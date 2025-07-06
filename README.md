@@ -1,0 +1,1 @@
+megamind-frontend-admin-ui
