@@ -118,37 +118,6 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
           </div>
         </nav>
 
-        {/* User Profile Section */}
-        <div className="p-6 border-t border-gray-100 bg-gradient-to-t from-gray-50/80 to-transparent flex-shrink-0">
-          <div className="flex items-center space-x-4 mb-4 p-3 bg-white rounded-xl shadow-sm border border-gray-100">
-            <div className="relative">
-              <img
-                src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
-                alt="Profile"
-                className="w-12 h-12 rounded-xl object-cover"
-              />
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-900">John Doe</p>
-              <p className="text-xs text-gray-500">Premium Student</p>
-              <div className="flex items-center space-x-1 mt-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-xs text-green-600 font-medium">Online</span>
-              </div>
-            </div>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={LogOut}
-            onClick={handleLogout}
-            fullWidth
-            className="text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors"
-          >
-            Sign Out
-          </Button>
-        </div>
       </div>
 
       {/* Main content */}
@@ -186,7 +155,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
                   type="search"
                   placeholder="Search tests, questions..."
                   icon={Search}
-                  className="w-80"
+                  className="w-64"
                 />
               </div>
               <div className="flex items-center space-x-2">
@@ -198,12 +167,67 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
                 >
                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  icon={User} 
-                  className="hover:bg-gray-100"
-                />
+                
+                {/* User Profile Dropdown */}
+                <div className="relative group">
+                  <button className="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-50 transition-colors">
+                    <div className="relative">
+                      <img
+                        src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+                        alt="Profile"
+                        className="w-8 h-8 rounded-lg object-cover"
+                      />
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div className="hidden md:block text-left">
+                      <p className="text-sm font-semibold text-gray-900">John Doe</p>
+                      <p className="text-xs text-gray-500">Premium Student</p>
+                    </div>
+                  </button>
+                  
+                  {/* Dropdown Menu */}
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="p-4 border-b border-gray-100">
+                      <div className="flex items-center space-x-3">
+                        <div className="relative">
+                          <img
+                            src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+                            alt="Profile"
+                            className="w-12 h-12 rounded-xl object-cover"
+                          />
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-gray-900">John Doe</p>
+                          <p className="text-xs text-gray-500">Premium Student</p>
+                          <div className="flex items-center space-x-1 mt-1">
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span className="text-xs text-green-600 font-medium">Online</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-2">
+                      <button className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                        <User className="h-4 w-4 text-gray-500" />
+                        <span className="text-sm text-gray-700">View Profile</span>
+                      </button>
+                      <button className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                        <Settings className="h-4 w-4 text-gray-500" />
+                        <span className="text-sm text-gray-700">Settings</span>
+                      </button>
+                      <div className="border-t border-gray-100 my-2"></div>
+                      <button 
+                        onClick={handleLogout}
+                        className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-red-50 rounded-lg transition-colors text-red-600"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        <span className="text-sm">Sign Out</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
