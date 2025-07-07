@@ -22,7 +22,7 @@ export const TakeTestPage: React.FC<TakeTestPageProps> = ({ onPageChange }) => {
     // Create a test session with questions
     const questions = currentTest.type === 'static' 
       ? mockQuestions.filter(q => currentTest.questionIds.includes(q.id))
-      : mockQuestions.slice(0, 3); // Simplified for demo
+      : mockQuestions.slice(0, 5); // Simplified for demo
 
     const session: TestSession = {
       id: Date.now().toString(),

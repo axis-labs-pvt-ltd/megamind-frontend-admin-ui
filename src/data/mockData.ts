@@ -180,7 +180,7 @@ export const mockTests: Test[] = [
     title: 'Calculus Midterm',
     description: 'Comprehensive test covering derivatives and integrals',
     type: 'static',
-    questionIds: ['1'],
+    questionIds: ['1', '3'],
     timeLimit: 60,
     passingScore: 70,
     isActive: true,
