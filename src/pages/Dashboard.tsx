@@ -1,5 +1,5 @@
 import React from 'react';
-import { DashboardStats } from '../components/organisms/DashboardStats';
+import { AdvancedDashboardStats } from '../components/organisms/AdvancedDashboardStats';
 import { TestCard } from '../components/molecules/TestCard';
 import { Button } from '../components/atoms/Button';
 import { Plus, TrendingUp, Clock, Target } from 'lucide-react';
@@ -117,7 +117,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
       </div>
 
       {/* Stats Overview */}
-      <DashboardStats stats={stats} />
+      <AdvancedDashboardStats stats={stats} />
 
       {/* Available Tests */}
       <div>
