@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '../atoms/Card';
 import { Badge } from '../atoms/Badge';
-import { LucideIcon } from 'lucide-react';
+import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface StatCardProps {
   title: string;
