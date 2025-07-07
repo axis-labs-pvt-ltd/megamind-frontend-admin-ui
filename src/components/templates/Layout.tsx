@@ -53,7 +53,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-30 w-72 bg-white/95 backdrop-blur-xl shadow-2xl border-r border-gray-200/50 transform transition-all duration-300 ease-out lg:translate-x-0 lg:relative lg:flex lg:flex-col ${
+      <div className={`fixed inset-y-0 left-0 z-30 w-72 bg-white/95 backdrop-blur-xl shadow-2xl border-r border-gray-200/50 transform transition-all duration-300 ease-out lg:translate-x-0 lg:static lg:flex lg:flex-col ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         
@@ -81,7 +81,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 mt-8 px-4 overflow-y-auto">
+        <nav className="flex-1 mt-8 px-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
           <div className="space-y-2">
             {navigation.map((item) => (
               <button
@@ -123,7 +123,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-gray-200/50 sticky top-0 z-10 flex-shrink-0">
+        <header className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-gray-200/50 sticky top-0 z-40 flex-shrink-0">
           <div className="flex items-center justify-between h-20 px-6 lg:px-8">
             <div className="flex items-center space-x-6">
               <Button
@@ -186,7 +186,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
                   </button>
                   
                   {/* Dropdown Menu */}
-                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 backdrop-blur-sm">
                     <div className="p-4 border-b border-gray-100">
                       <div className="flex items-center space-x-3">
                         <div className="relative">
@@ -234,7 +234,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-6 lg:p-8 overflow-auto">
+        <main className="flex-1 p-6 lg:p-8 overflow-y-auto overflow-x-hidden">
           <div className="max-w-[1600px] mx-auto w-full">
             {children}
           </div>
