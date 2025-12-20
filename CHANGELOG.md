@@ -165,6 +165,20 @@ All notable changes to this project will be documented in this file.
     - `DashboardPage` (Removed "flashbang" white hover states).
     - `Header` (Page Titles were invisible due to broken gradient clip; switched to solid text).
     - `StatCard` (Subtitles were hardcoded gray-600; switched to theme secondary text).
+- **New Feature**:
+  - **Neumorphic Theme**: Added a new "Neumorphic" theme option.
+    - Features "Soft UI" / Claymorphism aesthetic (Light top-left, Dark bottom-right shadows).
+    - Isolated CSS implementation `[data-theme="neumorphic"]` ensures zero impact on Light/Dark modes.
+    - Added to `ThemeSelector`.
+  - **Nested Profile Menu**:
+    - Refactored `ProfileDropdown` to support sub-menus.
+    - "Theme" selection is now a nested view, cleaner and clutter-free.
+    - Added "Back" navigation within the dropdown.
+  - **Neumorphic Theme Refinement**:
+    - Implemented high-fidelity "Inset" shadows for all inputs and textareas (Pressed look).
+    - Implemented "Outset" shadows for all cards and containers (Extruded look).
+    - Enforced consistently via global CSS overrides in `[data-theme="neumorphic"]`.
+    - Fixed Search Input overlap by ensuring 3rem left padding for all inputs with icons.
 - **Visual Consistency**:
   - `StatCard`: Replaced hardcoded color maps with `var(--accent-*)` opacity layers.
   - `TestInterface`: Fixed blue/white hardcoding in drag-drop zones and progress bars.

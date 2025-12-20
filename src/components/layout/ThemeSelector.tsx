@@ -1,48 +1,54 @@
 'use client';
 
-import { ThemeType, useThemeStore } from '@/store/useThemeStore';
-import { Check, Palette } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useThemeStore } from '@/store/useThemeStore';
+import { Check } from 'lucide-react';
 
-const themes: { value: ThemeType; label: string; colors: string[] }[] = [
-  { value: 'light', label: 'Light', colors: ['#ffffff', '#f3f4f6', '#3b82f6'] },
-  { value: 'dark', label: 'Dark', colors: ['#0f172a', '#1e293b', '#60a5fa'] },
-];
+const themes = [
+    { id: 'light', label: 'Light', color: '#ffffff', border: '#e2e8f0' },
+    { id: 'dark', label: 'Dark', color: '#0f172a', border: '#1e293b' },
+    { id: 'neumorphic', label: 'Neumorphic', color: '#e0e5ec', border: '#a3b1c6' }
+  ] as const;
 
 export function ThemeSelector() {
   const { theme, setTheme } = useThemeStore();
 
   return (
     <div className="px-2 py-1">
-      <div className="flex items-center space-x-2 px-3 py-2 text-xs font-medium text-[var(--text-muted)]">
-        <Palette className="h-3.5 w-3.5" />
-        <span>Theme</span>
-      </div>
-      <div className="space-y-1">
-        {themes.map((themeOption) => (
-          <button
-            key={themeOption.value}
-            onClick={() => setTheme(themeOption.value)}
-            className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-[var(--bg-hover)] rounded-lg transition-colors group/theme"
-          >
-            <div className="flex items-center space-x-3">
-              <div className="flex space-x-1">
-                {themeOption.colors.map((color, idx) => (
-                  <div
-                    key={idx}
-                    className="w-4 h-4 rounded-full border border-[var(--border-secondary)]"
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
+      <div className="p-2">
+        <div className="grid grid-cols-1 gap-2">
+          {themes.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTheme(t.id)}
+              className={cn(
+                "w-full flex items-center justify-between p-3 rounded-xl transition-all",
+                theme === t.id 
+                  ? "bg-[var(--bg-secondary)] border-2 border-[var(--accent-blue)]" 
+                  : "hover:bg-[var(--bg-hover)] border border-transparent"
+              )}
+            >
+              <div className="flex items-center space-x-3">
+                <div 
+                  className="w-8 h-8 rounded-full shadow-sm border"
+                  style={{ 
+                    backgroundColor: t.color,
+                    borderColor: t.border
+                  }}
+                />
+                <span className={cn(
+                  "font-medium",
+                  theme === t.id ? "text-[var(--accent-blue)]" : "text-[var(--text-primary)]"
+                )}>
+                  {t.label}
+                </span>
               </div>
-              <span className="text-sm text-[var(--text-primary)] group-hover/theme:text-[var(--accent-blue)] transition-colors">
-                {themeOption.label}
-              </span>
-            </div>
-            {theme === themeOption.value && (
-              <Check className="h-4 w-4 text-[var(--accent-blue)]" />
-            )}
-          </button>
-        ))}
+              {theme === t.id && (
+                <Check className="h-4 w-4 text-[var(--accent-blue)]" />
+              )}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

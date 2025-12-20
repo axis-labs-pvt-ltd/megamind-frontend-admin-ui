@@ -96,6 +96,159 @@
 
 
 
+/* Neumorphic Theme */
+/* Neumorphic Theme */
+[data-theme="neumorphic"] {
+  /* Soft, clay-morphism base - #E0E5EC matches reference */
+  --bg-primary: #e0e5ec;
+  --bg-secondary: #e0e5ec;
+  --bg-card: #e0e5ec; /* Cards blend into background to pop */
+  --bg-header: rgba(224, 229, 236, 0.9);
+  --bg-sidebar: #e0e5ec;
+  --bg-hover: linear-gradient(145deg, #eff3f8, #e0e5ec); /* Subtle gradient for hover */
+
+  /* Typography - High Contrast Dark Gray #4A5568 */
+  --text-primary: #4a5568;
+  --text-secondary: #718096;
+  --text-muted: #a0aec0;
+
+  /* Icons */
+  --icon-primary: #718096;
+  --icon-secondary: #a0aec0;
+  --icon-muted: #cbd5e0;
+
+  /* Borders - Removed/Transparent as shadows define shapes */
+  --border-primary: transparent;
+  --border-secondary: transparent;
+  --border-hover: rgba(255, 255, 255, 0.4);
+
+  /* Shadows - The Secret Sauce (Refined from Plan) */
+  --shadow-light: #ffffff;
+  --shadow-dark: #a3b1c6;
+  
+  /* Generic Shadows */
+  --shadow-sm: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+  --shadow-md: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
+  --shadow-lg: 13px 13px 20px var(--shadow-dark), -13px -13px 20px var(--shadow-light);
+  --shadow-xl: 20px 20px 40px var(--shadow-dark), -20px -20px 40px var(--shadow-light);
+
+  /* Semantic Neumorphic Shadows */
+  --shadow-surface: 9px 9px 16px var(--shadow-dark), -9px -9px 16px var(--shadow-light); /* Cards/Containers */
+  --shadow-inset: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light); /* Inputs/Wells */
+  --shadow-btn: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); /* Buttons */
+  --shadow-btn-active: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); /* Pressed Button */
+
+  /* Accents - Retaining Blue brand for actions, but softer/integrated */
+  --accent-blue: #3b82f6;
+  --accent-blue-light: rgba(59, 130, 246, 0.15);
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-yellow: #f59e0b;
+  --accent-purple: #8b5cf6;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(145deg, #e0e5ec, #ffffff);
+  --gradient-brand: linear-gradient(145deg, #3b82f6, #60a5fa);
+  
+  /* Global Radius for Soft Look */
+  --radius-theme: 1rem;
+}
+
+/* --- Neumorphic Global Overrides --- */
+
+/* Force Inputs to have "Pressed" Look (Inset Shadow) */
+/* Standard Neumorphic Inputs (Default to Inset/Pressed) */
+[data-theme="neumorphic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+[data-theme="neumorphic"] textarea,
+[data-theme="neumorphic"] select,
+[data-theme="neumorphic"] [role="combobox"] {
+  background-color: var(--bg-primary) !important;
+  box-shadow: var(--shadow-inset) !important;
+  border: none !important;
+  border-radius: var(--radius-theme) !important;
+  padding: 0.6rem 1rem !important;
+  color: var(--text-primary) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transition for pop effect */
+}
+
+/* 
+   Dynamic State: Pop Out when Filled 
+   If the input is NOT showing a placeholder (meaning it has value), pop it out.
+   Note: Requires inputs to have a placeholder attribute (even empty) to work robustly.
+*/
+[data-theme="neumorphic"] input:not(:placeholder-shown),
+[data-theme="neumorphic"] textarea:not(:placeholder-shown) {
+  box-shadow: var(--shadow-surface) !important;
+  transform: scale(1.01); /* Subtle scaling to emphasize "pop" */
+}
+
+/* Focus State: Deep Press */
+/* User didn't specify, but standard UX is to press on interaction. 
+   However, if user wants "filled = popped", we should respect that even during focus if filled.
+   Let's compromise: Focus ALWAYS presses slightly to show activity, or we keep the "Popped" state if filled?
+   User said: "when user inputs something... popped up". Typing implies inputting. 
+   Let's keep it popped if filled, but maybe add a highlight ring or subtle change.
+   
+   Actually, standard behavior:
+   Empty + Focus -> Pressed (Writing into the paper)
+   Filled + Focus -> Popped ? 
+   
+   Let's try: Focus wins -> Pressed. (You push the button to edit it).
+   Once you leave (Blur) + Filled -> Popped (It sits on top).
+*/
+[data-theme="neumorphic"] input:focus,
+[data-theme="neumorphic"] textarea:focus {
+  outline: none !important;
+  /* Deep inset for focus state overrides the "Popped" state temporarily, giving a tactile "editing" feel */
+  box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light) !important; 
+  transform: scale(1);
+}
+/* Ensure filled inputs return to popped state when not focused */
+[data-theme="neumorphic"] input:not(:placeholder-shown):not(:focus),
+[data-theme="neumorphic"] textarea:not(:placeholder-shown):not(:focus) {
+    box-shadow: var(--shadow-surface) !important;
+}
+
+/* Specific Fix for Inputs with Icons (Search, wrappers) */
+/* Boosted specificity to override the generic input rule (which has 3 :not attributes) */
+/* Specificity: Theme(0,1,0) + Class(0,1,0) + Type(0,0,1) + 3*Not(0,1,0) = 0,5,1 > Generic(0,4,1) */
+[data-theme="neumorphic"] .relative > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+    padding-left: 3rem !important; 
+}
+
+/* Ensure type="search" specifically wins too */
+[data-theme="neumorphic"] input[type="search"]:not([type="checkbox"]):not([type="radio"]) {
+    padding-left: 3rem !important;
+}
+
+/* Force Cards & Containers to have "Extruded" Look (Outset Shadow) */
+/* We target the specific tailwind class used by 'Card.tsx' component background or just generic cards */
+[data-theme="neumorphic"] .bg-\[var\(--bg-card\)\] {
+   background-color: var(--bg-primary) !important; /* Blend with body */
+   box-shadow: var(--shadow-surface) !important;
+   border: none !important;
+   border-radius: var(--radius-theme) !important;
+   /* padding: 2rem !important; */ /* REMOVED: Caused cards to be too large. Let component classes handle padding. */
+}
+
+/* Also target specialized containers if needed */
+[data-theme="neumorphic"] .rounded-xl {
+   border-radius: var(--radius-theme) !important;
+}
+
+/* Neumorphic Buttons (Generic Primary) */
+/* This is tricky to target all buttons but we can try common patterns */
+[data-theme="neumorphic"] button:not(.group) { /* Avoid targeting simple icon wrappers */
+  /* We let specific button components handle this via variable usage if possible, 
+     but for the "Wow" effect on standard buttons: */
+}
+
+/* Specific Fix for Search Input Containers */
+[data-theme="neumorphic"] .relative > input {
+    /* Ensure search icons align with new padding */
+    padding-left: 3rem !important; 
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
