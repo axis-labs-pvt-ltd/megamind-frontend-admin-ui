@@ -13,9 +13,9 @@ interface TestTypeSelectionProps {
 
 export function TestTypeSelection({ testType, setValue, errors }: TestTypeSelectionProps) {
   return (
-    <Card className="p-6">
+    <Card className="p-4 md:p-6">
       <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Test Type</h3>
-      <div className="flex space-x-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <div
           className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
             testType === 'static' 

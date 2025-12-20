@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { useThemeStore } from '@/store/useThemeStore';
 import { ChevronLeft, ChevronRight, LogOut, Palette, Settings, User } from 'lucide-react';
 import { useState } from 'react';
@@ -8,12 +9,16 @@ import { ThemeSelector } from './ThemeSelector';
 
 export function ProfileDropdown() {
   const [view, setView] = useState<'main' | 'themes'>('main');
+  const [isOpen, setIsOpen] = useState(false);
   const { theme } = useThemeStore();
   const themeLabel = theme === 'neumorphic' ? 'Neumorphic' : theme.charAt(0).toUpperCase() + theme.slice(1);
 
   return (
-    <div className="relative group">
-      <button className="flex items-center space-x-3 p-2 rounded-xl hover:bg-[var(--bg-hover)] transition-all duration-200 hover:scale-105">
+    <div className="relative">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center space-x-3 p-2 rounded-xl hover:bg-[var(--bg-hover)] transition-all duration-200 hover:scale-105"
+      >
         <div className="relative">
           <img
             src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
@@ -28,8 +33,16 @@ export function ProfileDropdown() {
         </div>
       </button>
       
+      {/* Overlay to close dropdown when clicking outside */}
+      {isOpen && (
+        <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+      )}
+      
       {/* Dropdown Menu */}
-      <div className="absolute right-0 top-full mt-2 w-72 bg-[var(--bg-card)] backdrop-blur-sm rounded-xl shadow-lg border border-[var(--border-primary)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform origin-top-right group-hover:translate-y-0 translate-y-2 max-h-[calc(100vh-100px)]">
+      <div className={cn(
+        "absolute right-0 top-full mt-2 w-72 bg-[var(--bg-card)] backdrop-blur-sm rounded-xl shadow-lg border border-[var(--border-primary)] transition-all duration-200 z-50 transform origin-top-right max-h-[calc(100vh-100px)]",
+        isOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible translate-y-2 pointer-events-none"
+      )}>
         
         {/* User Info Header - Always visible */}
         <div className="p-4 border-b border-[var(--border-primary)]">

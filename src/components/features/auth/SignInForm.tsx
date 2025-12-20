@@ -1,16 +1,15 @@
 'use client';
 
+import { SignInFormFields } from '@/components/features/auth/SignInFormFields';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import { SignInValues, signInSchema } from '@/lib/validations/auth';
 import { authService } from '@/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertCircle, KeyIcon, Loader2, LogIn, Mail } from 'lucide-react';
+import { AlertCircle, Loader2, LogIn } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 export function SignInForm() {
   const router = useRouter();
@@ -64,57 +63,7 @@ export function SignInForm() {
           </div>
         )}
 
-        <div className="flex flex-col space-y-3">
-          <label className="text-sm font-medium text-[var(--text-secondary)]">Email Address</label>
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="email"
-                placeholder="instructor@megamind.com"
-                icon={Mail}
-                error={errors.email?.message}
-              />
-            )}
-          />
-        </div>
-
-        <div className="flex flex-col space-y-3">
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-[var(--text-secondary)]">Password</label>
-            <a href="#" className="text-sm font-medium text-[var(--accent-blue)] hover:text-blue-600 transition-colors">
-              Forgot password?
-            </a>
-          </div>
-          <Controller
-            name="password"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="password"
-                placeholder="••••••••"
-                icon={KeyIcon}
-                error={errors.password?.message}
-              />
-            )}
-          />
-        </div>
-
-        
-        <Controller
-          name="remember"
-          control={control}
-          render={({ field: { value, onChange } }) => (
-            <Checkbox
-              checked={value}
-              onChange={(checked) => onChange(checked)}
-              label="Remember me"
-            />
-          )}
-        />
+        <SignInFormFields control={control} errors={errors} />
 
         <Button 
           type="submit" 

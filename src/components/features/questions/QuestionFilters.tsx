@@ -24,16 +24,18 @@ export function QuestionFilters({
   onDifficultyChange
 }: QuestionFiltersProps) {
   return (
-    <div className="flex items-center space-x-4">
-      <Input
-        type="search"
-        placeholder="Search questions..."
-        value={searchTerm}
-        onChange={(e) => onSearchChange(e.target.value)}
-        icon={Search}
-        className="flex-1 max-w-md"
-      />
-      <div className="flex items-center space-x-2">
+    <div className="flex flex-wrap gap-2 pb-2">
+      <div className="flex-1 min-w-[200px]">
+        <Input
+          type="search"
+          placeholder="Search questions..."
+          value={searchTerm}
+          onChange={(e) => onSearchChange(e.target.value)}
+          icon={Search}
+          className="w-full"
+        />
+      </div>
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
         <Filter className="h-4 w-4 text-[var(--icon-muted)]" />
         <span className="text-sm text-[var(--text-secondary)]">Type:</span>
         <div className="flex space-x-2">

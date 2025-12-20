@@ -48,7 +48,7 @@ export function DashboardStatCard({
 
   return (
     <div 
-      className="bg-[var(--bg-card)] rounded-xl p-6 shadow-sm border border-[var(--border-primary)] hover:shadow-lg transition-all duration-200 animate-slide-up"
+      className="bg-[var(--bg-card)] rounded-xl p-4 md:p-6 shadow-sm border border-[var(--border-primary)] hover:shadow-lg transition-all duration-200 animate-slide-up"
       style={{ animationDelay: `${delay}ms` }}
     >
       <div className="flex items-center space-x-4">

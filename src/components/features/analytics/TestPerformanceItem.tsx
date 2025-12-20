@@ -15,12 +15,12 @@ export function TestPerformanceItem({ performance, delay = 0 }: TestPerformanceI
   return (
     <NeumorphicWrapper
       variant="secondary" // Inset/Pressed look for list items
-      className="p-4 border border-[var(--border-primary)] rounded-lg animate-slide-up"
+      className="p-3 md:p-4 border border-[var(--border-primary)] rounded-lg animate-slide-up"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
         <h4 className="font-medium text-[var(--text-primary)]">{performance.test.title}</h4>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <Badge variant="secondary">
             {performance.attempts} attempts
           </Badge>
@@ -29,7 +29,7 @@ export function TestPerformanceItem({ performance, delay = 0 }: TestPerformanceI
           </Badge>
         </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+      <div className="grid grid-cols-2 gap-3 text-sm">
         <div>
           <p className="text-[var(--text-secondary)]">Average Score</p>
           <p className="font-medium text-[var(--text-primary)]">{performance.averageScore}%</p>

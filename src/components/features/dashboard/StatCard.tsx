@@ -93,7 +93,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   };
 
   return (
-    <Card className={cn("p-6 hover:shadow-lg transition-all duration-200", className)}>
+    <Card className={cn("p-4 md:p-6 hover:shadow-lg transition-all duration-200", className)}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-3 mb-3">

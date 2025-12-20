@@ -112,7 +112,7 @@ export const TestCard: React.FC<TestCardProps> = ({
         )}
 
         {/* Content */}
-        <div className="p-6 space-y-4">
+        <div className="p-4 md:p-6 space-y-4">
           {/* Header (if no cover image) */}
           {!test.coverImage && (
             <div className="flex items-start justify-between">
@@ -160,7 +160,7 @@ export const TestCard: React.FC<TestCardProps> = ({
           )}
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="text-center p-3 bg-[var(--bg-secondary)] rounded-xl">
               <FileText className="h-4 w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
               <p className="text-sm font-semibold text-[var(--text-primary)]">{questionCount}</p>

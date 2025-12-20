@@ -12,14 +12,14 @@ export function Header() {
   const currentPage = pathname === '/' ? 'dashboard' : pathname.split('/').pop()?.replace(/-/g, ' ') || 'dashboard';
 
   return (
-    <header className="bg-[var(--bg-header)] backdrop-blur-xl shadow-sm border-b border-[var(--border-primary)] sticky top-0 z-40 flex-shrink-0 transition-shadow duration-300 hover:shadow-md">
-      <div className="flex items-center justify-between h-20 pl-16 pr-6 lg:px-8">
+    <header className="bg-[var(--bg-header)] backdrop-blur-xl shadow-sm border-b-2 border-[var(--border-primary)] sticky top-0 z-40 flex-shrink-0 transition-shadow duration-300 hover:shadow-md">
+      <div className="flex items-center justify-between h-20 pl-16 pr-6 lg:pl-8 lg:pr-8">
         <div className="flex items-center space-x-6">
           <div className="animate-slide-right">
-            <h1 className="text-2xl font-bold text-[var(--text-primary)] capitalize">
+            <h1 className="text-xl md:text-2xl font-bold text-[var(--text-primary)] capitalize">
               {currentPage}
             </h1>
-            <p className="text-sm text-[var(--text-secondary)] mt-0.5">
+            <p className="hidden sm:block text-sm text-[var(--text-secondary)] mt-0.5">
               {currentPage === 'dashboard' && 'Welcome back! Here\'s your learning overview'}
               {currentPage === 'tests' && 'Discover and take available tests'}
               {currentPage === 'subjects' && 'Organize your curriculum with subjects and modules'}

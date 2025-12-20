@@ -58,7 +58,7 @@ export function TestCoverImage({ register, setValue, errors, coverImage, title, 
             {/* Suggested Images */}
             <div>
             <p className="text-sm text-[var(--text-secondary)] mb-2">Suggested cover images:</p>
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
                 {suggestedCoverImages.map((imageUrl, index) => (
                 <button
                     type="button"

@@ -129,7 +129,12 @@ export function Sidebar() {
                       isActive ? 'text-white' : 'text-[var(--text-secondary)] group-hover:text-[var(--accent-blue)]'
                     )} />
                   </div>
-                  <div className="overflow-hidden text-left ml-4 lg:ml-0 lg:group-hover/sidebar:ml-4 transition-all duration-300 opacity-0 group-hover/sidebar:opacity-100 -translate-x-5 group-hover/sidebar:translate-x-0 lg:w-0 lg:group-hover/sidebar:w-auto">
+                  <div className={cn(
+                    "overflow-hidden text-left ml-4 lg:ml-0 lg:group-hover/sidebar:ml-4 transition-all duration-300 -translate-x-5 lg:w-0 lg:group-hover/sidebar:w-auto",
+                    isSidebarOpen 
+                      ? "opacity-100 translate-x-0 w-auto" 
+                      : "opacity-0 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 group-hover/sidebar:w-auto"
+                  )}>
                     <div className="font-semibold truncate">
                       {item.name}
                     </div>

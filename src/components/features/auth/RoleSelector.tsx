@@ -13,7 +13,7 @@ interface RoleSelectorProps {
 
 export function RoleSelector({ selectedRole, onSelect }: RoleSelectorProps) {
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <NeumorphicWrapper
         as="button"
         active={selectedRole === 'student'}

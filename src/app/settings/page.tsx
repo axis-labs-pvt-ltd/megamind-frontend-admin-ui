@@ -41,7 +41,7 @@ export default function SettingsPage() {
         </Card>
 
         {/* Content Area */}
-        <Card className="flex-1 p-6 lg:p-8 min-h-[500px]">
+        <Card className="flex-1 flex flex-col justify-center items-center p-6 lg:p-8 min-h-[500px]">
           {activeTab === 'profile' && (
             <ProfileForm 
               initialData={{

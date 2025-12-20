@@ -97,11 +97,11 @@ export default function SubjectsPage() {
           <h2 className="text-2xl font-bold text-[var(--text-primary)]">Subject Management</h2>
           <p className="text-[var(--text-secondary)]">Organize your curriculum with subjects and modules</p>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <Button
             variant="outline"
             onClick={() => setShowModuleForm(true)}
-            className="hover:bg-green-50 hover:border-green-200 hover:text-green-700"
+            className="hover:bg-green-50 hover:border-green-200 hover:text-green-700 w-full sm:w-auto"
           >
              <FolderPlus className="mr-2 h-4 w-4" />
             Add Module
@@ -109,7 +109,7 @@ export default function SubjectsPage() {
           <Button
             variant="primary"
             onClick={() => setShowCreateForm(true)}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 w-full sm:w-auto"
           >
              <Plus className="mr-2 h-4 w-4" />
             Create Subject
