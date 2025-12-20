@@ -32,7 +32,7 @@ export function QuestionList({ questions, onEdit, onDelete, onCreateNew }: Quest
   }
 
   return (
-    <div className="space-y-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {questions.map((question, index) => (
         <div 
           key={question.id} 
@@ -41,7 +41,7 @@ export function QuestionList({ questions, onEdit, onDelete, onCreateNew }: Quest
         >
           <QuestionCard
             question={question}
-            className="hover:shadow-md transition-shadow"
+            className="hover:shadow-md transition-shadow h-full"
           />
           <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
             <div className="flex space-x-2">

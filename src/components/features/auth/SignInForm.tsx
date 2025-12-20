@@ -64,7 +64,7 @@ export function SignInForm() {
           </div>
         )}
 
-        <div className="space-y-2">
+        <div className="flex flex-col space-y-3">
           <label className="text-sm font-medium text-[var(--text-secondary)]">Email Address</label>
           <Controller
             name="email"
@@ -81,7 +81,7 @@ export function SignInForm() {
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col space-y-3">
           <div className="flex items-center justify-between">
             <label className="text-sm font-medium text-[var(--text-secondary)]">Password</label>
             <a href="#" className="text-sm font-medium text-[var(--accent-blue)] hover:text-blue-600 transition-colors">

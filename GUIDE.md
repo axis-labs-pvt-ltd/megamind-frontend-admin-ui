@@ -245,6 +245,12 @@ export default function AnalyticsPage() {
 
 ### Creating Reusable Components
 
+**CRITICAL: File Size Limits**
+- **Maximum 100 lines of code per file** - If a file exceeds 100 lines, it MUST be split into separate components
+- Extract logical sections into focused sub-components
+- Keep each component responsible for ONE clear task
+- Benefits: Better readability, easier testing, improved maintainability
+
 1. **Extract common patterns**: If UI appears 3+ times, make it a component
 2. **Share types**: Create `types.ts` files for interfaces used by multiple components
 3. **Keep components focused**: Each component should have one clear responsibility

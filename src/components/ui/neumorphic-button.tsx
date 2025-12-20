@@ -7,28 +7,49 @@ interface NeumorphicButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEle
 }
 
 export const NeumorphicButton = React.forwardRef<HTMLButtonElement, NeumorphicButtonProps>(
-  ({ children, variant = 'default', className, ...props }, ref) => {
+  ({ children, variant = 'default', className, style, ...props }, ref) => {
+    const [isHovered, setIsHovered] = React.useState(false);
+    const [isActive, setIsActive] = React.useState(false);
+
+    const getShadow = () => {
+      if (isActive) {
+        // Active: Strong inset shadow
+        return 'inset 8px 8px 16px rgba(0,0,0,0.8), inset -8px -8px 16px rgba(255,255,255,0.05)';
+      }
+      if (isHovered) {
+        // Hover: Medium inset shadow
+        return 'inset 6px 6px 12px rgba(0,0,0,0.6), inset -6px -6px 12px rgba(255,255,255,0.03)';
+      }
+      // Default: Extremely subtle downward-only shadow that won't cover labels
+      return '0 1px 2px rgba(0,0,0,0.04)';
+    };
+
     return (
       <button
         ref={ref}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setIsActive(false);
+        }}
+        onMouseDown={() => setIsActive(true)}
+        onMouseUp={() => setIsActive(false)}
         className={cn(
-          'relative overflow-hidden',
+          'relative',
           'px-4 py-3 rounded-lg',
           'bg-[var(--bg-card)] text-[var(--text-primary)] font-medium',
-          'border border-[var(--border-primary)]',
-          // Default: Outset shadow like checkbox unchecked reversed
-          'shadow-[0_4px_6px_-1px_rgba(59,130,246,0.3),_0_2px_4px_-2px_rgba(59,130,246,0.3)]',
-          // Hover: Inset shadow like checkbox unchecked
-          'hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),_inset_-2px_-2px_4px_rgba(255,255,255,0.7)]',
-          'hover:border-[var(--border-hover)]',
-          // Active: Stronger inset shadow
-          'active:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.15),_inset_-3px_-3px_6px_rgba(255,255,255,0.8)]',
-          'active:scale-[0.98]',
-          'transition-all duration-300',
+          'border',
           'disabled:opacity-50 disabled:cursor-not-allowed',
-          variant === 'primary' && 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/25 border-transparent',
+          variant === 'primary' && 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent',
           className
         )}
+        style={{
+          ...style,
+          boxShadow: getShadow(),
+          transform: isActive ? 'scale(0.96)' : 'scale(1)',
+          borderColor: isHovered ? '#60a5fa' : 'var(--border-primary)',
+          transition: 'all 0.3s ease-out',
+        }}
         {...props}
       >
         {children}

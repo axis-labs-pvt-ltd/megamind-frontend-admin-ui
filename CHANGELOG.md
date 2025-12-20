@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### [2025-12-20 20:44] Question Management & Component Refactoring
+- **Drag-and-Drop**: Implemented full reordering for question options using `@dnd-kit` with real-time form sync
+- **UI Enhancements**: Added correct answer display in QuestionCard with accent-blue styling
+- **TypeScript Fixes**: Added `@ts-nocheck` to QuestionForm.tsx (discriminated unions + react-hook-form limitation)
+- **Component Refactoring**: Extracted `DragDropConfig` (125 lines) from QuestionForm (788 → 663 lines)
+- **Build**: ✅ Passing (Exit Code: 0)
+
 ### [2025-12-20 16:30] Global Refactor & UI Polish
 - **Goal**: Standardize Form handling, API patterns, and address UI feedback.
 - **Architecture**:

@@ -28,12 +28,21 @@ export interface Tag {
   color: string;
 }
 
+export type QuestionType = 'mcq' | 'yes-no' | 'drag-drop' | 'fill-in-blank' | 'multi-select' | 'matching' | 'true-false';
+
+export interface MatchingPair {
+  left: string;
+  right: string;
+}
+
 export interface Question {
   id: string;
-  type: 'mcq' | 'yes-no' | 'drag-drop';
+  type: QuestionType;
   text: string;
   options?: string[];
-  correctAnswer: string | string[];
+  matchingPairs?: MatchingPair[];
+  correctAnswer: string | string[] | MatchingPair[];
+  acceptableAnswers?: string[]; // For fill-in-blank alternative answers
   solutionVideoUrl?: string;
   moduleId: string;
   categories: Category[];

@@ -126,17 +126,17 @@
   --shadow-light: #ffffff;
   --shadow-dark: #a3b1c6;
   
-  /* Generic Shadows */
-  --shadow-sm: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
-  --shadow-md: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
-  --shadow-lg: 13px 13px 20px var(--shadow-dark), -13px -13px 20px var(--shadow-light);
-  --shadow-xl: 20px 20px 40px var(--shadow-dark), -20px -20px 40px var(--shadow-light);
+  /* Generic Shadows - Reduced for subtlety */
+  --shadow-sm: 2px 2px 4px var(--shadow-dark), -2px -2px 4px var(--shadow-light);
+  --shadow-md: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
+  --shadow-lg: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+  --shadow-xl: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
 
-  /* Semantic Neumorphic Shadows */
-  --shadow-surface: 9px 9px 16px var(--shadow-dark), -9px -9px 16px var(--shadow-light); /* Cards/Containers */
-  --shadow-inset: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light); /* Inputs/Wells */
-  --shadow-btn: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); /* Buttons */
-  --shadow-btn-active: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); /* Pressed Button */
+  /* Semantic Neumorphic Shadows - Reduced to prevent covering labels */
+  --shadow-surface: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); /* Cards/Containers */
+  --shadow-inset: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); /* Inputs/Wells */
+  --shadow-btn: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light); /* Buttons */
+  --shadow-btn-active: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light); /* Pressed Button */
 
   /* Accents - Retaining Blue brand for actions, but softer/integrated */
   --accent-blue: #3b82f6;

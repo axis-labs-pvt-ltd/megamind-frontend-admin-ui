@@ -29,7 +29,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   return (
     <div className={className}>
       {label && (
-        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
           {label}
           {required && <span className="text-[var(--accent-red)] ml-1">*</span>}
         </label>
