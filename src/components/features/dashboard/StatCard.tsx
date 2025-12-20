@@ -73,7 +73,7 @@ export const StatCard: React.FC<StatCardProps> = ({
         stable: 'text-[var(--text-secondary)] bg-[var(--bg-secondary)]'
       }
     },
-    indigo: { // Mapping indigo to blue/purple mix or just blue for now as we don't have indigo accent
+    indigo: {
       bg: 'bg-[var(--accent-blue)]/10',
       text: 'text-[var(--accent-blue)]',
       trend: {

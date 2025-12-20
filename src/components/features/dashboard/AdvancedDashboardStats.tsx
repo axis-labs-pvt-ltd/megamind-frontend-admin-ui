@@ -1,23 +1,23 @@
 'use client';
 
 import { PerformanceChart } from '@/components/features/analytics/PerformanceChart';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
-    Activity,
-    AlertCircle,
-    Award,
-    Brain,
-    Calendar,
-    CheckCircle,
-    Clock,
-    Star,
-    Target,
-    TrendingUp,
-    Zap
+  Activity,
+  AlertCircle,
+  Award,
+  Brain,
+  CheckCircle,
+  Clock,
+  Star,
+  Target,
+  TrendingUp,
+  Zap
 } from 'lucide-react';
 import React from 'react';
+import { InsightItem } from './InsightItem';
+import { LearningGoals } from './LearningGoals';
+import { RecentResults } from './RecentResults';
 import { StatCard } from './StatCard';
 
 interface AdvancedDashboardStatsProps {
@@ -243,45 +243,33 @@ export const AdvancedDashboardStats: React.FC<AdvancedDashboardStatsProps> = ({ 
           <Card className="p-6 h-full">
             <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Performance Insights</h3>
             <div className="space-y-4">
-              <div className="flex items-start space-x-3 p-4 bg-[var(--accent-green)]/5 rounded-lg border border-[var(--accent-green)]/20">
-                <div className="p-1 bg-[var(--accent-green)]/10 rounded-full">
-                  <TrendingUp className="h-4 w-4 text-[var(--accent-green)]" />
-                </div>
-                <div>
-                  <p className="font-medium text-[var(--text-primary)]">Strong Improvement</p>
-                  <p className="text-sm text-[var(--text-secondary)]">Your scores have improved by 15% over the last month. Keep up the excellent work!</p>
-                </div>
-              </div>
+              <InsightItem
+                icon={TrendingUp}
+                title="Strong Improvement"
+                description="Your scores have improved by 15% over the last month. Keep up the excellent work!"
+                variant="green"
+              />
 
-              <div className="flex items-start space-x-3 p-4 bg-[var(--accent-blue)]/5 rounded-lg border border-[var(--accent-blue)]/20">
-                <div className="p-1 bg-[var(--accent-blue)]/10 rounded-full">
-                  <Brain className="h-4 w-4 text-[var(--accent-blue)]" />
-                </div>
-                <div>
-                  <p className="font-medium text-[var(--text-primary)]">Subject Strength</p>
-                  <p className="text-sm text-[var(--text-secondary)]">Computer Science is your strongest subject with 92% average score.</p>
-                </div>
-              </div>
+              <InsightItem
+                icon={Brain}
+                title="Subject Strength"
+                description="Computer Science is your strongest subject with 92% average score."
+                variant="blue"
+              />
 
-              <div className="flex items-start space-x-3 p-4 bg-[var(--accent-yellow)]/5 rounded-lg border border-[var(--accent-yellow)]/20">
-                <div className="p-1 bg-[var(--accent-yellow)]/10 rounded-full">
-                  <Target className="h-4 w-4 text-[var(--accent-yellow)]" />
-                </div>
-                <div>
-                  <p className="font-medium text-[var(--text-primary)]">Focus Area</p>
-                  <p className="text-sm text-[var(--text-secondary)]">Consider spending more time on Physics to improve your 78% average.</p>
-                </div>
-              </div>
+              <InsightItem
+                icon={Target}
+                title="Focus Area"
+                description="Consider spending more time on Physics to improve your 78% average."
+                variant="yellow"
+              />
 
-              <div className="flex items-start space-x-3 p-4 bg-[var(--accent-purple)]/5 rounded-lg border border-[var(--accent-purple)]/20">
-                <div className="p-1 bg-[var(--accent-purple)]/10 rounded-full">
-                  <Star className="h-4 w-4 text-[var(--accent-purple)]" />
-                </div>
-                <div>
-                  <p className="font-medium text-[var(--text-primary)]">Achievement Unlocked</p>
-                  <p className="text-sm text-[var(--text-secondary)]">You&apos;ve maintained a 90%+ score streak for 3 consecutive tests!</p>
-                </div>
-              </div>
+              <InsightItem
+                icon={Star}
+                title="Achievement Unlocked"
+                description="You've maintained a 90%+ score streak for 3 consecutive tests!"
+                variant="purple"
+              />
             </div>
           </Card>
         </div>
@@ -290,86 +278,12 @@ export const AdvancedDashboardStats: React.FC<AdvancedDashboardStatsProps> = ({ 
       {/* Recent Activity & Goals */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Test Results */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-[var(--text-primary)]">Recent Test Results</h3>
-            <Button variant="ghost" size="sm">View All</Button>
-          </div>
-          <div className="space-y-3">
-            {stats.recentAttempts.map((attempt, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-[var(--bg-secondary)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-3 h-3 rounded-full ${
-                    attempt.score >= 90 ? 'bg-green-500' :
-                    attempt.score >= 80 ? 'bg-blue-500' :
-                    attempt.score >= 70 ? 'bg-yellow-500' : 'bg-red-500'
-                  }`}></div>
-                  <div>
-                    <p className="font-medium text-[var(--text-primary)]">{attempt.testTitle}</p>
-                    <p className="text-sm text-[var(--text-secondary)]">
-                      {new Date(attempt.completedAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <Badge 
-                    variant={attempt.score >= 80 ? 'success' : attempt.score >= 60 ? 'warning' : 'danger'}
-                    size="md"
-                  >
-                    {attempt.score}%
-                  </Badge>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
+        <RecentResults attempts={stats.recentAttempts} />
 
         {/* Learning Goals */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-[var(--text-primary)]">Learning Goals</h3>
-            <Button variant="ghost" size="sm">Manage</Button>
-          </div>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-[var(--text-secondary)]">Monthly Test Target</span>
-                <span className="text-sm text-[var(--text-secondary)]">8/10</span>
-              </div>
-              <div className="w-full bg-[var(--bg-secondary)] rounded-full h-2">
-                <div className="bg-blue-500 h-2 rounded-full" style={{ width: '80%' }}></div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-[var(--text-secondary)]">Average Score Goal</span>
-                <span className="text-sm text-[var(--text-secondary)]">87/90%</span>
-              </div>
-              <div className="w-full bg-[var(--bg-secondary)] rounded-full h-2">
-                <div className="bg-green-500 h-2 rounded-full" style={{ width: '97%' }}></div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-[var(--text-secondary)]">Study Streak</span>
-                <span className="text-sm text-[var(--text-secondary)]">12/14 days</span>
-              </div>
-              <div className="w-full bg-[var(--bg-secondary)] rounded-full h-2">
-                <div className="bg-purple-500 h-2 rounded-full" style={{ width: '86%' }}></div>
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-gray-100">
-              <div className="flex items-center space-x-2 text-sm text-[var(--text-secondary)]">
-                <Calendar className="h-4 w-4" />
-                <span>Next milestone: Complete 2 more tests this week</span>
-              </div>
-            </div>
-          </div>
-        </Card>
+        <LearningGoals />
       </div>
     </div>
   );
 };
+

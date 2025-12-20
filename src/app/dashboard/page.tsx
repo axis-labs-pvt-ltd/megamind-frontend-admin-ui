@@ -66,8 +66,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <DashboardStatCard
           icon={Target}
-          iconBgColor="bg-blue-100"
-          iconColor="text-blue-600"
+          color="blue"
           label="Total Tests"
           value={stats.totalAttempts}
           subtitle="+2 this week"
@@ -76,8 +75,7 @@ export default function DashboardPage() {
         />
         <DashboardStatCard
           icon={TrendingUp}
-          iconBgColor="bg-green-100"
-          iconColor="text-green-600"
+          color="green"
           label="Average Score"
           value={`${stats.averageScore}%`}
           subtitle="+5% improvement"
@@ -86,8 +84,7 @@ export default function DashboardPage() {
         />
         <DashboardStatCard
           icon={Target}
-          iconBgColor="bg-yellow-100"
-          iconColor="text-yellow-600"
+          color="yellow"
           label="Best Score"
           value={`${stats.bestScore}%`}
           subtitle="Perfect score!"
@@ -96,8 +93,7 @@ export default function DashboardPage() {
         />
         <DashboardStatCard
           icon={Clock}
-          iconBgColor="bg-purple-100"
-          iconColor="text-purple-600"
+          color="purple"
           label="Study Time"
           value={`${Math.floor(stats.totalTimeSpent / 60)}h ${stats.totalTimeSpent % 60}m`}
           subtitle="This month"

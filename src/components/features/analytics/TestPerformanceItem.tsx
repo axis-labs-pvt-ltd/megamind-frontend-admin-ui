@@ -3,6 +3,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
+import { NeumorphicWrapper } from '@/components/ui/neumorphic-wrapper';
 import { TestPerformance } from './types';
 
 interface TestPerformanceItemProps {
@@ -12,7 +13,8 @@ interface TestPerformanceItemProps {
 
 export function TestPerformanceItem({ performance, delay = 0 }: TestPerformanceItemProps) {
   return (
-    <div 
+    <NeumorphicWrapper
+      variant="secondary" // Inset/Pressed look for list items
       className="p-4 border border-[var(--border-primary)] rounded-lg animate-slide-up"
       style={{ animationDelay: `${delay}ms` }}
     >
@@ -47,6 +49,6 @@ export function TestPerformanceItem({ performance, delay = 0 }: TestPerformanceI
           </p>
         </div>
       </div>
-    </div>
+    </NeumorphicWrapper>
   );
 }

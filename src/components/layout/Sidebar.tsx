@@ -99,6 +99,8 @@ export function Sidebar() {
                       ? 'bg-[var(--gradient-brand)] text-white shadow-lg shadow-blue-500/25'
                       : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]'
                   )}
+                  data-nav-item="true"
+                  data-active={isActive}
                 >
                   <div className={cn(
                     "p-2 rounded-lg transition-all duration-300 flex-shrink-0",

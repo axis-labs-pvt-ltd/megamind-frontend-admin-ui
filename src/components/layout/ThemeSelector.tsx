@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils';
 import { useThemeStore } from '@/store/useThemeStore';
 import { Check } from 'lucide-react';
+import { NeumorphicWrapper } from '../ui/neumorphic-wrapper';
 
 const themes = [
     { id: 'light', label: 'Light', color: '#ffffff', border: '#e2e8f0' },
@@ -18,28 +19,20 @@ export function ThemeSelector() {
       <div className="p-2">
         <div className="grid grid-cols-1 gap-2">
           {themes.map((t) => (
-            <button
+            <NeumorphicWrapper
+              as="button"
               key={t.id}
               onClick={() => setTheme(t.id)}
+              active={theme === t.id}
+              variant="secondary" // Inactive = Inset (Pressed)
               className={cn(
-                "w-full flex items-center justify-between p-3 rounded-xl transition-all duration-300",
-                // Neumorphic Specific Logic
-                theme === 'neumorphic' 
-                  ? (theme === t.id 
-                      ? "bg-[var(--bg-primary)] shadow-[var(--shadow-surface)] scale-[1.02] text-[var(--accent-blue)]" // Selected: Popped & Scaled
-                      : "bg-[var(--bg-primary)] shadow-[var(--shadow-inset)] hover:shadow-[var(--shadow-surface)] hover:scale-[1.01] text-[var(--text-primary)]" // Unselected: Inset -> Popped on Hover
-                    )
-                  : (theme === t.id 
-                      ? "bg-[var(--bg-secondary)] border-2 border-[var(--accent-blue)]" 
-                      : "hover:bg-[var(--bg-hover)] border border-transparent"
-                    )
+                "w-full flex items-center justify-between p-3"
               )}
             >
               <div className="flex items-center space-x-3">
                 <div 
                   className={cn(
                     "w-8 h-8 rounded-full border transition-shadow",
-                    // Add subtle shadow to color circles in neumorphic mode
                     theme === 'neumorphic' ? "shadow-md" : "shadow-sm"
                   )}
                   style={{ 
@@ -54,7 +47,7 @@ export function ThemeSelector() {
               {theme === t.id && (
                 <Check className="h-4 w-4 text-[var(--accent-blue)]" />
               )}
-            </button>
+            </NeumorphicWrapper>
           ))}
         </div>
       </div>

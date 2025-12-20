@@ -225,7 +225,8 @@
 [data-theme="neumorphic"] .bg-\[var\(--accent-blue\)\]\/10,
 [data-theme="neumorphic"] .bg-\[var\(--accent-green\)\]\/10, 
 [data-theme="neumorphic"] .bg-\[var\(--accent-yellow\)\]\/10,
-[data-theme="neumorphic"] .bg-\[var\(--accent-red\)\]\/10 {
+[data-theme="neumorphic"] .bg-\[var\(--accent-red\)\]\/10,
+[data-theme="neumorphic"] .bg-\[var\(--accent-purple\)\]\/10 {
   background-color: var(--bg-primary) !important;
   box-shadow: var(--shadow-surface) !important;
   border: none !important;
@@ -263,6 +264,39 @@
 [data-theme="neumorphic"] .relative > input {
     /* Ensure search icons align with new padding */
     padding-left: 3rem !important; 
+}
+
+/* Navbar/Sidebar Item Overrides for Neumorphic - Fix Contrast & Style */
+[data-theme="neumorphic"] button[data-nav-item="true"] {
+    transition: all 0.2s ease-out;
+}
+
+/* Active State: Pressed effect with Brand Color text */
+[data-theme="neumorphic"] button[data-nav-item="true"][data-active="true"] {
+    background: var(--bg-primary) !important; /* Remove gradient */
+    box-shadow: var(--shadow-inset) !important; /* Pressed look */
+    color: var(--accent-blue) !important; /* Brand color text */
+    transform: scale(0.98);
+}
+[data-theme="neumorphic"] button[data-nav-item="true"][data-active="true"] .text-white {
+    color: var(--accent-blue) !important; /* Icon color fix */
+}
+[data-theme="neumorphic"] button[data-nav-item="true"][data-active="true"] .text-blue-100 {
+    color: var(--text-secondary) !important; /* Subtitle color fix */
+}
+/* Active icon container bg */
+[data-theme="neumorphic"] button[data-nav-item="true"][data-active="true"] > div:first-child {
+    background-color: var(--bg-primary) !important;
+    box-shadow: var(--shadow-surface) !important; /* Pop the icon container */
+}
+
+
+/* Hover State: Popped effect */
+[data-theme="neumorphic"] button[data-nav-item="true"]:not([data-active="true"]):hover {
+    background: var(--bg-primary) !important;
+    box-shadow: var(--shadow-surface) !important; /* Popped look */
+    transform: translateY(-2px);
+    z-index: 10;
 }
 
 @theme inline {

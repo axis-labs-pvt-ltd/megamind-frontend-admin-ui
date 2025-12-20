@@ -1,9 +1,9 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import { useThemeStore } from '@/store/useThemeStore';
 import { ChevronLeft, ChevronRight, LogOut, Palette, Settings, User } from 'lucide-react';
 import { useState } from 'react';
+import { NeumorphicWrapper } from '../ui/neumorphic-wrapper';
 import { ThemeSelector } from './ThemeSelector';
 
 export function ProfileDropdown() {
@@ -29,7 +29,7 @@ export function ProfileDropdown() {
       </button>
       
       {/* Dropdown Menu */}
-      <div className="absolute right-0 top-full mt-2 w-72 bg-[var(--bg-card)] backdrop-blur-sm rounded-xl shadow-lg border border-[var(--border-primary)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform origin-top-right group-hover:translate-y-0 translate-y-2 max-h-[calc(100vh-100px)] overflow-hidden">
+      <div className="absolute right-0 top-full mt-2 w-72 bg-[var(--bg-card)] backdrop-blur-sm rounded-xl shadow-lg border border-[var(--border-primary)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform origin-top-right group-hover:translate-y-0 translate-y-2 max-h-[calc(100vh-100px)]">
         
         {/* User Info Header - Always visible */}
         <div className="p-4 border-b border-[var(--border-primary)]">
@@ -58,38 +58,37 @@ export function ProfileDropdown() {
           {view === 'main' ? (
             <div className="animate-slide-right">
               <div className="p-2">
-                <button className={cn(
-                  "w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-all duration-300 group/item",
-                  theme === 'neumorphic'
-                    ? "bg-[var(--bg-primary)] shadow-[var(--shadow-inset)] hover:shadow-[var(--shadow-surface)] hover:scale-[1.02] mb-2"
-                    : "hover:bg-[var(--bg-hover)]"
-                )}>
+                <NeumorphicWrapper
+                  as="button"
+                  active={false}
+                  variant="secondary"
+                  className="w-full flex items-center space-x-3 px-3 py-2 text-left mb-2 group/item"
+                >
                   <User className="h-4 w-4 text-[var(--text-secondary)] group-hover/item:text-[var(--accent-blue)] transition-colors" />
                   <span className="text-sm text-[var(--text-primary)] group-hover/item:text-[var(--accent-blue)] transition-colors">View Profile</span>
-                </button>
-                <button className={cn(
-                  "w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-all duration-300 group/item",
-                  theme === 'neumorphic'
-                    ? "bg-[var(--bg-primary)] shadow-[var(--shadow-inset)] hover:shadow-[var(--shadow-surface)] hover:scale-[1.02] mb-2"
-                    : "hover:bg-[var(--bg-hover)]"
-                )}>
+                </NeumorphicWrapper>
+
+                <NeumorphicWrapper
+                  as="button"
+                  active={false}
+                  variant="secondary"
+                  className="w-full flex items-center space-x-3 px-3 py-2 text-left mb-2 group/item"
+                >
                   <Settings className="h-4 w-4 text-[var(--text-secondary)] group-hover/item:text-[var(--accent-blue)] transition-colors" />
                   <span className="text-sm text-[var(--text-primary)] group-hover/item:text-[var(--accent-blue)] transition-colors">Settings</span>
-                </button>
+                </NeumorphicWrapper>
                 
                 {/* Theme Switcher Entry */}
-                <button 
-                  onClick={(e) => {
+                <NeumorphicWrapper 
+                  as="button"
+                  active={false}
+                  variant="secondary"
+                  onClick={(e: React.MouseEvent) => {
                     e.preventDefault();
                     e.stopPropagation();
                     setView('themes');
                   }}
-                  className={cn(
-                    "w-full flex items-center justify-between px-3 py-2 text-left rounded-lg transition-all duration-300 group/item",
-                    theme === 'neumorphic'
-                      ? "bg-[var(--bg-primary)] shadow-[var(--shadow-inset)] hover:shadow-[var(--shadow-surface)] hover:scale-[1.02]"
-                      : "hover:bg-[var(--bg-hover)]"
-                  )}
+                  className="w-full flex items-center justify-between px-3 py-2 text-left group/item"
                 >
                   <div className="flex items-center space-x-3">
                     <Palette className="h-4 w-4 text-[var(--text-secondary)] group-hover/item:text-[var(--accent-blue)] transition-colors" />
@@ -99,21 +98,19 @@ export function ProfileDropdown() {
                     <span className="text-xs text-[var(--text-muted)] group-hover/item:text-[var(--accent-blue)]">{themeLabel}</span>
                     <ChevronRight className="h-4 w-4 text-[var(--text-secondary)] group-hover/item:text-[var(--accent-blue)]" />
                   </div>
-                </button>
+                </NeumorphicWrapper>
               </div>
               
               <div className="p-2 border-t border-[var(--border-primary)]">
-                <button 
-                  className={cn(
-                    "w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-all duration-300 group/logout",
-                    theme === 'neumorphic'
-                      ? "bg-[var(--bg-primary)] shadow-[var(--shadow-inset)] hover:shadow-[var(--shadow-surface)] hover:scale-[1.02] text-[var(--accent-red)]"
-                      : "hover:bg-[var(--accent-red-light)] text-[var(--accent-red)]"
-                  )}
+                <NeumorphicWrapper 
+                  as="button"
+                  active={false}
+                  variant="secondary"
+                  className="w-full flex items-center space-x-3 px-3 py-2 text-left text-[var(--accent-red)] hover:bg-[var(--accent-red-light)] group/logout"
                 >
                   <LogOut className="h-4 w-4 group-hover/logout:scale-110 transition-transform" />
                   <span className="text-sm">Sign Out</span>
-                </button>
+                </NeumorphicWrapper>
               </div>
             </div>
           ) : (
