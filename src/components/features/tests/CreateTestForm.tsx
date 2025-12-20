@@ -5,16 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { mockQuestions, mockSubjects } from '@/lib/mock-data';
-import { Image, Plus, Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-
 import { CreateTestValues, createTestSchema } from '@/lib/validations/test';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, Save } from 'lucide-react';
+import { Image, Loader2, Plus, Save, Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
-export default function CreateTestPage() {
+export function CreateTestForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [newTag, setNewTag] = useState('');
@@ -42,7 +40,7 @@ export default function CreateTestPage() {
     },
   });
 
-  const { fields, append, remove, update } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: "dynamicRules",
   });
@@ -98,11 +96,6 @@ export default function CreateTestPage() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-4xl mx-auto space-y-6 animate-slide-up">
-      <div>
-        <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Create New Test</h2>
-        <p className="text-[var(--text-secondary)]">Build a comprehensive test for your students</p>
-      </div>
-
       {/* Test Type Selection */}
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Test Type</h3>
@@ -359,7 +352,7 @@ export default function CreateTestPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => remove(index)}
-                    disabled={fields.length === 1} // Prevent removing absolute last rule if desired, or allow empty
+                    disabled={fields.length === 1} 
                   >
                      <Trash2 className="h-4 w-4" />
                   </Button>

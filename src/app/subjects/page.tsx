@@ -140,7 +140,7 @@ export default function SubjectsPage() {
               <Input
                 placeholder="e.g., Mathematics, Physics, Computer Science"
                 value={subjectForm.name}
-                onChange={(value) => setSubjectForm({ ...subjectForm, name: value })}
+                onChange={(e) => setSubjectForm({ ...subjectForm, name: e.target.value })}
                 required
               />
               <div>
@@ -216,7 +216,7 @@ export default function SubjectsPage() {
               <Input
                 placeholder="e.g., Algebra, Calculus, Data Structures"
                 value={moduleForm.name}
-                onChange={(value) => setModuleForm({ ...moduleForm, name: value })}
+                onChange={(e) => setModuleForm({ ...moduleForm, name: e.target.value })}
                 required
               />
               <div>
@@ -275,7 +275,7 @@ export default function SubjectsPage() {
           type="search"
           placeholder="Search subjects..."
           value={searchTerm}
-          onChange={(value) => setSearchTerm(value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           icon={Search}
           className="flex-1 max-w-md"
         />

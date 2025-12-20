@@ -139,7 +139,7 @@ export default function TestsPage() {
           type="search"
           placeholder="Search tests, descriptions, tags..."
           value={searchTerm}
-          onChange={(val: string) => setSearchTerm(val)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           icon={Search}
           className="flex-1"
         />

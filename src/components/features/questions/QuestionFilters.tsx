@@ -29,7 +29,7 @@ export function QuestionFilters({
         type="search"
         placeholder="Search questions..."
         value={searchTerm}
-        onChange={(value) => onSearchChange(value)}
+        onChange={(e) => onSearchChange(e.target.value)}
         icon={Search}
         className="flex-1 max-w-md"
       />

@@ -1,6 +1,4 @@
-// Client Component - Reusable dashboard stat card
 
-'use client';
 
 import { LucideIcon } from 'lucide-react';
 

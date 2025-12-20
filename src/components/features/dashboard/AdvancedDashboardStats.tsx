@@ -1,4 +1,4 @@
-'use client';
+
 
 import { PerformanceChart } from '@/components/features/analytics/PerformanceChart';
 import { Card } from '@/components/ui/card';

@@ -143,7 +143,7 @@ export function QuestionForm({ editingQuestion, onSubmit, onCancel }: QuestionFo
                   </span>
                   <Input
                     value={option}
-                    onChange={(value) => updateOption(index, value)}
+                    onChange={(e) => updateOption(index, e.target.value)}
                     placeholder={`Option ${String.fromCharCode(65 + index)}`}
                     className="flex-1"
                   />
@@ -194,7 +194,7 @@ export function QuestionForm({ editingQuestion, onSubmit, onCancel }: QuestionFo
           {questionForm.type === 'drag-drop' && (
             <Input
               value={questionForm.correctAnswer}
-              onChange={(value) => setQuestionForm({ ...questionForm, correctAnswer: value })}
+              onChange={(e) => setQuestionForm({ ...questionForm, correctAnswer: e.target.value })}
               placeholder="Enter correct order (e.g., Option A → Option B → Option C)"
             />
           )}
@@ -238,7 +238,7 @@ export function QuestionForm({ editingQuestion, onSubmit, onCancel }: QuestionFo
         <Input
           label="Solution Video URL (Optional)"
           value={questionForm.solutionVideoUrl}
-          onChange={(value) => setQuestionForm({ ...questionForm, solutionVideoUrl: value })}
+          onChange={(e) => setQuestionForm({ ...questionForm, solutionVideoUrl: e.target.value })}
           placeholder="https://example.com/video"
           icon={Video}
         />

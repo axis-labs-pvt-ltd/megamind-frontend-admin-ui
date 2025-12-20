@@ -2,24 +2,23 @@ import { cn } from '@/lib/utils';
 import { type LucideIcon } from 'lucide-react';
 import React from 'react';
 
-interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: LucideIcon;
   iconPosition?: 'left' | 'right';
   label?: string;
   error?: string;
-  onChange?: (value: string) => void;
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   type = 'text',
-  placeholder = " ", // Default to space to ensure :placeholder-shown CSS works for Neumorphic empty state detection
+  placeholder = " ",
   value,
   onChange,
   disabled = false,
   error,
   icon: Icon,
   iconPosition = 'left',
-  className, // Wrapper className
+  className,
   label,
   required = false,
   onKeyPress,
@@ -44,7 +43,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
           type={type}
           placeholder={placeholder}
           value={value}
-          onChange={(e) => onChange?.(e.target.value)}
+          onChange={onChange}
           disabled={disabled}
           className={cn(
             'w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg',

@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### [2025-12-20 16:30] Global Refactor & UI Polish
+- **Goal**: Standardize Form handling, API patterns, and address UI feedback.
+- **Architecture**:
+  - **Forms**: Refactored `SignIn`, `SignUp`, `Settings`, `CreateTest` to use `react-hook-form` + `Zod`.
+  - **Services**: Established `src/services` layer (`auth`, `user`, `tests`, `api`) replacing ad-hoc logic.
+- **UI Refinements**:
+  - **SignIn**: Custom "Remember Me" toggle (pill style), Neumorphic "Or continue with" separator.
+  - **Input**: Fixed strict type compatibility with `react-hook-form`.
+  - **Style**: Removed duplicate icons and improved spacing in Auth forms.
+- **Documentation**: Updated `GUIDE.md` with Form & API standards.
+
 ### [2025-12-20 14:50] Theme System - Critical Fixes & Complete Implementation
 - **Goal**: Fix all remaining theme issues and ensure complete color coverage.
 - **Critical Fixes**:

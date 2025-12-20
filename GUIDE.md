@@ -310,3 +310,81 @@ When adding new features:
 5. **Update CHANGELOG.md**: Document your changes
 6. **Test themes**: Verify your component works in all 4 themes
 
+---
+
+## 9. Form & Validation Standards
+
+We use a standardized approach for all forms to ensure consistency and type safety.
+
+### Technology Stack
+- **Form State**: `react-hook-form`
+- **Validation**: `zod`
+- **Integration**: `@hookform/resolvers/zod`
+
+### Implementation Pattern
+
+1.  **Define Schema**: Create a schema in `src/lib/validations/your-feature.ts`.
+    ```typescript
+    import * as z from 'zod';
+
+    export const loginSchema = z.object({
+      email: z.string().email(),
+      password: z.string().min(8),
+    });
+
+    export type LoginValues = z.infer<typeof loginSchema>;
+    ```
+
+2.  **Create Form**:
+    ```tsx
+    'use client';
+    import { useForm } from 'react-hook-form';
+    import { zodResolver } from '@hookform/resolvers/zod';
+    import { loginSchema, LoginValues } from '@/lib/validations/auth';
+
+    export function LoginForm() {
+      const { register, handleSubmit, formState: { errors } } = useForm<LoginValues>({
+        resolver: zodResolver(loginSchema)
+      });
+
+      const onSubmit = (data: LoginValues) => {
+        // Safe access to data
+      };
+
+      return (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Input {...register('email')} error={errors.email?.message} />
+          <Button type="submit">Login</Button>
+        </form>
+      );
+    }
+    ```
+
+---
+
+## 10. API Service Layer Structure
+
+All API calls must be centralized in `src/services/`.
+
+- **`api.ts`**: Base Axios instance with interceptors.
+- **`auth.ts`**: Authentication endpoints.
+- **`user.ts`**: User profile and settings.
+- **`tests.ts`**: Test creation and management.
+
+
+---
+
+## 11. Specific Form Component Standards
+
+Forms using hooks like `useForm` must be their own Client Components (e.g., `feature/LoginForm.tsx`) and be imported into pages. Do not make the entire page a Client Component unless necessary.
+
+```tsx
+// src/components/features/auth/LoginForm.tsx
+'use client';
+export function LoginForm() { ... }
+
+// src/app/(auth)/login/page.tsx
+import { LoginForm } from '@/components/features/auth/LoginForm';
+export default function LoginPage() { return <LoginForm />; }
+```
+
