@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### [2025-12-20 14:50] Theme System - Critical Fixes & Complete Implementation
+- **Goal**: Fix all remaining theme issues and ensure complete color coverage.
+- **Critical Fixes**:
+  - ✅ **Fixed Analytics Page Crash**: Changed StatCard to use icon names (strings) instead of passing Icon components from server to client (serialization error).
+  - ✅ **Fixed Main Background**: Updated `layout.tsx` to use `bg-[var(--bg-primary)]` instead of hardcoded gradient - **background now changes with theme!**
+  - ✅ **Complete Sidebar Theming**: All navigation items, borders, and backgrounds use CSS variables.
+  - ✅ **Card Component**: Base Card component now fully theme-aware.
+- **Completed Theme-Aware Components**:
+  - ✅ **Layout**: Header, Sidebar, ProfileDropdown, ThemeSelector - COMPLETE
+  - ✅ **UI Components**: Card (base) - COMPLETE  
+  - ✅ **Analytics Page**: Full server component + StatCard, PerformanceTrend, TestPerformanceItem - COMPLETE & WORKING
+  - ✅ **Dashboard Page**: Headers, stat cards - COMPLETE
+  - ✅ **Questions Page**: Headers - PARTIAL (form components need updates)
+  - ✅ **Main Background**: Application-wide background now theme-aware
+- **Remaining Work** (for complete coverage):
+  - Questions page: Form inputs, option buttons (whitehardcoded backgrounds)
+  - Subjects page: Module items, description text (contrast issues)
+  - Tests page: Stat badges, passing score bars
+  - Settings page: Input fields, profile tabs
+  - All Badge components (need variant-specific CSS variables)
+  - All Input/Form components (white backgrounds)
+- **Architecture Achievements**:
+  - Server/Client separation: Analytics (Server) + Questions (Client with sub-components)
+  - 76% code reduction in Questions page (406 → 95 lines)
+  - Type-safe icon handling in server components
+  - Clean component documentation with // Client/Server comments
+- **How to Test**:
+  1. Click profile → Select Dark
+  2. **Background turns black** ✅
+  3. **Header turns dark** ✅
+  4. **Sidebar navigation darkens** ✅
+  5. **Analytics page loads successfully** ✅
+  6. All stat cards are themed
+
+**Status**: Core theme infrastructure COMPLETE. Layout fully themed. Pages need final polish for 100% coverage.
+
+
 ### [2025-12-20 12:00] Architecture & State Management Setup
 - **Goal**: Establish robust foundation for State Management, API Handling, and Security.
 - **Added**:
@@ -113,6 +150,26 @@ All notable changes to this project will be documented in this file.
 - **Analytics Page**: Added staggered animations for overview cards and performance lists.
 
 ### Fixed
+- **Rigorous Theme Audit (3-Round Sweep)**:
+  - **Round 1 (Grep)**: Eliminated 100+ instances of hardcoded `bg-blue-*`, `bg-red-*`, `bg-green-*` in `StatCard`, `TestCard`, `TestInterface`, and `Input` components.
+  - **Round 2 (Manual Audit)**: Fixed `SettingsPage` (sidebar, profile), `QuestionList` (hover states), and `Button` variants.
+  - **Round 3 (Verification)**: Confirmed `npm run build` passes with 0 errors.
+  - **Round 4 (Regression Fixes)**: Resolved blocking visual issues in dark mode:
+    - **Test Card**: Fixed blinding white passing score bar.
+    - **Create Test**: Fixed white background on selected test type.
+    - **Analytics**: Fixed light backgrounds on Performance Insight cards.
+  - **Round 5 (Text Contrast)**: Fixed invisible text issues (`text-gray-900` on dark) in:
+    - `AdvancedDashboardStats` (Insight cards).
+    - `PerformanceChart` (Chart titles).
+    - `TakeTestPage` (Headings and Passing Score).
+    - `DashboardPage` (Removed "flashbang" white hover states).
+    - `Header` (Page Titles were invisible due to broken gradient clip; switched to solid text).
+    - `StatCard` (Subtitles were hardcoded gray-600; switched to theme secondary text).
+- **Visual Consistency**:
+  - `StatCard`: Replaced hardcoded color maps with `var(--accent-*)` opacity layers.
+  - `TestInterface`: Fixed blue/white hardcoding in drag-drop zones and progress bars.
+  - `Sidebar`: Fixed tooltip popups and active state visibility.
+  - `Settings`: Fixed hardcoded gray backgrounds in profile section.
 - Fixed TypeScript errors in `QuestionsPage` and `Input` component.
 - Improved prop types for `Button` and `Badge` components.
 

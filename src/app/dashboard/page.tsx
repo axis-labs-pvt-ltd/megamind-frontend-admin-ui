@@ -1,6 +1,7 @@
 'use client';
 
 import { AdvancedDashboardStats } from '@/components/features/dashboard/AdvancedDashboardStats';
+import { DashboardStatCard } from '@/components/features/dashboard/DashboardStatCard';
 import { TestCard } from '@/components/features/tests/TestCard';
 import { Button } from '@/components/ui/button';
 import { mockTestAttempts, mockTests } from '@/lib/mock-data';
@@ -63,57 +64,46 @@ export default function DashboardPage() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow animate-slide-up animation-delay-100">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-blue-100 rounded-xl">
-              <Target className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Tests</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalAttempts}</p>
-              <p className="text-xs text-green-600 font-medium">+2 this week</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow animate-slide-up animation-delay-200">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-green-100 rounded-xl">
-              <TrendingUp className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-600">Average Score</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.averageScore}%</p>
-              <p className="text-xs text-green-600 font-medium">+5% improvement</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow animate-slide-up animation-delay-300">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-yellow-100 rounded-xl">
-              <Target className="h-6 w-6 text-yellow-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-600">Best Score</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.bestScore}%</p>
-              <p className="text-xs text-blue-600 font-medium">Perfect score!</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow animate-slide-up animation-delay-400">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-purple-100 rounded-xl">
-              <Clock className="h-6 w-6 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-600">Study Time</p>
-              <p className="text-2xl font-bold text-gray-900">{Math.floor(stats.totalTimeSpent / 60)}h {stats.totalTimeSpent % 60}m</p>
-              <p className="text-xs text-purple-600 font-medium">This month</p>
-            </div>
-          </div>
-        </div>
+        <DashboardStatCard
+          icon={Target}
+          iconBgColor="bg-blue-100"
+          iconColor="text-blue-600"
+          label="Total Tests"
+          value={stats.totalAttempts}
+          subtitle="+2 this week"
+          subtitleColor="text-green-600"
+          delay={100}
+        />
+        <DashboardStatCard
+          icon={TrendingUp}
+          iconBgColor="bg-green-100"
+          iconColor="text-green-600"
+          label="Average Score"
+          value={`${stats.averageScore}%`}
+          subtitle="+5% improvement"
+          subtitleColor="text-green-600"
+          delay={200}
+        />
+        <DashboardStatCard
+          icon={Target}
+          iconBgColor="bg-yellow-100"
+          iconColor="text-yellow-600"
+          label="Best Score"
+          value={`${stats.bestScore}%`}
+          subtitle="Perfect score!"
+          subtitleColor="text-blue-600"
+          delay={300}
+        />
+        <DashboardStatCard
+          icon={Clock}
+          iconBgColor="bg-purple-100"
+          iconColor="text-purple-600"
+          label="Study Time"
+          value={`${Math.floor(stats.totalTimeSpent / 60)}h ${stats.totalTimeSpent % 60}m`}
+          subtitle="This month"
+          subtitleColor="text-purple-600"
+          delay={400}
+        />
       </div>
 
       {/* Stats Overview */}
@@ -125,13 +115,13 @@ export default function DashboardPage() {
       <div className="animate-slide-up animation-delay-700">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h3 className="text-2xl font-bold text-gray-900">Available Tests</h3>
-            <p className="text-gray-600 mt-1">Continue your learning with these recommended tests</p>
+            <h3 className="text-2xl font-bold text-[var(--text-primary)]">Available Tests</h3>
+            <p className="text-[var(--text-secondary)] mt-1">Continue your learning with these recommended tests</p>
           </div>
           <Button
             variant="outline"
             onClick={() => router.push('/tests')}
-            className="hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700"
+            className="hover:bg-[var(--accent-blue)]/10 hover:border-[var(--accent-blue)] hover:text-[var(--accent-blue)]"
           >
             View All Tests
           </Button>

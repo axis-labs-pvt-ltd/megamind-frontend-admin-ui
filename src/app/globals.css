@@ -5,6 +5,97 @@
   --foreground: #171717;
 }
 
+/* Light Theme (Default) */
+:root,
+[data-theme="light"] {
+  /* Light theme - Clean, professional look */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-header: rgba(255, 255, 255, 0.8);
+  --bg-sidebar: rgba(255, 255, 255, 0.95);
+  --bg-hover: #f1f5f9;
+  
+  /* Text colors */
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  
+  /* Icon colors */
+  --icon-primary: #64748b;
+  --icon-secondary: #94a3b8;
+  --icon-muted: #cbd5e1;
+  
+  /* Border colors */
+  --border-primary: #e2e8f0;
+  --border-secondary: #f1f5f9;
+  --border-hover: #cbd5e1;
+  
+  /* Accent colors */
+  --accent-blue: #3b82f6;
+  --accent-blue-light: #dbeafe;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-yellow: #f59e0b;
+  --accent-purple: #8b5cf6;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(to right, #0f172a, #1e293b);
+  --gradient-brand: linear-gradient(to right, #3b82f6, #6366f1);
+  
+  /* Shadows - light theme */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  /* Dark theme - Premium, Deep & High Contrast */
+  --bg-primary: #020617; /* Slate 950 - Deepest background */
+  --bg-secondary: #0f172a; /* Slate 900 - Secondary/Sidebar */
+  --bg-card: #1e293b; /* Slate 800 - Cards (Lighter than bg) */
+  --bg-header: rgba(15, 23, 42, 0.85); /* Slate 900 with high blur opacity */
+  --bg-sidebar: rgba(15, 23, 42, 0.98); 
+  --bg-hover: #334155; /* Slate 700 */
+  
+  /* Text colors - High Contrast */
+  --text-primary: #f8fafc; /* Slate 50 - Almost pure white for headings */
+  --text-secondary: #cbd5e1; /* Slate 300 - Clear secondary text */
+  --text-muted: #94a3b8; /* Slate 400 - Muted but readable */
+  
+  /* Icon colors */
+  --icon-primary: #cbd5e1; /* Slate 300 */
+  --icon-secondary: #94a3b8; /* Slate 400 */
+  --icon-muted: #64748b; /* Slate 500 */
+  
+  /* Border colors - Subtle separation */
+  --border-primary: #334155; /* Slate 700 - Visible card borders */
+  --border-secondary: #1e293b; /* Slate 800 */
+  --border-hover: #475569; /* Slate 600 */
+  
+  /* Accent colors - Neons/Vibrant */
+  --accent-blue: #60a5fa; /* Blue 400 - Brighter than light theme */
+  --accent-blue-light: rgba(59, 130, 246, 0.2); /* Blue 500 with opacity */
+  --accent-green: #4ade80; /* Green 400 */
+  --accent-red: #f87171; /* Red 400 */
+  --accent-yellow: #fbbf24; /* Amber 400 */
+  --accent-purple: #c084fc; /* Purple 400 */
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(to right, #ffffff, #94a3b8);
+  --gradient-brand: linear-gradient(to right, #60a5fa, #a78bfa);
+  
+  /* Shadows - Glow effects for dark mode */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+}
+
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

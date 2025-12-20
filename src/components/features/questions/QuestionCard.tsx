@@ -63,7 +63,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 
         {/* Question Text */}
         <div className="prose max-w-none">
-          <p className="text-gray-900 font-medium">{question.text}</p>
+          <p className="text-[var(--text-primary)] font-medium">{question.text}</p>
         </div>
 
         {/* Options */}
@@ -76,18 +76,18 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
                   "p-3 rounded-lg border",
                    showAnswer
                     ? option === question.correctAnswer
-                      ? 'bg-green-50 border-green-200'
+                      ? 'bg-green-500/10 border-green-500/30'
                       : userAnswer === option && !isCorrect
-                      ? 'bg-red-50 border-red-200'
-                      : 'bg-gray-50 border-gray-200'
-                    : 'bg-gray-50 border-gray-200'
+                      ? 'bg-red-500/10 border-red-500/30'
+                      : 'bg-[var(--bg-secondary)] border-[var(--border-primary)]'
+                    : 'bg-[var(--bg-secondary)] border-[var(--border-primary)]'
                 )}
               >
                 <div className="flex items-center space-x-3">
-                  <span className="text-sm font-medium text-gray-500">
+                  <span className="text-sm font-medium text-[var(--text-secondary)]">
                     {String.fromCharCode(65 + index)}
                   </span>
-                  <span className="text-sm text-gray-900">{option}</span>
+                  <span className="text-sm text-[var(--text-primary)]">{option}</span>
                 </div>
               </div>
             ))}
@@ -97,7 +97,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         {/* Drag Drop Options */}
         {question.type === 'drag-drop' && question.options && (
           <div className="space-y-2">
-            <p className="text-sm font-medium text-gray-700">Options:</p>
+            <p className="text-sm font-medium text-[var(--text-secondary)]">Options:</p>
             <div className="flex flex-wrap gap-2">
               {question.options.map((option, index) => (
                 <Badge key={index} variant="outline" className="text-xs">
@@ -112,7 +112,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         {showAnswer && (
           <div className="border-t pt-4">
             <div className="flex items-center space-x-2 mb-2">
-              <span className="text-sm font-medium text-gray-700">Correct Answer:</span>
+              <span className="text-sm font-medium text-[var(--text-secondary)]">Correct Answer:</span>
               <Badge variant="success">
                 {Array.isArray(question.correctAnswer) 
                   ? question.correctAnswer.join(' → ')
@@ -121,7 +121,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             </div>
             {userAnswer && (
               <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-gray-700">Your Answer:</span>
+                <span className="text-sm font-medium text-[var(--text-secondary)]">Your Answer:</span>
                 <Badge variant={isCorrect ? 'success' : 'danger'}>
                   {Array.isArray(userAnswer) ? userAnswer.join(' → ') : userAnswer}
                 </Badge>
@@ -134,14 +134,14 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t">
           {question.categories.map((category) => (
             <div key={category.id} className="flex items-center space-x-1">
-              <Folder className="h-3 w-3 text-gray-400" />
-              <span className="text-xs text-gray-500">{category.name}</span>
+              <Folder className="h-3 w-3 text-[var(--icon-secondary)]" />
+              <span className="text-xs text-[var(--text-secondary)]">{category.name}</span>
             </div>
           ))}
           {question.tags.map((tag) => (
             <div key={tag.id} className="flex items-center space-x-1">
-              <Tag className="h-3 w-3 text-gray-400" />
-              <span className="text-xs text-gray-500">{tag.name}</span>
+              <Tag className="h-3 w-3 text-[var(--icon-secondary)]" />
+              <span className="text-xs text-[var(--text-secondary)]">{tag.name}</span>
             </div>
           ))}
         </div>

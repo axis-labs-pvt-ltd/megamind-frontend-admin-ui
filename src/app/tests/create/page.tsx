@@ -94,42 +94,42 @@ export default function CreateTestPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Create New Test</h2>
-        <p className="text-gray-600">Build a comprehensive test for your students</p>
+        <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Create New Test</h2>
+        <p className="text-[var(--text-secondary)]">Build a comprehensive test for your students</p>
       </div>
 
       {/* Test Type Selection */}
       <Card className="p-6 animate-slide-up animation-delay-100">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Test Type</h3>
+        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Test Type</h3>
         <div className="flex space-x-4">
           <div
             className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
               testType === 'static' 
-                ? 'border-blue-500 bg-blue-50' 
-                : 'border-gray-200 hover:border-gray-300'
+                ? 'border-[var(--accent-blue)] bg-[var(--accent-blue)]/10' 
+                : 'border-[var(--border-primary)] hover:border-[var(--border-hover)]'
             }`}
             onClick={() => setTestType('static')}
           >
-            <h4 className="font-medium text-gray-900">Static Test</h4>
-            <p className="text-sm text-gray-600">Fixed set of questions</p>
+            <h4 className="font-medium text-[var(--text-primary)]">Static Test</h4>
+            <p className="text-sm text-[var(--text-secondary)]">Fixed set of questions</p>
           </div>
           <div
             className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
               testType === 'dynamic' 
-                ? 'border-blue-500 bg-blue-50' 
-                : 'border-gray-200 hover:border-gray-300'
+                ? 'border-[var(--accent-blue)] bg-[var(--accent-blue)]/10' 
+                : 'border-[var(--border-primary)] hover:border-[var(--border-hover)]'
             }`}
             onClick={() => setTestType('dynamic')}
           >
-            <h4 className="font-medium text-gray-900">Dynamic Test</h4>
-            <p className="text-sm text-gray-600">Rule-based question selection</p>
+            <h4 className="font-medium text-[var(--text-primary)]">Dynamic Test</h4>
+            <p className="text-sm text-[var(--text-secondary)]">Rule-based question selection</p>
           </div>
         </div>
       </Card>
 
       {/* Test Details */}
       <Card className="p-6 animate-slide-up animation-delay-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Test Details</h3>
+        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Test Details</h3>
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
@@ -165,11 +165,11 @@ export default function CreateTestPage() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
               Description
             </label>
             <textarea
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)] focus:border-transparent"
               rows={3}
               value={testDescription}
               onChange={(e) => setTestDescription(e.target.value)}
@@ -179,7 +179,7 @@ export default function CreateTestPage() {
 
           {/* Cover Image */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
               Cover Image
             </label>
             <div className="space-y-4">
@@ -192,7 +192,7 @@ export default function CreateTestPage() {
               
               {/* Image Preview */}
               {coverImage && (
-                <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200">
+                <div className="relative w-full h-48 rounded-lg overflow-hidden border border-[var(--border-primary)]">
                   <img
                     src={coverImage}
                     alt="Cover preview"
@@ -208,13 +208,13 @@ export default function CreateTestPage() {
 
               {/* Suggested Images */}
               <div>
-                <p className="text-sm text-gray-600 mb-2">Suggested cover images:</p>
+                <p className="text-sm text-[var(--text-secondary)] mb-2">Suggested cover images:</p>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                   {suggestedCoverImages.map((imageUrl, index) => (
                     <button
                       key={index}
                       className={`relative h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                        coverImage === imageUrl ? 'border-blue-500' : 'border-gray-200 hover:border-gray-300'
+                        coverImage === imageUrl ? 'border-blue-500' : 'border-[var(--border-primary)] hover:border-[var(--border-hover)]'
                       }`}
                       onClick={() => setCoverImage(imageUrl)}
                     >
@@ -232,7 +232,7 @@ export default function CreateTestPage() {
 
           {/* Tags */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
               Tags
             </label>
             <div className="space-y-3">
@@ -263,7 +263,7 @@ export default function CreateTestPage() {
                     <Badge
                       key={index}
                       variant="secondary"
-                      className="cursor-pointer hover:bg-red-100 hover:text-red-700"
+                      className="cursor-pointer text-[var(--accent-red)] hover:text-[var(--accent-red)] hover:bg-[var(--accent-red)]/10"
                       onClick={() => removeTag(tag)}
                     >
                       #{tag} ×
@@ -280,7 +280,7 @@ export default function CreateTestPage() {
       {testType === 'static' && (
         <Card className="p-6 animate-slide-up animation-delay-300">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Select Questions</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">Select Questions</h3>
             <Badge variant="primary" size="md">
               {selectedQuestions.length} selected
             </Badge>
@@ -291,8 +291,8 @@ export default function CreateTestPage() {
                 key={question.id}
                 className={`p-4 rounded-lg border cursor-pointer transition-all ${
                   selectedQuestions.includes(question.id)
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-[var(--accent-blue)] bg-[var(--accent-blue)]/10'
+                    : 'border-[var(--border-primary)] hover:border-[var(--border-hover)]'
                 }`}
                 onClick={() => 
                   selectedQuestions.includes(question.id) 
@@ -302,7 +302,7 @@ export default function CreateTestPage() {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">{question.text}</p>
+                    <p className="font-medium text-[var(--text-primary)]">{question.text}</p>
                     <div className="flex items-center space-x-2 mt-2">
                       <Badge variant="secondary" size="sm">
                         {question.type.toUpperCase()}
@@ -328,7 +328,7 @@ export default function CreateTestPage() {
       {testType === 'dynamic' && (
         <Card className="p-6 animate-slide-up animation-delay-300">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Dynamic Rules</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">Dynamic Rules</h3>
             <Button
               variant="outline"
               size="sm"
@@ -340,9 +340,9 @@ export default function CreateTestPage() {
           </div>
           <div className="space-y-4">
             {dynamicRules.map((rule, index) => (
-              <div key={index} className="p-4 border rounded-lg bg-gray-50">
+              <div key={index} className="p-4 border rounded-lg bg-[var(--bg-secondary)]">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="font-medium text-gray-900">Rule {index + 1}</h4>
+                  <h4 className="font-medium text-[var(--text-primary)]">Rule {index + 1}</h4>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -353,11 +353,11 @@ export default function CreateTestPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                       Module
                     </label>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)]"
                       value={rule.moduleId}
                       onChange={(e) => updateDynamicRule(index, 'moduleId', e.target.value)}
                     >
@@ -372,23 +372,23 @@ export default function CreateTestPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                       Question Count
                     </label>
                     <input
                       type="number"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)]"
                       value={rule.questionCount}
                       onChange={(e) => updateDynamicRule(index, 'questionCount', parseInt(e.target.value))}
                       min="1"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                       Difficulty
                     </label>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)]"
                       value={rule.difficulty}
                       onChange={(e) => updateDynamicRule(index, 'difficulty', e.target.value)}
                     >

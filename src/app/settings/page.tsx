@@ -9,8 +9,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Settings</h2>
-        <p className="text-gray-600">Manage your account preferences and application settings</p>
+        <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Settings</h2>
+        <p className="text-[var(--text-secondary)]">Manage your account preferences and application settings</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -27,11 +27,11 @@ export default function SettingsPage() {
                 key={item.name}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                   item.active
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-[var(--accent-blue)]/10 text-[var(--accent-blue)]'
+                    : 'text-[var(--text-secondary)] hover:bg- [var(--bg-hover)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <item.icon className={`h-4 w-4 ${item.active ? 'text-blue-500' : 'text-gray-400'}`} />
+                <item.icon className={`h-4 w-4 ${item.active ? 'text-blue-500' : 'text-[var(--icon-secondary)]'}`} />
                 <span>{item.name}</span>
               </button>
             ))}
@@ -41,23 +41,23 @@ export default function SettingsPage() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Profile Information</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-6">Profile Information</h3>
             <div className="space-y-6">
               <div className="flex items-center space-x-6">
                 <div className="relative">
-                  <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-3xl font-bold text-gray-400">
+                  <div className="w-24 h-24 rounded-full bg-[var(--bg-secondary)] text-[var(--icon-secondary)]">
                     JD
                   </div>
-                  <button className="absolute bottom-0 right-0 p-1.5 bg-white rounded-full border border-gray-200 shadow-sm hover:bg-gray-50">
-                    <Paintbrush className="h-4 w-4 text-gray-600" />
+                  <button className="absolute bottom-0 right-0 p-1.5 bg-[var(--bg-card)] border-[var(--border-primary)] hover:bg-[var(--bg-hover)]">
+                    <Paintbrush className="h-4 w-4 text-[var(--text-secondary)]" />
                   </button>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">Profile Photo</h4>
-                  <p className="text-sm text-gray-500 mb-3">Update your profile picture.</p>
+                  <h4 className="font-medium text-[var(--text-primary)]">Profile Photo</h4>
+                  <p className="text-sm text-[var(--text-secondary)] mb-3">Update your profile picture.</p>
                   <div className="flex space-x-3">
                     <Button variant="outline" size="sm">Change</Button>
-                    <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50">Remove</Button>
+                    <Button variant="ghost" size="sm" className="text-[var(--accent-red)] hover:text-[var(--accent-red)] hover:bg-[var(--accent-red)]/10">Remove</Button>
                   </div>
                 </div>
               </div>
@@ -70,9 +70,9 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                 <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                 <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Bio</label>
                  <textarea 
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                    className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
                     rows={4}
                     defaultValue="Passionate educator and administrator."
                  />

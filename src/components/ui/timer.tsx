@@ -44,11 +44,11 @@ export const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp, className }
     <div className={cn("flex items-center space-x-2", className)}>
       <Clock className={cn(
         "h-4 w-4",
-        isCritical ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-gray-500'
+        isCritical ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-[var(--text-muted)]'
       )} />
       <span className={cn(
         "font-mono text-sm font-medium",
-        isCritical ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-gray-700'
+        isCritical ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-[var(--text-secondary)]'
       )}>
         {formatTime(timeLeft)}
       </span>

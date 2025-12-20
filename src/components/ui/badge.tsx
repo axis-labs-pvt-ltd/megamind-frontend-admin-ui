@@ -17,12 +17,12 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(({
   const baseClasses = 'inline-flex items-center font-medium rounded-full transition-colors duration-200';
   
   const variantClasses = {
-    primary: 'bg-blue-100 text-blue-800',
-    secondary: 'bg-gray-100 text-gray-800',
-    success: 'bg-green-100 text-green-800',
-    warning: 'bg-yellow-100 text-yellow-800',
-    danger: 'bg-red-100 text-red-800',
-    outline: 'bg-transparent border border-gray-200 text-gray-700',
+    primary: 'bg-[var(--accent-blue)]/10 text-[var(--accent-blue)] border border-[var(--accent-blue)]/20',
+    secondary: 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-primary)]',
+    success: 'bg-[var(--accent-green)]/10 text-[var(--accent-green)] border border-[var(--accent-green)]/20',
+    warning: 'bg-[var(--accent-yellow)]/10 text-[var(--accent-yellow)] border border-[var(--accent-yellow)]/20',
+    danger: 'bg-[var(--accent-red)]/10 text-[var(--accent-red)] border border-[var(--accent-red)]/20',
+    outline: 'bg-transparent border border-[var(--border-primary)] text-[var(--text-secondary)]',
   };
 
   const sizeClasses = {
