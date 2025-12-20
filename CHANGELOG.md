@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### [2025-12-20 12:00] Architecture & State Management Setup
+- **Goal**: Establish robust foundation for State Management, API Handling, and Security.
+- **Added**:
+  - **Libraries**: `@tanstack/react-query`, `zustand`, `axios`, `react-hook-form`, `zod`.
+  - **Infrastructure**:
+    - `src/lib/query-client.ts`: Configured QueryClient.
+    - `src/lib/axios.ts`: Axios instance with Auth Token interceptors (Security).
+    - `src/store/useAuthStore.ts`: Zustand store for Auth with persistence.
+    - `src/store/useUIStore.ts`: Global UI state.
+    - `src/components/providers/AppProviders.tsx`: Application wrapper.
+  - **Documentation**: Created `GUIDE.md` detailing architecture, security, and real-time strategies.
+
 ### [2025-12-20 09:55] Sidebar & Migration Planning
 - **Goal**: Implement "hover-to-expand" sidebar and plan Next.js migration.
 - **Added**:
