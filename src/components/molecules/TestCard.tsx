@@ -1,9 +1,9 @@
+import { Calendar, Clock, Edit, FileText, Play, Settings, Star, Users } from 'lucide-react';
 import React from 'react';
 import { Test } from '../../types';
-import { Card } from '../atoms/Card';
-import { Button } from '../atoms/Button';
 import { Badge } from '../atoms/Badge';
-import { Clock, Users, FileText, Play, Edit, Settings, Star, Calendar } from 'lucide-react';
+import { Button } from '../atoms/Button';
+import { Card } from '../atoms/Card';
 
 interface TestCardProps {
   test: Test;
@@ -40,7 +40,7 @@ export const TestCard: React.FC<TestCardProps> = ({
   };
 
   return (
-    <Card className={`group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-0 shadow-md overflow-hidden ${className}`} hover>
+    <Card className={`group hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] border-0 shadow-md overflow-hidden ${className}`} hover>
       <div className="space-y-0">
         {/* Cover Image */}
         {test.coverImage && (

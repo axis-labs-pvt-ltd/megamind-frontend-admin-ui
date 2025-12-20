@@ -1,11 +1,11 @@
+import { BookOpen, Edit, FolderPlus, Plus, Search, Trash2, Users } from 'lucide-react';
 import React, { useState } from 'react';
-import { Card } from '../components/atoms/Card';
-import { Button } from '../components/atoms/Button';
-import { Input } from '../components/atoms/Input';
 import { Badge } from '../components/atoms/Badge';
-import { Plus, Search, Edit, Trash2, BookOpen, FolderPlus, Users } from 'lucide-react';
+import { Button } from '../components/atoms/Button';
+import { Card } from '../components/atoms/Card';
+import { Input } from '../components/atoms/Input';
 import { mockSubjects } from '../data/mockData';
-import { Subject, Module } from '../types';
+import { Module, Subject } from '../types';
 
 interface SubjectsPageProps {
   onPageChange: (page: string) => void;
@@ -287,105 +287,112 @@ export const SubjectsPage: React.FC<SubjectsPageProps> = ({ onPageChange }) => {
 
       {/* Subjects Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredSubjects.map((subject) => (
-          <Card key={subject.id} className="p-6 hover:shadow-lg transition-all duration-200 group">
-            <div className="space-y-4">
-              {/* Subject Header */}
-              <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="p-3 bg-blue-100 rounded-xl">
-                    <BookOpen className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">{subject.name}</h3>
-                    <p className="text-gray-600">{subject.description}</p>
-                  </div>
-                </div>
-                <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    icon={Edit}
-                    onClick={() => handleEditSubject(subject)}
-                    className="hover:bg-blue-50"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    icon={Trash2}
-                    onClick={() => console.log('Delete subject:', subject.id)}
-                    className="hover:bg-red-50 text-red-600"
-                  />
-                </div>
-              </div>
-
-              {/* Modules */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-semibold text-gray-900">Modules ({subject.modules.length})</h4>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    icon={Plus}
-                    onClick={() => {
-                      setModuleForm({ ...moduleForm, subjectId: subject.id });
-                      setShowModuleForm(true);
-                    }}
-                    className="text-blue-600 hover:bg-blue-50"
-                  >
-                    Add Module
-                  </Button>
-                </div>
-                <div className="space-y-2">
-                  {subject.modules.map((module) => (
-                    <div
-                      key={module.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group/module"
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900">{module.name}</p>
-                        <p className="text-sm text-gray-600">{module.description}</p>
-                      </div>
-                      <div className="flex space-x-1 opacity-0 group-hover/module:opacity-100 transition-opacity">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          icon={Edit}
-                          onClick={() => handleEditModule(module)}
-                          className="hover:bg-blue-50"
-                        />
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          icon={Trash2}
-                          onClick={() => console.log('Delete module:', module.id)}
-                          className="hover:bg-red-50 text-red-600"
-                        />
-                      </div>
+        {filteredSubjects.map((subject, index) => (
+          <div 
+            key={subject.id} 
+            className="animate-slide-up"
+            style={{ animationDelay: `${index * 50}ms` }}
+          >
+            <Card className="p-6 hover:shadow-lg transition-all duration-200 group h-full">
+              <div className="space-y-4">
+                {/* Subject Header */}
+                <div className="flex items-start justify-between">
+                  {/* ... contents preserved ... */}
+                  <div className="flex items-center space-x-3">
+                    <div className="p-3 bg-blue-100 rounded-xl">
+                      <BookOpen className="h-6 w-6 text-blue-600" />
                     </div>
-                  ))}
-                  {subject.modules.length === 0 && (
-                    <p className="text-gray-500 text-sm italic">No modules yet. Add your first module!</p>
-                  )}
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">{subject.name}</h3>
+                      <p className="text-gray-600">{subject.description}</p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={Edit}
+                      onClick={() => handleEditSubject(subject)}
+                      className="hover:bg-blue-50"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={Trash2}
+                      onClick={() => console.log('Delete subject:', subject.id)}
+                      className="hover:bg-red-50 text-red-600"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Stats */}
-              <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-1">
-                    <FolderPlus className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">{subject.modules.length} modules</span>
+                {/* Modules */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold text-gray-900">Modules ({subject.modules.length})</h4>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={Plus}
+                      onClick={() => {
+                        setModuleForm({ ...moduleForm, subjectId: subject.id });
+                        setShowModuleForm(true);
+                      }}
+                      className="text-blue-600 hover:bg-blue-50"
+                    >
+                      Add Module
+                    </Button>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Users className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">0 students</span>
+                  <div className="space-y-2">
+                    {subject.modules.map((module) => (
+                      <div
+                        key={module.id}
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group/module"
+                      >
+                        <div>
+                          <p className="font-medium text-gray-900">{module.name}</p>
+                          <p className="text-sm text-gray-600">{module.description}</p>
+                        </div>
+                        <div className="flex space-x-1 opacity-0 group-hover/module:opacity-100 transition-opacity">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon={Edit}
+                            onClick={() => handleEditModule(module)}
+                            className="hover:bg-blue-50"
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon={Trash2}
+                            onClick={() => console.log('Delete module:', module.id)}
+                            className="hover:bg-red-50 text-red-600"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                    {subject.modules.length === 0 && (
+                      <p className="text-gray-500 text-sm italic">No modules yet. Add your first module!</p>
+                    )}
                   </div>
                 </div>
-                <Badge variant="primary" size="sm">Active</Badge>
+
+                {/* Stats */}
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-1">
+                      <FolderPlus className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">{subject.modules.length} modules</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Users className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">0 students</span>
+                    </div>
+                  </div>
+                  <Badge variant="primary" size="sm">Active</Badge>
+                </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          </div>
         ))}
       </div>
 

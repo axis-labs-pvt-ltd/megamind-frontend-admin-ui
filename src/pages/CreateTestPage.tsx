@@ -1,10 +1,10 @@
+import { Image, Plus, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
-import { Card } from '../components/atoms/Card';
-import { Button } from '../components/atoms/Button';
-import { Input } from '../components/atoms/Input';
 import { Badge } from '../components/atoms/Badge';
-import { Plus, Trash2, Settings, Upload, Image } from 'lucide-react';
-import { mockSubjects, mockQuestions } from '../data/mockData';
+import { Button } from '../components/atoms/Button';
+import { Card } from '../components/atoms/Card';
+import { Input } from '../components/atoms/Input';
+import { mockQuestions, mockSubjects } from '../data/mockData';
 
 interface CreateTestPageProps {
   onPageChange: (page: string) => void;
@@ -99,7 +99,7 @@ export const CreateTestPage: React.FC<CreateTestPageProps> = ({ onPageChange }) 
       </div>
 
       {/* Test Type Selection */}
-      <Card className="p-6">
+      <Card className="p-6 animate-slide-up animation-delay-100">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Test Type</h3>
         <div className="flex space-x-4">
           <div
@@ -128,7 +128,7 @@ export const CreateTestPage: React.FC<CreateTestPageProps> = ({ onPageChange }) 
       </Card>
 
       {/* Test Details */}
-      <Card className="p-6">
+      <Card className="p-6 animate-slide-up animation-delay-200">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Test Details</h3>
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -278,7 +278,7 @@ export const CreateTestPage: React.FC<CreateTestPageProps> = ({ onPageChange }) 
 
       {/* Question Selection */}
       {testType === 'static' && (
-        <Card className="p-6">
+        <Card className="p-6 animate-slide-up animation-delay-300">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Select Questions</h3>
             <Badge variant="primary" size="md">
@@ -326,7 +326,7 @@ export const CreateTestPage: React.FC<CreateTestPageProps> = ({ onPageChange }) 
 
       {/* Dynamic Rules */}
       {testType === 'dynamic' && (
-        <Card className="p-6">
+        <Card className="p-6 animate-slide-up animation-delay-300">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Dynamic Rules</h3>
             <Button

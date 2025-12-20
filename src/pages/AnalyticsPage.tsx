@@ -1,7 +1,7 @@
+import { Award, Clock, Target, TrendingDown, TrendingUp } from 'lucide-react';
 import React from 'react';
-import { Card } from '../components/atoms/Card';
 import { Badge } from '../components/atoms/Badge';
-import { TrendingUp, TrendingDown, Clock, Award, Target, Users } from 'lucide-react';
+import { Card } from '../components/atoms/Card';
 import { mockTestAttempts, mockTests } from '../data/mockData';
 
 interface AnalyticsPageProps {
@@ -38,9 +38,8 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ onPageChange }) =>
         <p className="text-gray-600">Track your progress and performance over time</p>
       </div>
 
-      {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="p-6">
+        <Card className="p-6 animate-slide-up animation-delay-100">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-blue-100 rounded-lg">
               <Target className="h-6 w-6 text-blue-600" />
@@ -52,7 +51,7 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ onPageChange }) =>
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 animate-slide-up animation-delay-200">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-green-100 rounded-lg">
               <TrendingUp className="h-6 w-6 text-green-600" />
@@ -64,7 +63,7 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ onPageChange }) =>
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 animate-slide-up animation-delay-300">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-yellow-100 rounded-lg">
               <Award className="h-6 w-6 text-yellow-600" />
@@ -76,7 +75,7 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ onPageChange }) =>
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 animate-slide-up animation-delay-400">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-purple-100 rounded-lg">
               <Clock className="h-6 w-6 text-purple-600" />
@@ -94,7 +93,11 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ onPageChange }) =>
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance Trends</h3>
         <div className="space-y-4">
           {recentTrends.map((trend, index) => (
-            <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div 
+              key={index} 
+              className="flex items-center justify-between p-4 bg-gray-50 rounded-lg animate-slide-up"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
               <div>
                 <p className="font-medium text-gray-900">{trend.period}</p>
                 <p className="text-sm text-gray-600">Average Score</p>
@@ -124,7 +127,11 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ onPageChange }) =>
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Test Performance</h3>
         <div className="space-y-4">
           {testPerformance.map((perf, index) => (
-            <div key={index} className="p-4 border rounded-lg">
+            <div 
+              key={index} 
+              className="p-4 border rounded-lg animate-slide-up"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-medium text-gray-900">{perf.test.title}</h4>
                 <div className="flex items-center space-x-2">

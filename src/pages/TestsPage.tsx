@@ -1,11 +1,11 @@
+import { BookOpen, Calendar, Clock, Filter, Search, SlidersHorizontal, Target, X } from 'lucide-react';
 import React, { useState } from 'react';
-import { TestCard } from '../components/molecules/TestCard';
-import { Input } from '../components/atoms/Input';
-import { Button } from '../components/atoms/Button';
 import { Badge } from '../components/atoms/Badge';
+import { Button } from '../components/atoms/Button';
 import { Card } from '../components/atoms/Card';
-import { Search, Filter, SlidersHorizontal, X, Calendar, Clock, Target, BookOpen } from 'lucide-react';
-import { mockTests, mockTestAttempts, mockSubjects } from '../data/mockData';
+import { Input } from '../components/atoms/Input';
+import { TestCard } from '../components/molecules/TestCard';
+import { mockSubjects, mockTestAttempts, mockTests } from '../data/mockData';
 
 interface TestsPageProps {
   onPageChange: (page: string) => void;
@@ -360,13 +360,18 @@ export const TestsPage: React.FC<TestsPageProps> = ({ onPageChange }) => {
 
       {/* Tests Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedTests.map((test) => (
-          <TestCard
-            key={test.id}
-            test={test}
-            attemptCount={mockTestAttempts.filter(attempt => attempt.testId === test.id).length}
-            onStart={() => onPageChange('take-test')}
-          />
+        {sortedTests.map((test, index) => (
+          <div 
+            key={test.id} 
+            className="animate-slide-up" 
+            style={{ animationDelay: `${index * 50}ms` }}
+          >
+            <TestCard
+              test={test}
+              attemptCount={mockTestAttempts.filter(attempt => attempt.testId === test.id).length}
+              onStart={() => onPageChange('take-test')}
+            />
+          </div>
         ))}
       </div>
 

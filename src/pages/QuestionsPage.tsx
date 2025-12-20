@@ -1,11 +1,11 @@
+import { Edit, Filter, Plus, Search, Trash2, Video } from 'lucide-react';
 import React, { useState } from 'react';
-import { Card } from '../components/atoms/Card';
-import { Button } from '../components/atoms/Button';
-import { Input } from '../components/atoms/Input';
 import { Badge } from '../components/atoms/Badge';
+import { Button } from '../components/atoms/Button';
+import { Card } from '../components/atoms/Card';
+import { Input } from '../components/atoms/Input';
 import { QuestionCard } from '../components/molecules/QuestionCard';
-import { Plus, Search, Filter, Edit, Trash2, Video } from 'lucide-react';
-import { mockQuestions, mockSubjects, mockCategories, mockTags } from '../data/mockData';
+import { mockQuestions, mockSubjects } from '../data/mockData';
 import { Question } from '../types';
 
 interface QuestionsPageProps {
@@ -21,7 +21,7 @@ export const QuestionsPage: React.FC<QuestionsPageProps> = ({ onPageChange }) =>
 
   // Form state
   const [questionForm, setQuestionForm] = useState({
-    type: 'mcq' as const,
+    type: 'mcq' as 'mcq' | 'yes-no' | 'drag-drop',
     text: '',
     options: ['', '', '', ''],
     correctAnswer: '',
@@ -29,7 +29,7 @@ export const QuestionsPage: React.FC<QuestionsPageProps> = ({ onPageChange }) =>
     moduleId: '',
     categoryIds: [] as string[],
     tagIds: [] as string[],
-    difficulty: 'medium' as const
+    difficulty: 'medium' as 'easy' | 'medium' | 'hard'
   });
 
   const filteredQuestions = mockQuestions.filter(question => {
@@ -351,10 +351,13 @@ export const QuestionsPage: React.FC<QuestionsPageProps> = ({ onPageChange }) =>
         </div>
       </div>
 
-      {/* Questions List */}
       <div className="space-y-4">
-        {filteredQuestions.map((question) => (
-          <div key={question.id} className="relative group">
+        {filteredQuestions.map((question, index) => (
+          <div 
+            key={question.id} 
+            className="relative group animate-slide-up"
+            style={{ animationDelay: `${index * 50}ms` }}
+          >
             <QuestionCard
               question={question}
               className="hover:shadow-md transition-shadow"

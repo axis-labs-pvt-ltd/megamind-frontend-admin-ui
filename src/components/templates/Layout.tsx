@@ -1,23 +1,22 @@
+import {
+    BarChart3,
+    Bell,
+    BookOpen,
+    FileText,
+    GraduationCap,
+    HelpCircle,
+    Home,
+    LogOut,
+    Menu,
+    PlusCircle,
+    Search,
+    Settings,
+    User,
+    X
+} from 'lucide-react';
 import React, { useState } from 'react';
 import { Button } from '../atoms/Button';
 import { Input } from '../atoms/Input';
-import { 
-  Home, 
-  FileText, 
-  PlusCircle, 
-  BarChart3, 
-  Settings, 
-  User,
-  Search,
-  Bell,
-  LogOut,
-  Menu,
-  X,
-  GraduationCap,
-  HelpCircle,
-  BookOpen,
-  Layers
-} from 'lucide-react';
 
 interface LayoutProps {
   currentPage: string;
@@ -53,22 +52,22 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-30 w-72 bg-white/95 backdrop-blur-xl shadow-2xl border-r border-gray-200/50 transform transition-all duration-300 ease-out lg:translate-x-0 lg:static lg:flex lg:flex-col ${
+      <div className={`fixed inset-y-0 left-0 z-30 w-72 bg-white/95 backdrop-blur-xl shadow-2xl border-r border-gray-200/50 transform transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] lg:translate-x-0 lg:static lg:flex lg:flex-col ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         
         {/* Header */}
         <div className="flex items-center justify-between h-20 px-6 border-b border-gray-100 flex-shrink-0">
-          <div className="flex items-center space-x-3">
-            <div className="relative">
+          <div className="flex items-center space-x-3 group/brand cursor-pointer">
+            <div className="relative transform transition-transform duration-300 group-hover/brand:scale-110">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
             </div>
             <div>
               <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">TestPlatform</span>
-              <p className="text-xs text-gray-500 font-medium">Learning Hub</p>
+              <p className="text-xs text-gray-500 font-medium tracking-wide">Learning Hub</p>
             </div>
           </div>
           <Button
@@ -90,26 +89,26 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
                   onPageChange(item.page);
                   setIsSidebarOpen(false);
                 }}
-                className={`group w-full flex items-center space-x-4 px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                className={`group w-full flex items-center space-x-4 px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-300 ${
                   currentPage === item.page
                     ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/25 transform scale-[1.02]'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:transform hover:scale-[1.01]'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:transform hover:translate-x-1'
                 }`}
               >
-                <div className={`p-2 rounded-lg transition-colors ${
+                <div className={`p-2 rounded-lg transition-all duration-300 transform group-hover:scale-110 ${
                   currentPage === item.page
                     ? 'bg-white/20'
-                    : 'bg-gray-100 group-hover:bg-gray-200'
+                    : 'bg-gray-100 group-hover:bg-blue-50 group-hover:text-blue-600'
                 }`}>
-                  <item.icon className={`h-5 w-5 ${
-                    currentPage === item.page ? 'text-white' : 'text-gray-600 group-hover:text-gray-700'
+                  <item.icon className={`h-5 w-5 transition-colors duration-300 ${
+                    currentPage === item.page ? 'text-white' : 'text-gray-600 group-hover:text-blue-600'
                   }`} />
                 </div>
                 <div className="flex-1 text-left">
-                  <div className={`font-semibold ${currentPage === item.page ? 'text-white' : 'text-gray-900'}`}>
+                  <div className={`font-semibold transition-colors duration-300 ${currentPage === item.page ? 'text-white' : 'text-gray-900 group-hover:text-blue-700'}`}>
                     {item.name}
                   </div>
-                  <div className={`text-xs ${currentPage === item.page ? 'text-blue-100' : 'text-gray-500'}`}>
+                  <div className={`text-xs transition-colors duration-300 ${currentPage === item.page ? 'text-blue-100' : 'text-gray-500 group-hover:text-blue-400'}`}>
                     {item.description}
                   </div>
                 </div>
@@ -123,7 +122,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-gray-200/50 sticky top-0 z-40 flex-shrink-0">
+        <header className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-gray-200/50 sticky top-0 z-40 flex-shrink-0 transition-shadow duration-300 hover:shadow-md">
           <div className="flex items-center justify-between h-20 px-6 lg:px-8">
             <div className="flex items-center space-x-6">
               <Button
@@ -133,7 +132,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
                 onClick={() => setIsSidebarOpen(true)}
                 className="lg:hidden"
               />
-              <div>
+              <div className="animate-slide-right">
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent capitalize">
                   {currentPage.replace('-', ' ')}
                 </h1>
@@ -150,7 +149,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
             </div>
 
             <div className="flex items-center space-x-4">
-              <div className="hidden sm:block">
+              <div className="hidden sm:block transition-all duration-300 focus-within:scale-105">
                 <Input
                   type="search"
                   placeholder="Search tests, questions..."
@@ -163,19 +162,19 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
                   variant="ghost" 
                   size="sm" 
                   icon={Bell} 
-                  className="relative hover:bg-gray-100"
+                  className="relative hover:bg-gray-100 transition-transform hover:scale-110 active:scale-95"
                 >
-                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
                 </Button>
                 
                 {/* User Profile Dropdown */}
                 <div className="relative group">
-                  <button className="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-50 transition-colors">
+                  <button className="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 hover:scale-105">
                     <div className="relative">
                       <img
                         src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
                         alt="Profile"
-                        className="w-8 h-8 rounded-lg object-cover"
+                        className="w-8 h-8 rounded-lg object-cover ring-2 ring-white shadow-sm"
                       />
                       <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                     </div>
@@ -186,7 +185,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
                   </button>
                   
                   {/* Dropdown Menu */}
-                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 backdrop-blur-sm">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 backdrop-blur-sm transform origin-top-right group-hover:translate-y-0 translate-y-2">
                     <div className="p-4 border-b border-gray-100">
                       <div className="flex items-center space-x-3">
                         <div className="relative">
@@ -201,7 +200,7 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
                           <p className="text-sm font-semibold text-gray-900">John Doe</p>
                           <p className="text-xs text-gray-500">Premium Student</p>
                           <div className="flex items-center space-x-1 mt-1">
-                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                             <span className="text-xs text-green-600 font-medium">Online</span>
                           </div>
                         </div>
@@ -209,20 +208,20 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
                     </div>
                     
                     <div className="p-2">
-                      <button className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-gray-50 rounded-lg transition-colors">
-                        <User className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm text-gray-700">View Profile</span>
+                      <button className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-gray-50 rounded-lg transition-colors group/item">
+                        <User className="h-4 w-4 text-gray-500 group-hover/item:text-blue-600 transition-colors" />
+                        <span className="text-sm text-gray-700 group-hover/item:text-blue-700 transition-colors">View Profile</span>
                       </button>
-                      <button className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-gray-50 rounded-lg transition-colors">
-                        <Settings className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm text-gray-700">Settings</span>
+                      <button className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-gray-50 rounded-lg transition-colors group/item">
+                        <Settings className="h-4 w-4 text-gray-500 group-hover/item:text-blue-600 transition-colors" />
+                        <span className="text-sm text-gray-700 group-hover/item:text-blue-700 transition-colors">Settings</span>
                       </button>
                       <div className="border-t border-gray-100 my-2"></div>
                       <button 
                         onClick={handleLogout}
-                        className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-red-50 rounded-lg transition-colors text-red-600"
+                        className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-red-50 rounded-lg transition-colors text-red-600 group/logout"
                       >
-                        <LogOut className="h-4 w-4" />
+                        <LogOut className="h-4 w-4 group-hover/logout:scale-110 transition-transform" />
                         <span className="text-sm">Sign Out</span>
                       </button>
                     </div>
@@ -236,7 +235,12 @@ export const Layout: React.FC<LayoutProps> = ({ currentPage, onPageChange, child
         {/* Page content */}
         <main className="flex-1 p-6 lg:p-8 overflow-y-auto overflow-x-hidden">
           <div className="max-w-[1600px] mx-auto w-full">
-            {children}
+            <div 
+              key={currentPage}
+              className="animate-slide-up"
+            >
+              {children}
+            </div>
           </div>
         </main>
       </div>

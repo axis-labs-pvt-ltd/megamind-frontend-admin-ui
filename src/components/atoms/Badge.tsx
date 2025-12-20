@@ -5,6 +5,7 @@ interface BadgeProps {
   size?: 'sm' | 'md';
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 
 export const Badge: React.FC<BadgeProps> = ({
@@ -12,8 +13,10 @@ export const Badge: React.FC<BadgeProps> = ({
   size = 'sm',
   children,
   className = '',
+  onClick,
 }) => {
-  const baseClasses = 'inline-flex items-center font-medium rounded-full';
+  const baseClasses = 'inline-flex items-center font-medium rounded-full transition-colors duration-200';
+  const interactiveClasses = onClick ? 'cursor-pointer hover:bg-opacity-80 active:scale-95 transform' : '';
   
   const variantClasses = {
     primary: 'bg-blue-100 text-blue-800',
@@ -29,7 +32,10 @@ export const Badge: React.FC<BadgeProps> = ({
   };
 
   return (
-    <span className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}>
+    <span 
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${interactiveClasses} ${className}`}
+      onClick={onClick}
+    >
       {children}
     </span>
   );

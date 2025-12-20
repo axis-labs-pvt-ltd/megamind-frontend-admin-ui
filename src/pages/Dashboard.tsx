@@ -1,9 +1,9 @@
+import { Clock, Plus, Target, TrendingUp } from 'lucide-react';
 import React from 'react';
-import { AdvancedDashboardStats } from '../components/organisms/AdvancedDashboardStats';
-import { TestCard } from '../components/molecules/TestCard';
 import { Button } from '../components/atoms/Button';
-import { Plus, TrendingUp, Clock, Target } from 'lucide-react';
-import { mockTests, mockTestAttempts } from '../data/mockData';
+import { TestCard } from '../components/molecules/TestCard';
+import { AdvancedDashboardStats } from '../components/organisms/AdvancedDashboardStats';
+import { mockTestAttempts, mockTests } from '../data/mockData';
 
 interface DashboardProps {
   onPageChange: (page: string) => void;
@@ -25,7 +25,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-2xl p-8 text-white">
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-2xl p-8 text-white animate-slide-down shadow-xl">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.05%22%3E%3Ccircle cx=%2230%22 cy=%2230%22 r=%224%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between">
@@ -63,7 +63,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow animate-slide-up animation-delay-100">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-blue-100 rounded-xl">
               <Target className="h-6 w-6 text-blue-600" />
@@ -76,7 +76,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow animate-slide-up animation-delay-200">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-green-100 rounded-xl">
               <TrendingUp className="h-6 w-6 text-green-600" />
@@ -89,7 +89,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow animate-slide-up animation-delay-300">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-yellow-100 rounded-xl">
               <Target className="h-6 w-6 text-yellow-600" />
@@ -102,7 +102,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow animate-slide-up animation-delay-400">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-purple-100 rounded-xl">
               <Clock className="h-6 w-6 text-purple-600" />
@@ -117,10 +117,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
       </div>
 
       {/* Stats Overview */}
-      <AdvancedDashboardStats stats={stats} />
+      <div className="animate-scale-in animation-delay-500">
+        <AdvancedDashboardStats stats={stats} />
+      </div>
 
       {/* Available Tests */}
-      <div>
+      <div className="animate-slide-up animation-delay-700">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h3 className="text-2xl font-bold text-gray-900">Available Tests</h3>

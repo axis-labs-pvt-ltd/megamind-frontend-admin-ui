@@ -1,5 +1,5 @@
-import React from 'react';
-import { DivideIcon as LucideIcon } from 'lucide-react';
+import { type LucideIcon } from 'lucide-react';
+import React, { KeyboardEvent } from 'react';
 
 interface InputProps {
   type?: 'text' | 'email' | 'password' | 'number' | 'search';
@@ -13,6 +13,8 @@ interface InputProps {
   className?: string;
   label?: string;
   required?: boolean;
+  onKeyPress?: (e: KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -27,6 +29,8 @@ export const Input: React.FC<InputProps> = ({
   className = '',
   label,
   required = false,
+  onKeyPress,
+  onKeyDown,
 }) => {
   const baseClasses = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200';
   const errorClasses = error ? 'border-red-500 focus:ring-red-500' : '';
@@ -52,6 +56,8 @@ export const Input: React.FC<InputProps> = ({
           onChange={(e) => onChange?.(e.target.value)}
           disabled={disabled}
           className={`${baseClasses} ${errorClasses} ${disabledClasses} ${iconClasses}`}
+          onKeyPress={onKeyPress}
+          onKeyDown={onKeyDown}
         />
         {Icon && iconPosition === 'right' && (
           <Icon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
