@@ -12,7 +12,7 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   type = 'text',
-  placeholder,
+  placeholder = " ", // Default to space to ensure :placeholder-shown CSS works for Neumorphic empty state detection
   value,
   onChange,
   disabled = false,

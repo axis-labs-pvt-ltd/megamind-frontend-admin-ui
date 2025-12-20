@@ -168,43 +168,32 @@
   border-radius: var(--radius-theme) !important;
   padding: 0.6rem 1rem !important;
   color: var(--text-primary) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transition for pop effect */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 
    Dynamic State: Pop Out when Filled 
-   If the input is NOT showing a placeholder (meaning it has value), pop it out.
-   Note: Requires inputs to have a placeholder attribute (even empty) to work robustly.
+   Specificity Boost: We match the Generic rule's specificity (Theme+Tag+3*Not) and add the Pseudo-class to win.
+   We force 'placeholder=" "' in React components to ensure this works for empty strings.
 */
-[data-theme="neumorphic"] input:not(:placeholder-shown),
+[data-theme="neumorphic"] input:not(:placeholder-shown):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 [data-theme="neumorphic"] textarea:not(:placeholder-shown) {
   box-shadow: var(--shadow-surface) !important;
-  transform: scale(1.01); /* Subtle scaling to emphasize "pop" */
+  transform: scale(1.01); 
 }
 
-/* Focus State: Deep Press */
-/* User didn't specify, but standard UX is to press on interaction. 
-   However, if user wants "filled = popped", we should respect that even during focus if filled.
-   Let's compromise: Focus ALWAYS presses slightly to show activity, or we keep the "Popped" state if filled?
-   User said: "when user inputs something... popped up". Typing implies inputting. 
-   Let's keep it popped if filled, but maybe add a highlight ring or subtle change.
-   
-   Actually, standard behavior:
-   Empty + Focus -> Pressed (Writing into the paper)
-   Filled + Focus -> Popped ? 
-   
-   Let's try: Focus wins -> Pressed. (You push the button to edit it).
-   Once you leave (Blur) + Filled -> Popped (It sits on top).
-*/
+/* Focus State: Deep Press (Editing Mode) */
+/* Override the popped state when focused to give tactile feedback */
 [data-theme="neumorphic"] input:focus,
 [data-theme="neumorphic"] textarea:focus {
   outline: none !important;
-  /* Deep inset for focus state overrides the "Popped" state temporarily, giving a tactile "editing" feel */
   box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light) !important; 
   transform: scale(1);
 }
+
 /* Ensure filled inputs return to popped state when not focused */
-[data-theme="neumorphic"] input:not(:placeholder-shown):not(:focus),
+/* High specificity again to maintain the pop after blur */
+[data-theme="neumorphic"] input:not(:placeholder-shown):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(:focus),
 [data-theme="neumorphic"] textarea:not(:placeholder-shown):not(:focus) {
     box-shadow: var(--shadow-surface) !important;
 }
@@ -229,6 +218,33 @@
    border: none !important;
    border-radius: var(--radius-theme) !important;
    /* padding: 2rem !important; */ /* REMOVED: Caused cards to be too large. Let component classes handle padding. */
+}
+
+/* Badge/Selection Item Overrides (Question Filters, etc.) */
+/* Primary Badge (Selected State) -> Popped/Extruded */
+[data-theme="neumorphic"] .bg-\[var\(--accent-blue\)\]\/10,
+[data-theme="neumorphic"] .bg-\[var\(--accent-green\)\]\/10, 
+[data-theme="neumorphic"] .bg-\[var\(--accent-yellow\)\]\/10,
+[data-theme="neumorphic"] .bg-\[var\(--accent-red\)\]\/10 {
+  background-color: var(--bg-primary) !important;
+  box-shadow: var(--shadow-surface) !important;
+  border: none !important;
+  font-weight: 600 !important;
+}
+
+/* Secondary Badge (Unselected State) -> Pressed/Inset */
+[data-theme="neumorphic"] .bg-\[var\(--bg-secondary\)\] {
+  background-color: var(--bg-primary) !important;
+  box-shadow: var(--shadow-inset) !important;
+  border: none !important;
+  color: var(--text-secondary) !important;
+  opacity: 0.8;
+}
+
+/* Hover effect for clickable badges */
+[data-theme="neumorphic"] .cursor-pointer:hover {
+    box-shadow: var(--shadow-surface) !important;
+    transform: translateY(-1px);
 }
 
 /* Also target specialized containers if needed */

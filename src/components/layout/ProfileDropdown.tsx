@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { useThemeStore } from '@/store/useThemeStore';
 import { ChevronLeft, ChevronRight, LogOut, Palette, Settings, User } from 'lucide-react';
 import { useState } from 'react';
@@ -57,11 +58,21 @@ export function ProfileDropdown() {
           {view === 'main' ? (
             <div className="animate-slide-right">
               <div className="p-2">
-                <button className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-[var(--bg-hover)] rounded-lg transition-colors group/item">
+                <button className={cn(
+                  "w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-all duration-300 group/item",
+                  theme === 'neumorphic'
+                    ? "bg-[var(--bg-primary)] shadow-[var(--shadow-inset)] hover:shadow-[var(--shadow-surface)] hover:scale-[1.02] mb-2"
+                    : "hover:bg-[var(--bg-hover)]"
+                )}>
                   <User className="h-4 w-4 text-[var(--text-secondary)] group-hover/item:text-[var(--accent-blue)] transition-colors" />
                   <span className="text-sm text-[var(--text-primary)] group-hover/item:text-[var(--accent-blue)] transition-colors">View Profile</span>
                 </button>
-                <button className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-[var(--bg-hover)] rounded-lg transition-colors group/item">
+                <button className={cn(
+                  "w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-all duration-300 group/item",
+                  theme === 'neumorphic'
+                    ? "bg-[var(--bg-primary)] shadow-[var(--shadow-inset)] hover:shadow-[var(--shadow-surface)] hover:scale-[1.02] mb-2"
+                    : "hover:bg-[var(--bg-hover)]"
+                )}>
                   <Settings className="h-4 w-4 text-[var(--text-secondary)] group-hover/item:text-[var(--accent-blue)] transition-colors" />
                   <span className="text-sm text-[var(--text-primary)] group-hover/item:text-[var(--accent-blue)] transition-colors">Settings</span>
                 </button>
@@ -73,7 +84,12 @@ export function ProfileDropdown() {
                     e.stopPropagation();
                     setView('themes');
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-[var(--bg-hover)] rounded-lg transition-colors group/item"
+                  className={cn(
+                    "w-full flex items-center justify-between px-3 py-2 text-left rounded-lg transition-all duration-300 group/item",
+                    theme === 'neumorphic'
+                      ? "bg-[var(--bg-primary)] shadow-[var(--shadow-inset)] hover:shadow-[var(--shadow-surface)] hover:scale-[1.02]"
+                      : "hover:bg-[var(--bg-hover)]"
+                  )}
                 >
                   <div className="flex items-center space-x-3">
                     <Palette className="h-4 w-4 text-[var(--text-secondary)] group-hover/item:text-[var(--accent-blue)] transition-colors" />
@@ -88,7 +104,12 @@ export function ProfileDropdown() {
               
               <div className="p-2 border-t border-[var(--border-primary)]">
                 <button 
-                  className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-[var(--accent-red-light)] rounded-lg transition-colors text-[var(--accent-red)] group/logout"
+                  className={cn(
+                    "w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-all duration-300 group/logout",
+                    theme === 'neumorphic'
+                      ? "bg-[var(--bg-primary)] shadow-[var(--shadow-inset)] hover:shadow-[var(--shadow-surface)] hover:scale-[1.02] text-[var(--accent-red)]"
+                      : "hover:bg-[var(--accent-red-light)] text-[var(--accent-red)]"
+                  )}
                 >
                   <LogOut className="h-4 w-4 group-hover/logout:scale-110 transition-transform" />
                   <span className="text-sm">Sign Out</span>

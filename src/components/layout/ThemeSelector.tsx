@@ -22,24 +22,32 @@ export function ThemeSelector() {
               key={t.id}
               onClick={() => setTheme(t.id)}
               className={cn(
-                "w-full flex items-center justify-between p-3 rounded-xl transition-all",
-                theme === t.id 
-                  ? "bg-[var(--bg-secondary)] border-2 border-[var(--accent-blue)]" 
-                  : "hover:bg-[var(--bg-hover)] border border-transparent"
+                "w-full flex items-center justify-between p-3 rounded-xl transition-all duration-300",
+                // Neumorphic Specific Logic
+                theme === 'neumorphic' 
+                  ? (theme === t.id 
+                      ? "bg-[var(--bg-primary)] shadow-[var(--shadow-surface)] scale-[1.02] text-[var(--accent-blue)]" // Selected: Popped & Scaled
+                      : "bg-[var(--bg-primary)] shadow-[var(--shadow-inset)] hover:shadow-[var(--shadow-surface)] hover:scale-[1.01] text-[var(--text-primary)]" // Unselected: Inset -> Popped on Hover
+                    )
+                  : (theme === t.id 
+                      ? "bg-[var(--bg-secondary)] border-2 border-[var(--accent-blue)]" 
+                      : "hover:bg-[var(--bg-hover)] border border-transparent"
+                    )
               )}
             >
               <div className="flex items-center space-x-3">
                 <div 
-                  className="w-8 h-8 rounded-full shadow-sm border"
+                  className={cn(
+                    "w-8 h-8 rounded-full border transition-shadow",
+                    // Add subtle shadow to color circles in neumorphic mode
+                    theme === 'neumorphic' ? "shadow-md" : "shadow-sm"
+                  )}
                   style={{ 
                     backgroundColor: t.color,
                     borderColor: t.border
                   }}
                 />
-                <span className={cn(
-                  "font-medium",
-                  theme === t.id ? "text-[var(--accent-blue)]" : "text-[var(--text-primary)]"
-                )}>
+                <span className="font-medium">
                   {t.label}
                 </span>
               </div>
