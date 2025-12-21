@@ -112,8 +112,13 @@ export const mockQuestions: Question[] = [
     id: '1',
     type: 'mcq',
     text: 'What is the derivative of x²?',
-    options: ['2x', 'x²', '2x²', 'x'],
-    correctAnswer: '2x',
+    options: [
+      { id: 'opt1', text: '3x²' },
+      { id: 'opt2', text: '2x' },
+      { id: 'opt3', text: '3x' },
+      { id: 'opt4', text: 'x³' }
+    ],
+    correctAnswer: 'opt2', // Correct answer is now the ID
     solutionVideoUrl: 'https://example.com/video1',
     moduleId: '2',
     categories: [mockCategories[0]],
@@ -123,11 +128,19 @@ export const mockQuestions: Question[] = [
   },
   {
     id: '2',
-    type: 'yes-no',
-    text: 'Is the speed of light constant in a vacuum?',
-    correctAnswer: 'Yes',
+    type: 'true-false',
+    text: 'Is the derivative of a constant zero?',
+    // Options are usually implicit for TF but we can make them explicit if needed, or component handles handle it.
+    // For T/F, let's explicitize them as options for consistency if we want, or keep logic. 
+    // Usually T/F doesn't need options array in DB, but for consistency let's leave it empty or handled by renderer.
+    // Let's provide them for "mcq-like" rendering of T/F if wanted.
+    options: [
+        { id: 'true', text: 'True' },
+        { id: 'false', text: 'False' }
+    ],
+    correctAnswer: 'true',
     solutionVideoUrl: 'https://example.com/video2',
-    moduleId: '6',
+    moduleId: '2',
     categories: [mockCategories[1]],
     tags: [mockTags[1]],
     difficulty: 'easy',
@@ -135,42 +148,85 @@ export const mockQuestions: Question[] = [
   },
   {
     id: '3',
-    type: 'drag-drop',
-    text: 'Arrange the following data structures in order of average search time complexity (fastest to slowest):',
-    options: ['Hash Table', 'Binary Search Tree', 'Linked List', 'Array'],
-    correctAnswer: ['Hash Table', 'Binary Search Tree', 'Array', 'Linked List'],
+    type: 'mcq',
+    text: 'What is the integral of 1/x?',
+    options: [
+      { id: 'optA', text: 'ln(|x|) + C' },
+      { id: 'optB', text: 'x + C' },
+      { id: 'optC', text: '1/x^2' },
+      { id: 'optD', text: 'e^x' }
+    ],
+    correctAnswer: 'optA',
     solutionVideoUrl: 'https://example.com/video3',
-    moduleId: '7',
-    categories: [mockCategories[2]],
-    tags: [mockTags[2]],
-    difficulty: 'hard',
+    moduleId: '2',
+    categories: [mockCategories[0]],
+    tags: [mockTags[0]],
+    difficulty: 'medium',
     createdAt: new Date('2024-01-17')
   },
   {
     id: '4',
-    type: 'mcq',
-    text: 'What is the time complexity of binary search?',
-    options: ['O(1)', 'O(log n)', 'O(n)', 'O(n log n)'],
-    correctAnswer: 'O(log n)',
+    type: 'drag-drop',
+    text: 'Order the following functions by growth rate (slowest to fastest).',
+    options: [
+      { id: 'dd1', text: 'log(n)' },
+      { id: 'dd2', text: 'n' },
+      { id: 'dd3', text: 'n log(n)' },
+      { id: 'dd4', text: 'n^2' }
+    ],
+    correctAnswer: ['dd1', 'dd2', 'dd3', 'dd4'], // Order of IDs
     solutionVideoUrl: 'https://example.com/video4',
     moduleId: '8',
-    categories: [mockCategories[0]],
-    tags: [mockTags[0]],
-    difficulty: 'medium',
+    categories: [mockCategories[2]],
+    tags: [mockTags[2]],
+    difficulty: 'hard',
     createdAt: new Date('2024-01-18')
   },
   {
     id: '5',
-    type: 'mcq',
-    text: 'Which HTML tag is used to create a hyperlink?',
-    options: ['<link>', '<a>', '<href>', '<url>'],
-    correctAnswer: '<a>',
+    type: 'yes-no',
+    text: 'Can a function be continuous but not differentiable?',
+    options: [
+        { id: 'yes', text: 'Yes' },
+        { id: 'no', text: 'No' }
+    ],
+    correctAnswer: 'yes',
     solutionVideoUrl: 'https://example.com/video5',
+    moduleId: '2',
+    categories: [mockCategories[1]],
+    tags: [mockTags[1]],
+    difficulty: 'medium',
+    createdAt: new Date('2024-01-19')
+  },
+  {
+    id: '6',
+    type: 'text',
+    text: 'Explain the concept of "Pass by Value" vs "Pass by Reference".',
+    correctAnswer: 'Pass by value copies data; pass by reference copies the pointer.',
+    solutionVideoUrl: 'https://example.com/video6',
     moduleId: '9',
     categories: [mockCategories[0]],
-    tags: [mockTags[3]],
+    tags: [mockTags[0]],
+    difficulty: 'hard',
+    createdAt: new Date('2024-01-20')
+  },
+  {
+    id: '7',
+    type: 'multi-select',
+    text: 'Which of the following are prime numbers?',
+    options: [
+        { id: 'ms1', text: '2' },
+        { id: 'ms2', text: '4' },
+        { id: 'ms3', text: '11' },
+        { id: 'ms4', text: '15' }
+    ],
+    correctAnswer: ['ms1', 'ms3'],
+    moduleId: '1',
+    categories: [mockCategories[2]],
+    tags: [mockTags[2]],
     difficulty: 'easy',
-    createdAt: new Date('2024-01-19')
+    referenceVideoUrl: 'https://www.youtube.com/watch?v=GC-n1gi9sPo', 
+    createdAt: new Date('2024-01-21')
   }
 ];
 
@@ -180,7 +236,7 @@ export const mockTests: Test[] = [
     title: 'Calculus Midterm',
     description: 'Comprehensive test covering derivatives and integrals',
     type: 'static',
-    questionIds: ['1', '3'],
+    questionIds: ['1', '3', '6', '7'],
     timeLimit: 60,
     passingScore: 70,
     isActive: true,

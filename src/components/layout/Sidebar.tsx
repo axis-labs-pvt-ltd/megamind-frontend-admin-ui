@@ -9,6 +9,7 @@ import {
   GraduationCap,
   HelpCircle,
   Home,
+  Menu,
   PlusCircle,
   Settings,
   X
@@ -38,17 +39,29 @@ export function Sidebar() {
 
   return (
     <>
-       {/* Mobile sidebar overlay */}
-       {isSidebarOpen && (
+      {/* Mobile sidebar overlay */}
+      {isSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-20 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
+      {/* Mobile Menu Trigger */}
+      {!isSidebarOpen && (
+        <Button
+          variant="outline"
+          size="sm"
+          className="fixed top-4 left-4 z-50 lg:hidden bg-[var(--bg-card)] shadow-lg border-[var(--border-primary)] p-2 h-auto"
+          onClick={() => setIsSidebarOpen(true)}
+        >
+          <Menu className="h-5 w-5 text-[var(--text-primary)]" />
+        </Button>
+      )}
+
       {/* Sidebar */}
       <aside className={cn(
-        "fixed inset-y-0 left-0 z-30 bg-white/95 backdrop-blur-xl shadow-2xl border-r border-gray-200/50",
+        "fixed inset-y-0 left-0 z-30 bg-[var(--bg-sidebar)] backdrop-blur-xl shadow-2xl border-r border-[var(--border-primary)]",
         "transform transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
         "flex flex-col group/sidebar",
         "lg:sticky lg:top-0 lg:h-screen lg:shadow-none lg:border-r-2",
@@ -57,19 +70,22 @@ export function Sidebar() {
         
         {/* Header */}
         <div className={cn(
-          "flex items-center h-20 border-b border-gray-100 flex-shrink-0 overflow-hidden whitespace-nowrap transition-all duration-300",
+          "flex items-center h-20 border-b border-[var(--border-primary)] flex-shrink-0 overflow-hidden whitespace-nowrap transition-all duration-300",
           "px-6 lg:px-0 lg:justify-center lg:group-hover/sidebar:px-6 lg:group-hover/sidebar:justify-start"
         )}>
-          <div className="flex items-center space-x-3 cursor-pointer min-w-max">
+          <div className="flex items-center space-x-3 min-w-max">
             <div className="relative transform transition-transform duration-300 group-hover/brand:scale-110">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
             </div>
-            <div className="transition-all duration-300 opacity-0 group-hover/sidebar:opacity-100 -translate-x-5 group-hover/sidebar:translate-x-0 lg:w-0 lg:group-hover/sidebar:w-auto">
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent block">TestPlatform</span>
-              <p className="text-xs text-gray-500 font-medium tracking-wide block">Learning Hub</p>
+            <div className={cn(
+              "transition-all duration-300 -translate-x-5 lg:w-0",
+              isSidebarOpen ? "opacity-100 translate-x-0" : "opacity-0 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 lg:group-hover/sidebar:w-auto"
+            )}>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent block">Megamind</span>
+              <p className="text-xs text-[var(--text-secondary)] font-medium tracking-wide block">Learning Hub</p>
             </div>
           </div>
           <Button
@@ -77,7 +93,7 @@ export function Sidebar() {
             size="sm"
             style={{ padding: 8 }} 
             onClick={() => setIsSidebarOpen(false)}
-            className="lg:hidden ml-auto hover:bg-gray-100"
+            className="lg:hidden ml-auto hover:bg-[var(--bg-hover)]"
           >
            <X className="h-5 w-5" />
           </Button>
@@ -97,34 +113,41 @@ export function Sidebar() {
                     "py-3.5 px-3 lg:px-0 lg:justify-center lg:group-hover/sidebar:px-3 lg:group-hover/sidebar:justify-start",
                     isActive
                       ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/25'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]'
                   )}
+                  data-nav-item="true"
+                  data-active={isActive}
                 >
                   <div className={cn(
                     "p-2 rounded-lg transition-all duration-300 flex-shrink-0",
                     isActive
-                      ? 'bg-white/20'
-                      : 'bg-gray-100 group-hover:bg-blue-50 group-hover:text-blue-600'
+                      ? 'bg-[var(--text-primary)]/10'
+                      : 'bg-[var(--bg-secondary)] group-hover:bg-[var(--accent-blue-light)] group-hover:text-[var(--accent-blue)]'
                   )}>
                     <item.icon className={cn(
                       "h-5 w-5 transition-colors duration-300",
-                      isActive ? 'text-white' : 'text-gray-600 group-hover:text-blue-600'
+                      isActive ? 'text-white' : 'text-[var(--text-secondary)] group-hover:text-[var(--accent-blue)]'
                     )} />
                   </div>
-                  <div className="overflow-hidden text-left ml-4 lg:ml-0 lg:group-hover/sidebar:ml-4 transition-all duration-300 opacity-0 group-hover/sidebar:opacity-100 -translate-x-5 group-hover/sidebar:translate-x-0 lg:w-0 lg:group-hover/sidebar:w-auto">
+                  <div className={cn(
+                    "overflow-hidden text-left ml-4 lg:ml-0 lg:group-hover/sidebar:ml-4 transition-all duration-300 -translate-x-5 lg:w-0 lg:group-hover/sidebar:w-auto",
+                    isSidebarOpen 
+                      ? "opacity-100 translate-x-0 w-auto" 
+                      : "opacity-0 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 group-hover/sidebar:w-auto"
+                  )}>
                     <div className="font-semibold truncate">
                       {item.name}
                     </div>
                     <div className={cn(
                       "text-xs truncate",
-                      isActive ? 'text-blue-100' : 'text-gray-500'
+                      isActive ? 'text-blue-100' : 'text-[var(--text-muted)]'
                     )}>
                       {item.description}
                     </div>
                   </div>
                   
                   {/* Tooltip for collapsed state */}
-                  <div className="hidden lg:block lg:group-hover/sidebar:hidden absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none whitespace-nowrap">
+                  <div className="hidden lg:block lg:group-hover/sidebar:hidden absolute left-14 bg-[var(--bg-card)] text-[var(--text-primary)] text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none whitespace-nowrap">
                     {item.name}
                   </div>
                 </button>

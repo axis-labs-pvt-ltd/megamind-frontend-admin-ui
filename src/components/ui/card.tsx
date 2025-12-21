@@ -14,7 +14,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(({
   onClick,
   ...props
 }, ref) => {
-  const baseClasses = 'bg-white/80 backdrop-blur-sm rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100/50';
+  const baseClasses = 'bg-[var(--bg-card)] backdrop-blur-sm rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[var(--border-primary)] transition-colors';
   
   const paddingClasses = {
     sm: 'p-3',

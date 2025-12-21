@@ -8,12 +8,15 @@ interface TimerProps {
   initialTime: number; // in seconds
   onTimeUp: () => void;
   className?: string;
+  isRunning?: boolean;
 }
 
-export const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp, className }) => {
+export const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp, className, isRunning = true }) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
 
   useEffect(() => {
+    if (!isRunning) return;
+
     if (timeLeft <= 0) {
       onTimeUp();
       return;
@@ -24,7 +27,7 @@ export const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp, className }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, onTimeUp]);
+  }, [timeLeft, onTimeUp, isRunning]);
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
@@ -44,11 +47,11 @@ export const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp, className }
     <div className={cn("flex items-center space-x-2", className)}>
       <Clock className={cn(
         "h-4 w-4",
-        isCritical ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-gray-500'
+        isCritical ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-[var(--text-muted)]'
       )} />
       <span className={cn(
         "font-mono text-sm font-medium",
-        isCritical ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-gray-700'
+        isCritical ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-[var(--text-secondary)]'
       )}>
         {formatTime(timeLeft)}
       </span>

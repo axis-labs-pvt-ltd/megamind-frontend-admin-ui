@@ -1,17 +1,23 @@
+// Client Component - Question Card for Lists
 'use client';
 
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { cn } from '@/lib/utils';
 import { Question } from '@/types';
-import { Folder, PlayCircle, Tag } from 'lucide-react';
-import React from 'react';
+import { Folder, Tag } from 'lucide-react';
+import React, { useState } from 'react';
+import { AnswerOptions } from './AnswerOptions';
+import { CorrectAnswerDisplay } from './CorrectAnswerDisplay';
+import { QuestionHeader } from './QuestionHeader';
 
 interface QuestionCardProps {
   question: Question;
   showAnswer?: boolean;
   userAnswer?: string | string[];
   onEdit?: () => void;
+  onDelete?: () => void;
   className?: string;
   onClick?: () => void;
 }
@@ -21,131 +27,137 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   showAnswer = false,
   userAnswer,
   onEdit,
+  onDelete,
   className = '',
   onClick
 }) => {
-  const isCorrect = userAnswer && JSON.stringify(userAnswer) === JSON.stringify(question.correctAnswer);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'success';
-      case 'medium': return 'warning';
-      case 'hard': return 'danger';
-      default: return 'secondary';
+  const handleCardClick = () => {
+    if (onClick) onClick();
+  };
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete();
     }
   };
 
-  const handleCardClick = () => {
-    if (onClick) onClick();
-    else if (onEdit) onEdit();
-  };
-
   return (
-    <Card 
-      className={cn(className, !!onEdit && "cursor-pointer hover:shadow-md")} 
-      onClick={handleCardClick}
-    >
-      <div className="space-y-4 p-4">
-        {/* Question Header */}
-        <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-2">
-            <Badge variant="secondary">
-              {question.type.toUpperCase()}
-            </Badge>
-            <Badge variant={getDifficultyColor(question.difficulty)}>
-              {question.difficulty}
-            </Badge>
-          </div>
-          {question.solutionVideoUrl && (
-            <PlayCircle className="h-5 w-5 text-blue-500 cursor-pointer hover:text-blue-600" />
+    <>
+      <Card 
+        className={cn(className, !!onClick && "cursor-pointer hover:shadow-md")}
+        onClick={handleCardClick}
+      >
+      <div className="flex flex-col gap-4 p-4 h-full">
+        <QuestionHeader 
+          question={question} 
+          onEdit={onEdit} 
+          onDelete={onDelete ? () => setShowDeleteConfirm(true) : undefined} 
+        />
+        
+        <div className="flex-1">
+          <p className="text-lg font-medium text-[var(--text-primary)] mb-4">
+            {question.text}
+          </p>
+          
+          {/* Answer Options */}
+          {(question.type === 'mcq' || question.type === 'multi-select') && question.options && (
+            <AnswerOptions
+              options={question.options}
+              correctAnswer={question.correctAnswer as string | string[]}
+              userAnswer={userAnswer}
+              showAnswer={showAnswer}
+              isMultiSelect={question.type === 'multi-select'}
+            />
           )}
-        </div>
 
-        {/* Question Text */}
-        <div className="prose max-w-none">
-          <p className="text-gray-900 font-medium">{question.text}</p>
-        </div>
-
-        {/* Options */}
-        {question.options && question.type !== 'drag-drop' && (
-          <div className="space-y-2">
-            {question.options.map((option, index) => (
-              <div
-                key={index}
-                className={cn(
-                  "p-3 rounded-lg border",
-                   showAnswer
-                    ? option === question.correctAnswer
-                      ? 'bg-green-50 border-green-200'
-                      : userAnswer === option && !isCorrect
-                      ? 'bg-red-50 border-red-200'
-                      : 'bg-gray-50 border-gray-200'
-                    : 'bg-gray-50 border-gray-200'
-                )}
-              >
-                <div className="flex items-center space-x-3">
-                  <span className="text-sm font-medium text-gray-500">
-                    {String.fromCharCode(65 + index)}
-                  </span>
-                  <span className="text-sm text-gray-900">{option}</span>
+          {/* Yes/No & True/False Options */}
+          {(question.type === 'yes-no' || question.type === 'true-false') && question.options && (
+            <div className="flex space-x-4">
+              {question.options.map((option) => (
+                <div
+                  key={option.id}
+                  className={cn(
+                    "flex-1 p-3 rounded-lg border text-center font-medium",
+                     showAnswer && question.correctAnswer === option.id
+                      ? 'bg-green-500/10 border-green-500/30 text-green-700'
+                      : 'bg-[var(--bg-secondary)] border-[var(--border-primary)] text-[var(--text-secondary)]'
+                  )}
+                >
+                  {option.text}
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Drag Drop Options */}
-        {question.type === 'drag-drop' && question.options && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-gray-700">Options:</p>
-            <div className="flex flex-wrap gap-2">
-              {question.options.map((option, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {option}
-                </Badge>
               ))}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Answer Section */}
-        {showAnswer && (
-          <div className="border-t pt-4">
-            <div className="flex items-center space-x-2 mb-2">
-              <span className="text-sm font-medium text-gray-700">Correct Answer:</span>
-              <Badge variant="success">
-                {Array.isArray(question.correctAnswer) 
-                  ? question.correctAnswer.join(' → ')
-                  : question.correctAnswer}
-              </Badge>
-            </div>
-            {userAnswer && (
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-gray-700">Your Answer:</span>
-                <Badge variant={isCorrect ? 'success' : 'danger'}>
-                  {Array.isArray(userAnswer) ? userAnswer.join(' → ') : userAnswer}
-                </Badge>
+          {/* Drag and Drop */}
+          {question.type === 'drag-drop' && question.options && (
+            <div className="space-y-2">
+              <div className="text-sm font-medium text-[var(--text-secondary)] mb-2">Correct Order:</div>
+              <div className="space-y-2">
+                {(Array.isArray(question.correctAnswer) ? question.correctAnswer : []).map((id, index) => {
+                  // Find the text for the ID
+                  const option = question.options?.find(opt => opt.id === id);
+                  return (
+                    <div 
+                        key={index}
+                        className="p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)] flex items-center gap-3"
+                    >
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[var(--bg-card)] text-xs font-bold text-[var(--text-secondary)] border border-[var(--border-primary)]">
+                        {index + 1}
+                        </span>
+                        <span className="text-[var(--text-primary)]">{option ? option.text : id as string}</span>
+                    </div>
+                  );
+                })}
               </div>
-            )}
-          </div>
+            </div>
+           )}
+
+          {/* Text Type (Preview) */}
+          {question.type === 'text' && (
+             <div className="p-3 rounded-lg border bg-[var(--bg-secondary)] border-[var(--border-primary)] text-[var(--text-secondary)] italic">
+                 Rich text answer (model answer hidden)
+             </div>
+          )}
+
+        </div>
+
+        {/* Correct Answer Indicator (when not showing as test answer) */}
+        {!showAnswer && (
+          <CorrectAnswerDisplay question={question} />
         )}
 
         {/* Categories and Tags */}
-        <div className="flex flex-wrap items-center gap-2 pt-2 border-t">
+        <div className="flex flex-wrap items-center gap-2 pt-2 border-t mt-auto">
           {question.categories.map((category) => (
-            <div key={category.id} className="flex items-center space-x-1">
-              <Folder className="h-3 w-3 text-gray-400" />
-              <span className="text-xs text-gray-500">{category.name}</span>
-            </div>
+            <Badge key={category.id} variant="outline" className="text-xs">
+              <Folder className="h-3 w-3 mr-1" />
+              {category.name}
+            </Badge>
           ))}
           {question.tags.map((tag) => (
-            <div key={tag.id} className="flex items-center space-x-1">
-              <Tag className="h-3 w-3 text-gray-400" />
-              <span className="text-xs text-gray-500">{tag.name}</span>
-            </div>
+            <Badge key={tag.id} variant="secondary" className="text-xs">
+              <Tag className="h-3 w-3 mr-1" />
+              {tag.name}
+            </Badge>
           ))}
         </div>
       </div>
-    </Card>
+      </Card>
+
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        onCancel={() => setShowDeleteConfirm(false)}
+        onConfirm={handleDelete}
+        title="Delete Question"
+        description="Are you sure you want to delete this question? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
+    </>
   );
 };
+

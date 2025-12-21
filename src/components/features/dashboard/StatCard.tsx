@@ -29,57 +29,57 @@ export const StatCard: React.FC<StatCardProps> = ({
 }) => {
   const colorClasses = {
     blue: {
-      bg: 'bg-blue-100',
-      text: 'text-blue-600',
+      bg: 'bg-[var(--accent-blue)]/10',
+      text: 'text-[var(--accent-blue)]',
       trend: {
-        up: 'text-green-600 bg-green-100',
-        down: 'text-red-600 bg-red-100',
-        stable: 'text-gray-600 bg-gray-100'
+        up: 'text-[var(--accent-green)] bg-[var(--accent-green)]/10',
+        down: 'text-[var(--accent-red)] bg-[var(--accent-red)]/10',
+        stable: 'text-[var(--text-secondary)] bg-[var(--bg-secondary)]'
       }
     },
     green: {
-      bg: 'bg-green-100',
-      text: 'text-green-600',
+      bg: 'bg-[var(--accent-green)]/10',
+      text: 'text-[var(--accent-green)]',
       trend: {
-        up: 'text-green-600 bg-green-100',
-        down: 'text-red-600 bg-red-100',
-        stable: 'text-gray-600 bg-gray-100'
+        up: 'text-[var(--accent-green)] bg-[var(--accent-green)]/10',
+        down: 'text-[var(--accent-red)] bg-[var(--accent-red)]/10',
+        stable: 'text-[var(--text-secondary)] bg-[var(--bg-secondary)]'
       }
     },
     yellow: {
-      bg: 'bg-yellow-100',
-      text: 'text-yellow-600',
+      bg: 'bg-[var(--accent-yellow)]/10',
+      text: 'text-[var(--accent-yellow)]',
       trend: {
-        up: 'text-green-600 bg-green-100',
-        down: 'text-red-600 bg-red-100',
-        stable: 'text-gray-600 bg-gray-100'
+        up: 'text-[var(--accent-green)] bg-[var(--accent-green)]/10',
+        down: 'text-[var(--accent-red)] bg-[var(--accent-red)]/10',
+        stable: 'text-[var(--text-secondary)] bg-[var(--bg-secondary)]'
       }
     },
     red: {
-      bg: 'bg-red-100',
-      text: 'text-red-600',
+      bg: 'bg-[var(--accent-red)]/10',
+      text: 'text-[var(--accent-red)]',
       trend: {
-        up: 'text-green-600 bg-green-100',
-        down: 'text-red-600 bg-red-100',
-        stable: 'text-gray-600 bg-gray-100'
+        up: 'text-[var(--accent-green)] bg-[var(--accent-green)]/10',
+        down: 'text-[var(--accent-red)] bg-[var(--accent-red)]/10',
+        stable: 'text-[var(--text-secondary)] bg-[var(--bg-secondary)]'
       }
     },
     purple: {
-      bg: 'bg-purple-100',
-      text: 'text-purple-600',
+      bg: 'bg-[var(--accent-purple)]/10',
+      text: 'text-[var(--accent-purple)]',
       trend: {
-        up: 'text-green-600 bg-green-100',
-        down: 'text-red-600 bg-red-100',
-        stable: 'text-gray-600 bg-gray-100'
+        up: 'text-[var(--accent-green)] bg-[var(--accent-green)]/10',
+        down: 'text-[var(--accent-red)] bg-[var(--accent-red)]/10',
+        stable: 'text-[var(--text-secondary)] bg-[var(--bg-secondary)]'
       }
     },
     indigo: {
-      bg: 'bg-indigo-100',
-      text: 'text-indigo-600',
+      bg: 'bg-[var(--accent-blue)]/10',
+      text: 'text-[var(--accent-blue)]',
       trend: {
-        up: 'text-green-600 bg-green-100',
-        down: 'text-red-600 bg-red-100',
-        stable: 'text-gray-600 bg-gray-100'
+        up: 'text-[var(--accent-green)] bg-[var(--accent-green)]/10',
+        down: 'text-[var(--accent-red)] bg-[var(--accent-red)]/10',
+        stable: 'text-[var(--text-secondary)] bg-[var(--bg-secondary)]'
       }
     }
   };
@@ -93,7 +93,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   };
 
   return (
-    <Card className={cn("p-6 hover:shadow-lg transition-all duration-200", className)}>
+    <Card className={cn("p-4 md:p-6 hover:shadow-lg transition-all duration-200", className)}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-3 mb-3">
@@ -101,15 +101,15 @@ export const StatCard: React.FC<StatCardProps> = ({
               <Icon className={`h-6 w-6 ${colorClasses[color].text}`} />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600">{title}</p>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">{title}</p>
               {subtitle && (
-                <p className="text-xs text-gray-500">{subtitle}</p>
+                <p className="text-xs text-[var(--text-secondary)]">{subtitle}</p>
               )}
             </div>
           </div>
           
           <div className="space-y-2">
-            <p className="text-3xl font-bold text-gray-900">{value}</p>
+            <p className="text-3xl font-bold text-[var(--text-primary)]">{value}</p>
             
             {trend && (
               <div className="flex items-center space-x-2">
@@ -120,7 +120,7 @@ export const StatCard: React.FC<StatCardProps> = ({
                 >
                   {getTrendSymbol(trend.direction)} {Math.abs(trend.value)}%
                 </Badge>
-                <span className="text-xs text-gray-500">{trend.period}</span>
+                <span className="text-xs text-[var(--text-secondary)]">{trend.period}</span>
               </div>
             )}
           </div>

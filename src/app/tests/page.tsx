@@ -118,8 +118,8 @@ export default function TestsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Available Tests</h2>
-          <p className="text-gray-600">
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">Available Tests</h2>
+          <p className="text-[var(--text-secondary)]">
             {sortedTests.length} test{sortedTests.length !== 1 ? 's' : ''} available
             {activeFiltersCount > 0 && ` (${activeFiltersCount} filter${activeFiltersCount !== 1 ? 's' : ''} applied)`}
           </p>
@@ -139,7 +139,7 @@ export default function TestsPage() {
           type="search"
           placeholder="Search tests, descriptions, tags..."
           value={searchTerm}
-          onChange={(val: string) => setSearchTerm(val)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           icon={Search}
           className="flex-1"
         />
@@ -227,7 +227,7 @@ export default function TestsPage() {
         <Card className="p-6 border-2 border-blue-100 bg-blue-50/30">
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
                 <SlidersHorizontal className="h-5 w-5" />
                 Advanced Filters
               </h3>
@@ -244,7 +244,7 @@ export default function TestsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Time Limit Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-3 flex items-center gap-2">
                   <Clock className="h-4 w-4" />
                   Time Limit
                 </label>
@@ -265,7 +265,7 @@ export default function TestsPage() {
                         onChange={(e) => setTimeLimitRange(e.target.value as 'all' | '0-30' | '31-60' | '61-120' | '120+')}
                         className="text-blue-600 focus:ring-blue-500"
                       />
-                      <span className="text-sm text-gray-700">{option.label}</span>
+                      <span className="text-sm text-[var(--text-secondary)]">{option.label}</span>
                     </label>
                   ))}
                 </div>
@@ -273,7 +273,7 @@ export default function TestsPage() {
 
               {/* Passing Score Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-3 flex items-center gap-2">
                   <Target className="h-4 w-4" />
                   Passing Score
                 </label>
@@ -293,7 +293,7 @@ export default function TestsPage() {
                         onChange={(e) => setPassingScoreRange(e.target.value as 'all' | '0-60' | '61-80' | '81-100')}
                         className="text-blue-600 focus:ring-blue-500"
                       />
-                      <span className="text-sm text-gray-700">{option.label}</span>
+                      <span className="text-sm text-[var(--text-secondary)]">{option.label}</span>
                     </label>
                   ))}
                 </div>
@@ -301,12 +301,12 @@ export default function TestsPage() {
 
               {/* Subject Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-3 flex items-center gap-2">
                   <BookOpen className="h-4 w-4" />
                   Subject
                 </label>
                 <select
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   value={selectedSubject}
                   onChange={(e) => setSelectedSubject(e.target.value)}
                 >
@@ -321,12 +321,12 @@ export default function TestsPage() {
 
               {/* Sort By */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-3 flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   Sort By
                 </label>
                 <select
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'title' | 'difficulty' | 'attempts')}
                 >
@@ -383,10 +383,10 @@ export default function TestsPage() {
         <div className="text-center py-12">
           <div className="max-w-md mx-auto">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="h-8 w-8 text-gray-400" />
+              <Search className="h-8 w-8 text-[var(--icon-secondary)]" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No tests found</h3>
-            <p className="text-gray-500 mb-6">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">No tests found</h3>
+            <p className="text-[var(--text-secondary)] mb-6">
               {activeFiltersCount > 0 
                 ? "Try adjusting your filters to see more results."
                 : "No tests match your search criteria."
