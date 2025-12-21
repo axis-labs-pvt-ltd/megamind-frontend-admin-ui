@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Question } from '@/types';
-import { RotateCcw } from 'lucide-react';
+import { GripVertical, RotateCcw } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface QuestionRendererProps {
@@ -23,6 +23,8 @@ export function QuestionRenderer({
 }: QuestionRendererProps) {
   const [draggedItems, setDraggedItems] = useState<string[]>([]);
   const [availableItems, setAvailableItems] = useState<string[]>([]);
+  const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
+  const [activeDropZone, setActiveDropZone] = useState<number | null>(null);
 
   // Initialize drag and drop state
   useEffect(() => {
@@ -47,8 +49,24 @@ export function QuestionRenderer({
   const handleDragStart = (e: React.DragEvent, item: string) => {
     if (showResult) return;
     e.dataTransfer.setData('text/plain', item);
+    setDraggedItemId(item);
+  };
+  
+  const handleDragEnd = () => {
+    setDraggedItemId(null);
+    setActiveDropZone(null);
   };
   const handleDragOver = (e: React.DragEvent) => e.preventDefault();
+  
+  const handleDropZoneEnter = (index: number) => {
+    if (draggedItemId) {
+      setActiveDropZone(index);
+    }
+  };
+  
+  const handleDropZoneLeave = () => {
+    setActiveDropZone(null);
+  };
   
   const handleDropToOrder = (e: React.DragEvent, targetIndex: number) => {
     if (showResult) return;
@@ -70,6 +88,8 @@ export function QuestionRenderer({
     
     setDraggedItems(newDragged);
     setAvailableItems(newAvailable);
+    setDraggedItemId(null); // Reset drag state
+    setActiveDropZone(null); // Reset active zone
     onAnswerChange(newDragged.filter(Boolean));
   };
 
@@ -90,6 +110,8 @@ export function QuestionRenderer({
 
     setDraggedItems(newDragged);
     setAvailableItems(newAvailable);
+    setDraggedItemId(null); // Reset drag state
+    setActiveDropZone(null); // Reset active zone
     onAnswerChange(newDragged.filter(Boolean));
   };
 
@@ -259,29 +281,128 @@ export function QuestionRenderer({
              <div className="space-y-6">
                  {/* Implementation similar to original but with read-only state if showResult is true */}
                  {!showResult && (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div>
                              <div className="flex items-center justify-between mb-4">
                                 <h4 className="font-semibold text-[var(--text-primary)]">Available Options</h4>
                                 <Button variant="ghost" size="sm" onClick={handleResetDragDrop}><RotateCcw className="h-4 w-4 mr-2"/>Reset</Button>
                              </div>
-                             <div className="min-h-[200px] p-4 border-2 border-dashed rounded-lg bg-[var(--bg-secondary)]" onDragOver={handleDragOver} onDrop={handleDropToAvailable}>
-                                {availableItems.map((item, i) => (
-                                    <div key={i} draggable onDragStart={(e) => handleDragStart(e, item)} className="p-3 bg-[var(--bg-card)] rounded-lg border mb-2 cursor-move">{item}</div>
-                                ))}
+                             <div 
+                               className="min-h-[100px] max-h-[500px] overflow-y-auto p-4 rounded-xl border-2 border-dashed border-[var(--border-primary)] bg-[var(--bg-secondary)]/30 space-y-2 transition-colors hover:border-[var(--accent-blue)]/30" 
+                               onDragOver={handleDragOver} 
+                               onDrop={handleDropToAvailable}
+                             >
+                                {availableItems.length === 0 ? (
+                                  <div className="h-full flex flex-col items-center justify-center text-[var(--text-secondary)] py-8 animate-in fade-in zoom-in duration-300">
+                                    <span className="text-4xl mb-2 opacity-20">✨</span>
+                                    <span className="text-sm font-medium opacity-60">All items placed</span>
+                                  </div>
+                                ) : (
+                                  availableItems.map((item, i) => (
+                                    <div 
+                                      key={i} 
+                                      draggable 
+                                      onDragStart={(e) => handleDragStart(e, item)}
+                                      onDragEnd={handleDragEnd}
+                                      className={cn(
+                                        "group p-3 rounded-lg border flex items-center gap-3 transition-all duration-200",
+                                        draggedItemId === item 
+                                          ? "border-dashed border-[var(--accent-blue)] bg-[var(--accent-blue)]/5 opacity-50 grayscale" 
+                                          : "bg-[var(--bg-card)] border-[var(--border-primary)] hover:border-[var(--accent-blue)] hover:shadow-sm hover:translate-x-1"
+                                      )}
+                                    >
+                                      <GripVertical className="h-5 w-5 text-[var(--text-secondary)]/50 group-hover:text-[var(--accent-blue)] transition-colors flex-shrink-0" />
+                                      <span className="text-[var(--text-primary)] font-medium">{item}</span>
+                                    </div>
+                                  ))
+                                )}
                              </div>
                         </div>
                         <div>
-                             <h4 className="font-semibold text-[var(--text-primary)] mb-4">Your Anwer</h4>
-                             <div className="space-y-2">
+                             <h4 className="font-semibold text-[var(--text-primary)] mb-4">Your Answer</h4>
+                             <div className="max-h-[500px] overflow-y-auto pr-2">
+                                {/* Drop zone at the beginning */}
+                                <div 
+                                  className={cn(
+                                    "rounded-lg border-2 border-dashed transition-all duration-200 flex items-center justify-center text-xs font-medium",
+                                    draggedItemId 
+                                      ? (activeDropZone === -1 
+                                          ? "h-12 border-[var(--accent-blue)] bg-[var(--accent-blue)]/10 text-[var(--accent-blue)] my-2 opacity-100" 
+                                          : "h-2 border-transparent bg-transparent my-0 opacity-0 hover:h-12 hover:border-[var(--accent-blue)] hover:bg-[var(--accent-blue)]/5 hover:opacity-100") 
+                                      : "h-0 border-transparent overflow-hidden my-0"
+                                  )}
+                                  onDragEnter={() => handleDropZoneEnter(-1)}
+                                  onDragOver={handleDragOver}
+                                  onDrop={(e) => handleDropToOrder(e, 0)}
+                                >
+                                  {draggedItemId && (activeDropZone === -1 ? "Drop here to insert at start" : "")}
+                                </div>
+
+                                {/* Render each dragged item with drop zone after it */}
                                 {draggedItems.map((item, i) => (
-                                    <div key={i} className="p-3 border rounded bg-[var(--bg-card)] flex justify-between">
-                                        <span>{i+1}. {item}</span>
-                                        <Button variant="ghost" size="sm" onClick={() => handleRemoveFromOrder(item)}>×</Button>
+                                  <React.Fragment key={i}>
+                                    {/* The dragged item */}
+                                    <div 
+                                      draggable
+                                      onDragStart={(e) => handleDragStart(e, item)} 
+                                      onDragEnd={handleDragEnd}
+                                      className={cn(
+                                        "group p-3 border rounded-lg flex items-center gap-3 transition-all duration-200",
+                                        draggedItemId === item 
+                                          ? "border-dashed border-[var(--accent-blue)] bg-[var(--accent-blue)]/5 opacity-50 grayscale" 
+                                          : "bg-[var(--bg-card)] border-[var(--border-primary)] hover:border-[var(--accent-blue)] hover:shadow-sm"
+                                      )}
+                                    >
+                                      <GripVertical className="h-5 w-5 text-[var(--text-secondary)] group-hover:text-[var(--accent-blue)] flex-shrink-0" />
+                                      <span className="flex-1 text-[var(--text-primary)] font-medium">{i+1}. {item}</span>
+                                      <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        onClick={() => handleRemoveFromOrder(item)}
+                                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0 text-lg"
+                                      >
+                                        ×
+                                      </Button>
                                     </div>
+                                    
+                                    {/* Drop zone after this item */}
+                                    <div 
+                                      className={cn(
+                                        "rounded-lg border-2 border-dashed transition-all duration-200 flex items-center justify-center text-xs font-medium",
+                                        draggedItemId 
+                                          ? (activeDropZone === i 
+                                              ? "h-12 border-[var(--accent-blue)] bg-[var(--accent-blue)]/10 text-[var(--accent-blue)] my-2 opacity-100" 
+                                              : "h-2 border-transparent bg-transparent my-0 opacity-0 hover:h-12 hover:border-[var(--accent-blue)] hover:bg-[var(--accent-blue)]/5 hover:opacity-100") 
+                                          : "h-0 border-transparent overflow-hidden my-0"
+                                      )}
+                                      onDragEnter={() => handleDropZoneEnter(i)}
+                                      onDragOver={handleDragOver}
+                                      onDrop={(e) => handleDropToOrder(e, i + 1)}
+                                    >
+                                      {draggedItemId && (activeDropZone === i ? `Drop here to insert at position ${i + 2}` : "")}
+                                    </div>
+                                  </React.Fragment>
                                 ))}
-                                {draggedItems.length < question.options.length && (
-                                     <div className="p-3 border-2 border-dashed rounded text-center text-gray-400">Drop here</div>
+
+                                {/* Empty state when no items */}
+                                {draggedItems.length === 0 && (
+                                  <div 
+                                    className={cn(
+                                      "min-h-[140px] rounded-lg border-2 border-dashed transition-all flex items-center justify-center p-6",
+                                      draggedItemId 
+                                        ? "border-[var(--accent-blue)] bg-[var(--accent-blue)]/10" 
+                                        : "border-[var(--border-primary)] bg-[var(--bg-secondary)]"
+                                    )}
+                                    onDragOver={handleDragOver}
+                                    onDrop={(e) => handleDropToOrder(e, 0)}
+                                  >
+                                    <span className={cn(
+                                      "text-sm text-center",
+                                      draggedItemId ? "text-[var(--accent-blue)] font-semibold" : "text-[var(--text-secondary)]"
+                                    )}>
+                                      {draggedItemId ? "Drop here to start ordering" : "Drag items here to order them"}
+                                    </span>
+                                  </div>
                                 )}
                              </div>
                         </div>
