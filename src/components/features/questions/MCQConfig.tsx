@@ -23,7 +23,7 @@ export function MCQConfig({
   removeOption,
   watch
 }: MCQConfigProps) {
-  const options = watch('options') as string[] || [];
+  const options = watch('options') as any[] || [];
   
   return (
     <div className="space-y-4">
@@ -37,7 +37,7 @@ export function MCQConfig({
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => appendOption('')}
+            onClick={() => appendOption({ id: crypto.randomUUID(), text: '' })}
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Option
@@ -50,7 +50,7 @@ export function MCQConfig({
                 {String.fromCharCode(65 + index)}
               </span>
               <Controller
-                name={`options.${index}` as const}
+                name={`options.${index}.text` as const}
                 control={control}
                 render={({ field }) => (
                   <input
@@ -94,9 +94,9 @@ export function MCQConfig({
               className="w-full px-4 py-3 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select correct answer</option>
-              {options.filter(opt => opt.trim()).map((option, index) => (
-                <option key={index} value={option}>
-                  {String.fromCharCode(65 + index)} - {option}
+              {options.filter(opt => opt.text && opt.text.trim()).map((option, index) => (
+                <option key={option.id || index} value={option.id}>
+                  {String.fromCharCode(65 + index)} - {option.text}
                 </option>
               ))}
             </select>
@@ -109,3 +109,4 @@ export function MCQConfig({
     </div>
   );
 }
+

@@ -1,6 +1,4 @@
-// @ts-nocheck - TypeScript cannot properly infer complex discriminated unions. Types validated by Zod at runtime.
 // Client Component - Drag & Drop configuration for question options
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -32,24 +30,37 @@ export function DragDropConfig({
 
   // Sync items with optionFields
   React.useEffect(() => {
+    // We need to be careful not to create infinite loops by checking if values actually changed
+    // But for now, we map the form values to local state for the generic DraggableList
+    // We assume options are QuestionOption objects { id, text, ... }
     const currentOptions = optionFields.map((field, index) => {
-      const value = control._defaultValues.options?.[index] || control._formValues.options?.[index] || '';
+      // Access the actual value from the form
+      // @ts-ignore - accessing internal form state for initial sync
+      const value = control._formValues.options?.[index] || control._defaultValues.options?.[index];
+      
       return {
-        id: field.id,
-        content: typeof value === 'string' ? value : '',
+        id: field.id, 
+        // If value is an object (new format), use .text. If it's string (legacy), use it directly.
+        content: typeof value === 'object' && value ? value.text : (typeof value === 'string' ? value : ''),
+        originalId: value?.id // Keep track of the real option ID
       };
     });
     setItems(currentOptions);
-  }, [optionFields.length]);
+  }, [optionFields, control._formValues.options]); 
+  // Note: dependency on optionFields is tricky in RHF, usually checking length is safer or deep comparison
 
-  const handleReorder = (newItems: { id: string; content: string }[]) => {
+  const handleReorder = (newItems: { id: string; content: string; originalId?: string }[]) => {
     setItems(newItems);
     
-    // Update all option fields to reflect new order
-    const newOptions = newItems.map(item => item.content);
-    newOptions.forEach((content, index) => {
-      setValue(`options.${index}` as const, content);
-    });
+    // update form value with reordered objects
+    // We need to reconstruct the QuestionOption object
+    const newOptions = newItems.map(item => ({
+       id: item.originalId || crypto.randomUUID(),
+       text: item.content
+    }));
+    
+    // We must update the entire options array field
+    setValue('options', newOptions as any);
   };
 
   return (
@@ -63,7 +74,7 @@ export function DragDropConfig({
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => appendOption('')}
+            onClick={() => appendOption({ id: crypto.randomUUID(), text: '' })}
           >
             <Plus className="h-4 w-4 mr-1" />
             Add Item
@@ -79,7 +90,7 @@ export function DragDropConfig({
                 {index + 1}
               </span>
               <Controller
-                name={`options.${index}` as const}
+                name={`options.${index}.text` as const}
                 control={control}
                 render={({ field }) => (
                   <input
@@ -88,10 +99,8 @@ export function DragDropConfig({
                     placeholder={`Item ${index + 1}`}
                     onChange={(e) => {
                       field.onChange(e);
-                      // Update items state
-                      const newItems = [...items];
-                      newItems[index] = { ...newItems[index], content: e.target.value };
-                      setItems(newItems);
+                      // Update local item state to reflect typing immediately
+                      setItems(prev => prev.map((it, idx) => idx === index ? { ...it, content: e.target.value } : it));
                     }}
                   />
                 )}
@@ -110,8 +119,8 @@ export function DragDropConfig({
           )}
         />
 
-        {errors.options && (
-          <p className="text-red-500 text-sm mt-1">{errors.options.message}</p>
+        {errors && (errors as any).options && (
+          <p className="text-red-500 text-sm mt-1">{((errors as any).options as any).message || "Invalid options"}</p>
         )}
       </div>
     </div>

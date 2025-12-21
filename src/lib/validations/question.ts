@@ -11,17 +11,29 @@ const baseQuestionSchema = z.object({
   solutionVideoUrl: z.string().url().optional().or(z.literal('')),
 });
 
+// Option Schema
+const questionOptionSchema = z.object({
+  id: z.string(),
+  text: z.string().min(1, 'Option text cannot be empty'),
+  isCorrect: z.boolean().optional(),
+  media: z.object({
+    type: z.enum(['image', 'video']),
+    url: z.string().url(),
+    altText: z.string().optional(),
+  }).optional(),
+});
+
 // MCQ Schema
 const mcqSchema = baseQuestionSchema.extend({
   type: z.literal('mcq'),
-  options: z.array(z.string().min(1, 'Option cannot be empty')).min(2, 'At least 2 options required'),
+  options: z.array(questionOptionSchema).min(2, 'At least 2 options required'),
   correctAnswer: z.string().min(1, 'Please select a correct answer'),
 });
 
 // Multi-Select Schema
 const multiSelectSchema = baseQuestionSchema.extend({
   type: z.literal('multi-select'),
-  options: z.array(z.string().min(1, 'Option cannot be empty')).min(2, 'At least 2 options required'),
+  options: z.array(questionOptionSchema).min(2, 'At least 2 options required'),
   correctAnswer: z.array(z.string()).min(1, 'At least one correct answer required'),
 });
 
@@ -48,8 +60,14 @@ const fillInBlankSchema = baseQuestionSchema.extend({
 // Drag-Drop Schema
 const dragDropSchema = baseQuestionSchema.extend({
   type: z.literal('drag-drop'),
-  options: z.array(z.string().min(1, 'Option cannot be empty')).min(2, 'At least 2 options required'),
+  options: z.array(questionOptionSchema).min(2, 'At least 2 options required'),
   correctAnswer: z.array(z.string()).min(2, 'Please set the correct order'),
+});
+
+// Text Schema
+const textSchema = baseQuestionSchema.extend({
+  type: z.literal('text'),
+  correctAnswer: z.string().min(1, 'Please provide a model answer'),
 });
 
 // Matching Schema
@@ -73,6 +91,7 @@ export const questionFormSchema = z.discriminatedUnion('type', [
   fillInBlankSchema,
   dragDropSchema,
   matchingSchema,
+  textSchema,
 ]);
 
 export type QuestionFormData = z.infer<typeof questionFormSchema>;
@@ -133,5 +152,12 @@ export const questionTypeConfig: Record<QuestionType, {
     icon: '🔗',
     hasOptions: false,
     hasMatchingPairs: true,
+  },
+  'text': {
+    label: 'Text / Rich Text',
+    description: 'Open-ended text answer',
+    icon: '📄',
+    hasOptions: false,
+    hasMatchingPairs: false,
   },
 };

@@ -10,6 +10,7 @@ interface TestHeaderProps {
   answeredCount: number;
   timeLimit: number; // in minutes
   onTimeUp: () => void;
+  isSubmitted?: boolean;
 }
 
 export function TestHeader({
@@ -18,6 +19,7 @@ export function TestHeader({
   answeredCount,
   timeLimit,
   onTimeUp,
+  isSubmitted = false,
 }: TestHeaderProps) {
   const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
@@ -31,6 +33,7 @@ export function TestHeader({
           <Timer
             initialTime={timeLimit * 60}
             onTimeUp={onTimeUp}
+            isRunning={!isSubmitted}
           />
         </div>
         <div className="flex items-center justify-end w-full md:w-auto space-x-2">

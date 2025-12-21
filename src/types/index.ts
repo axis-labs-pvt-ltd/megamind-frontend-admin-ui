@@ -28,22 +28,34 @@ export interface Tag {
   color: string;
 }
 
-export type QuestionType = 'mcq' | 'yes-no' | 'drag-drop' | 'fill-in-blank' | 'multi-select' | 'matching' | 'true-false';
+export type QuestionType = 'mcq' | 'yes-no' | 'drag-drop' | 'fill-in-blank' | 'multi-select' | 'matching' | 'true-false' | 'text';
 
 export interface MatchingPair {
   left: string;
   right: string;
 }
 
+export interface QuestionOption {
+  id: string;
+  text: string;
+  isCorrect?: boolean;
+  media?: {
+    type: 'image' | 'video';
+    url: string;
+    altText?: string;
+  };
+}
+
 export interface Question {
   id: string;
   type: QuestionType;
   text: string;
-  options?: string[];
+  options?: QuestionOption[]; // Refactored from string[] to object array
   matchingPairs?: MatchingPair[];
-  correctAnswer: string | string[] | MatchingPair[];
+  correctAnswer: string | string[] | MatchingPair[]; // For MCQ/Multi-select, this will contain Option IDs
   acceptableAnswers?: string[]; // For fill-in-blank alternative answers
-  solutionVideoUrl?: string;
+  solutionVideoUrl?: string; // Video shown AFTER submission (explanation)
+  referenceVideoUrl?: string; // Video shown DURING exam (context)
   moduleId: string;
   categories: Category[];
   tags: Tag[];

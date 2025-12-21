@@ -12,6 +12,7 @@ interface TestNavigationProps {
   onSubmit: () => void;
   onFlag: () => void;
   isFlagged: boolean;
+  isSubmitted?: boolean; // New prop
 }
 
 export function TestNavigation({
@@ -22,6 +23,7 @@ export function TestNavigation({
   onSubmit,
   onFlag,
   isFlagged,
+  isSubmitted = false,
 }: TestNavigationProps) {
   const isLastQuestion = currentIndex === totalQuestions - 1;
 
@@ -55,7 +57,7 @@ export function TestNavigation({
           className="w-full md:w-auto"
         >
           <CheckCircle className="h-4 w-4 mr-2" />
-          Submit Test
+          {isSubmitted ? "Finish Review" : "Submit Test"}
         </Button>
       ) : (
         <Button

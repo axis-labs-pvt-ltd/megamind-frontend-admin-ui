@@ -26,14 +26,14 @@ export function MultiSelectConfig({
   watch,
   setValue
 }: MultiSelectConfigProps) {
-  const options = watch('options') as string[] || [];
+  const options = watch('options') as any[] || [];
   const correctAnswers = (watch('correctAnswer') as string[]) || [];
 
-  const toggleCorrectAnswer = (option: string) => {
-    if (correctAnswers.includes(option)) {
-      setValue('correctAnswer', correctAnswers.filter(a => a !== option) as never);
+  const toggleCorrectAnswer = (optionId: string) => {
+    if (correctAnswers.includes(optionId)) {
+      setValue('correctAnswer', correctAnswers.filter(a => a !== optionId) as never);
     } else {
-      setValue('correctAnswer', [...correctAnswers, option] as never);
+      setValue('correctAnswer', [...correctAnswers, optionId] as never);
     }
   };
 
@@ -49,7 +49,7 @@ export function MultiSelectConfig({
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => appendOption('')}
+            onClick={() => appendOption({ id: crypto.randomUUID(), text: '' })}
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Option
@@ -62,7 +62,7 @@ export function MultiSelectConfig({
                 {String.fromCharCode(65 + index)}
               </span>
               <Controller
-                name={`options.${index}` as const}
+                name={`options.${index}.text` as const}
                 control={control}
                 render={({ field }) => (
                   <input
@@ -97,15 +97,15 @@ export function MultiSelectConfig({
           Correct Answers (select all that apply) <span className="text-red-500">*</span>
         </label>
         <div className="space-y-2 p-4 border border-[var(--border-primary)] rounded-lg bg-[var(--bg-secondary)]">
-          {options.filter(opt => opt.trim()).map((option, index) => (
+          {options.filter(opt => opt.text && opt.text.trim()).map((option, index) => (
             <Checkbox
-              key={index}
-              label={`${String.fromCharCode(65 + index)} - ${option}`}
-              checked={correctAnswers.includes(option)}
-              onChange={() => toggleCorrectAnswer(option)}
+              key={option.id}
+              label={`${String.fromCharCode(65 + index)} - ${option.text}`}
+              checked={correctAnswers.includes(option.id)}
+              onChange={() => toggleCorrectAnswer(option.id)}
             />
           ))}
-          {options.filter(opt => opt.trim()).length === 0 && (
+          {options.filter(opt => opt.text && opt.text.trim()).length === 0 && (
             <p className="text-sm text-[var(--text-secondary)] italic">Add options above to select correct answers</p>
           )}
         </div>
@@ -116,3 +116,4 @@ export function MultiSelectConfig({
     </div>
   );
 }
+

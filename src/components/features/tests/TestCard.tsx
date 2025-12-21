@@ -3,6 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Tooltip } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Test } from '@/types';
 import { Calendar, Clock, Edit, FileText, Play, Settings, Star, Users } from 'lucide-react';
@@ -112,7 +113,7 @@ export const TestCard: React.FC<TestCardProps> = ({
         )}
 
         {/* Content */}
-        <div className="p-4 md:p-6 space-y-4">
+        <div className="p-3 md:p-6 space-y-3 md:space-y-4">
           {/* Header (if no cover image) */}
           {!test.coverImage && (
             <div className="flex items-start justify-between">
@@ -160,27 +161,38 @@ export const TestCard: React.FC<TestCardProps> = ({
           )}
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="text-center p-3 bg-[var(--bg-secondary)] rounded-xl">
-              <FileText className="h-4 w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
-              <p className="text-sm font-semibold text-[var(--text-primary)]">{questionCount}</p>
-              <p className="text-xs text-[var(--text-secondary)]">Questions</p>
-            </div>
-            <div className="text-center p-3 bg-[var(--bg-secondary)] rounded-xl">
-              <Clock className="h-4 w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
-              <p className="text-sm font-semibold text-[var(--text-primary)]">{test.timeLimit}</p>
-              <p className="text-xs text-[var(--text-secondary)]">Minutes</p>
-            </div>
-            <div className="text-center p-3 bg-[var(--bg-secondary)] rounded-xl">
-              <Calendar className="h-4 w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
-              <p className="text-sm font-semibold text-[var(--text-primary)]">{test.estimatedDuration || test.timeLimit}</p>
-              <p className="text-xs text-[var(--text-secondary)]">Est. Time</p>
-            </div>
-            <div className="text-center p-3 bg-[var(--bg-secondary)] rounded-xl">
-              <Users className="h-4 w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
-              <p className="text-sm font-semibold text-[var(--text-primary)]">{attemptCount}</p>
-              <p className="text-xs text-[var(--text-secondary)]">Attempts</p>
-            </div>
+          <div className="grid grid-cols-4 gap-2">
+            <Tooltip content="Questions" className="w-full">
+                <div className="text-center p-1 md:p-3 bg-[var(--bg-secondary)] rounded-xl hover:bg-[var(--bg-tertiary)] transition-colors">
+                <FileText className="h-3 w-3 md:h-4 md:w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
+                <p className="text-xs md:text-sm font-semibold text-[var(--text-primary)]">{questionCount}</p>
+                <span className="text-[9px] md:text-[10px] text-[var(--text-secondary)] block">Ques</span>
+                </div>
+            </Tooltip>
+            
+            <Tooltip content="Minutes" className="w-full">
+                <div className="text-center p-1 md:p-3 bg-[var(--bg-secondary)] rounded-xl hover:bg-[var(--bg-tertiary)] transition-colors">
+                <Clock className="h-3 w-3 md:h-4 md:w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
+                <p className="text-xs md:text-sm font-semibold text-[var(--text-primary)]">{test.timeLimit}</p>
+                <span className="text-[9px] md:text-[10px] text-[var(--text-secondary)] block">Mins</span>
+                </div>
+            </Tooltip>
+
+            <Tooltip content="Estimated Time" className="w-full">
+                <div className="text-center p-1 md:p-3 bg-[var(--bg-secondary)] rounded-xl hover:bg-[var(--bg-tertiary)] transition-colors">
+                <Calendar className="h-3 w-3 md:h-4 md:w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
+                <p className="text-xs md:text-sm font-semibold text-[var(--text-primary)]">{test.estimatedDuration || test.timeLimit}</p>
+                <span className="text-[9px] md:text-[10px] text-[var(--text-secondary)] block">Est</span>
+                </div>
+            </Tooltip>
+
+            <Tooltip content="Attempts" className="w-full">
+                <div className="text-center p-1 md:p-3 bg-[var(--bg-secondary)] rounded-xl hover:bg-[var(--bg-tertiary)] transition-colors">
+                <Users className="h-3 w-3 md:h-4 md:w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
+                <p className="text-xs md:text-sm font-semibold text-[var(--text-primary)]">{attemptCount}</p>
+                <span className="text-[9px] md:text-[10px] text-[var(--text-secondary)] block">Users</span>
+                </div>
+            </Tooltip>
           </div>
 
           {/* Tags */}

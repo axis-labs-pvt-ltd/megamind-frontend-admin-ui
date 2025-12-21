@@ -8,12 +8,15 @@ interface TimerProps {
   initialTime: number; // in seconds
   onTimeUp: () => void;
   className?: string;
+  isRunning?: boolean;
 }
 
-export const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp, className }) => {
+export const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp, className, isRunning = true }) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
 
   useEffect(() => {
+    if (!isRunning) return;
+
     if (timeLeft <= 0) {
       onTimeUp();
       return;
@@ -24,7 +27,7 @@ export const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp, className }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, onTimeUp]);
+  }, [timeLeft, onTimeUp, isRunning]);
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);

@@ -11,13 +11,22 @@ interface CorrectAnswerDisplayProps {
 export function CorrectAnswerDisplay({ question }: CorrectAnswerDisplayProps) {
   const getCorrectAnswerText = () => {
     if (question.type === 'mcq' || question.type === 'multi-select' || question.type === 'drag-drop') {
-      if (Array.isArray(question.correctAnswer)) {
-        return (question.correctAnswer as string[]).join(', ');
-      }
-      return String(question.correctAnswer);
+      const ids = Array.isArray(question.correctAnswer) 
+        ? (question.correctAnswer as string[]) 
+        : [String(question.correctAnswer)];
+      
+      const textValues = ids.map(id => {
+        const option = question.options?.find(opt => opt.id === id);
+        return option ? option.text : id;
+      });
+
+      return textValues.join(', ');
     }
-    if (question.type === 'yes-no') {
-      return String(question.correctAnswer);
+    if (question.type === 'yes-no' || question.type === 'true-false') {
+        // Find text for Yes/No ID
+        const id = String(question.correctAnswer);
+        const option = question.options?.find(opt => opt.id === id);
+        return option ? option.text : id;
     }
     if (question.type === 'fill-in-blank') {
       const answers = [String(question.correctAnswer)];

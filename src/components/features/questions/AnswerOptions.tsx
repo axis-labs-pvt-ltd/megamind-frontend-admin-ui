@@ -1,11 +1,11 @@
 // Client Component - Display answer options for MCQ and Multi-Select questions
-
 'use client';
 
 import { cn } from '@/lib/utils';
+import { QuestionOption } from '@/types';
 
 interface AnswerOptionsProps {
-  options: string[];
+  options: QuestionOption[];
   correctAnswer: string | string[];
   userAnswer?: string | string[];
   showAnswer?: boolean;
@@ -30,12 +30,12 @@ export function AnswerOptions({
   return (
     <div className="flex flex-col gap-2 w-full">
       {options.map((option, index) => {
-        const isCorrectOption = correctAnswers.includes(option);
-        const isUserAnswer = userAnswers.includes(option);
+        const isCorrectOption = correctAnswers.includes(option.id);
+        const isUserAnswer = userAnswers.includes(option.id);
         
         return (
           <div
-            key={index}
+            key={option.id}
             className={cn(
               "p-3 rounded-lg border",
                showAnswer
@@ -51,7 +51,7 @@ export function AnswerOptions({
               <span className="text-sm font-medium text-[var(--text-secondary)]">
                 {String.fromCharCode(65 + index)}
               </span>
-              <span className="text-sm text-[var(--text-primary)] whitespace-normal">{option}</span>
+              <span className="text-sm text-[var(--text-primary)] whitespace-normal">{option.text}</span>
               {isMultiSelect && showAnswer && isCorrectOption && (
                 <span className="ml-auto text-green-500 text-xs">✓</span>
               )}
