@@ -1,23 +1,23 @@
-'use client';
+
 
 import { PerformanceChart } from '@/components/features/analytics/PerformanceChart';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
-    Activity,
-    AlertCircle,
-    Award,
-    Brain,
-    Calendar,
-    CheckCircle,
-    Clock,
-    Star,
-    Target,
-    TrendingUp,
-    Zap
+  Activity,
+  AlertCircle,
+  Award,
+  Brain,
+  CheckCircle,
+  Clock,
+  Star,
+  Target,
+  TrendingUp,
+  Zap
 } from 'lucide-react';
 import React from 'react';
+import { InsightItem } from './InsightItem';
+import { LearningGoals } from './LearningGoals';
+import { RecentResults } from './RecentResults';
 import { StatCard } from './StatCard';
 
 interface AdvancedDashboardStatsProps {
@@ -100,7 +100,7 @@ export const AdvancedDashboardStats: React.FC<AdvancedDashboardStatsProps> = ({ 
     <div className="space-y-8">
       {/* Key Performance Indicators */}
       <div>
-        <h3 className="text-xl font-bold text-gray-900 mb-6">Performance Overview</h3>
+        <h3 className="text-xl font-bold text-[var(--text-primary)] mb-6">Performance Overview</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             title="Total Tests Taken"
@@ -142,7 +142,7 @@ export const AdvancedDashboardStats: React.FC<AdvancedDashboardStatsProps> = ({ 
 
       {/* Advanced Analytics */}
       <div>
-        <h3 className="text-xl font-bold text-gray-900 mb-6">Detailed Analytics</h3>
+        <h3 className="text-xl font-bold text-[var(--text-primary)] mb-6">Detailed Analytics</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             title="Consistency Score"
@@ -241,47 +241,35 @@ export const AdvancedDashboardStats: React.FC<AdvancedDashboardStatsProps> = ({ 
         {/* Performance Insights */}
         <div className="lg:col-span-2">
           <Card className="p-6 h-full">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance Insights</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Performance Insights</h3>
             <div className="space-y-4">
-              <div className="flex items-start space-x-3 p-4 bg-green-50 rounded-lg border border-green-200">
-                <div className="p-1 bg-green-100 rounded-full">
-                  <TrendingUp className="h-4 w-4 text-green-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-green-900">Strong Improvement</p>
-                  <p className="text-sm text-green-700">Your scores have improved by 15% over the last month. Keep up the excellent work!</p>
-                </div>
-              </div>
+              <InsightItem
+                icon={TrendingUp}
+                title="Strong Improvement"
+                description="Your scores have improved by 15% over the last month. Keep up the excellent work!"
+                variant="green"
+              />
 
-              <div className="flex items-start space-x-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <div className="p-1 bg-blue-100 rounded-full">
-                  <Brain className="h-4 w-4 text-blue-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-blue-900">Subject Strength</p>
-                  <p className="text-sm text-blue-700">Computer Science is your strongest subject with 92% average score.</p>
-                </div>
-              </div>
+              <InsightItem
+                icon={Brain}
+                title="Subject Strength"
+                description="Computer Science is your strongest subject with 92% average score."
+                variant="blue"
+              />
 
-              <div className="flex items-start space-x-3 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                <div className="p-1 bg-yellow-100 rounded-full">
-                  <Target className="h-4 w-4 text-yellow-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-yellow-900">Focus Area</p>
-                  <p className="text-sm text-yellow-700">Consider spending more time on Physics to improve your 78% average.</p>
-                </div>
-              </div>
+              <InsightItem
+                icon={Target}
+                title="Focus Area"
+                description="Consider spending more time on Physics to improve your 78% average."
+                variant="yellow"
+              />
 
-              <div className="flex items-start space-x-3 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                <div className="p-1 bg-purple-100 rounded-full">
-                  <Star className="h-4 w-4 text-purple-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-purple-900">Achievement Unlocked</p>
-                  <p className="text-sm text-purple-700">You&apos;ve maintained a 90%+ score streak for 3 consecutive tests!</p>
-                </div>
-              </div>
+              <InsightItem
+                icon={Star}
+                title="Achievement Unlocked"
+                description="You've maintained a 90%+ score streak for 3 consecutive tests!"
+                variant="purple"
+              />
             </div>
           </Card>
         </div>
@@ -290,86 +278,12 @@ export const AdvancedDashboardStats: React.FC<AdvancedDashboardStatsProps> = ({ 
       {/* Recent Activity & Goals */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Test Results */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Test Results</h3>
-            <Button variant="ghost" size="sm">View All</Button>
-          </div>
-          <div className="space-y-3">
-            {stats.recentAttempts.map((attempt, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-3 h-3 rounded-full ${
-                    attempt.score >= 90 ? 'bg-green-500' :
-                    attempt.score >= 80 ? 'bg-blue-500' :
-                    attempt.score >= 70 ? 'bg-yellow-500' : 'bg-red-500'
-                  }`}></div>
-                  <div>
-                    <p className="font-medium text-gray-900">{attempt.testTitle}</p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(attempt.completedAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <Badge 
-                    variant={attempt.score >= 80 ? 'success' : attempt.score >= 60 ? 'warning' : 'danger'}
-                    size="md"
-                  >
-                    {attempt.score}%
-                  </Badge>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
+        <RecentResults attempts={stats.recentAttempts} />
 
         {/* Learning Goals */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Learning Goals</h3>
-            <Button variant="ghost" size="sm">Manage</Button>
-          </div>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Monthly Test Target</span>
-                <span className="text-sm text-gray-500">8/10</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-blue-500 h-2 rounded-full" style={{ width: '80%' }}></div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Average Score Goal</span>
-                <span className="text-sm text-gray-500">87/90%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-green-500 h-2 rounded-full" style={{ width: '97%' }}></div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Study Streak</span>
-                <span className="text-sm text-gray-500">12/14 days</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-purple-500 h-2 rounded-full" style={{ width: '86%' }}></div>
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-gray-100">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <Calendar className="h-4 w-4" />
-                <span>Next milestone: Complete 2 more tests this week</span>
-              </div>
-            </div>
-          </div>
-        </Card>
+        <LearningGoals />
       </div>
     </div>
   );
 };
+

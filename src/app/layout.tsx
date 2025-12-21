@@ -1,5 +1,6 @@
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { AppProviders } from '@/components/providers/AppProviders';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -19,7 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 flex">
+        <AppProviders>
+          <div className="min-h-screen bg-[var(--bg-primary)] flex">
            <Sidebar />
            <div className="flex-1 flex flex-col min-w-0">
              <Header />
@@ -29,7 +31,8 @@ export default function RootLayout({
                </div>
              </main>
            </div>
-        </div>
+          </div>
+        </AppProviders>
       </body>
     </html>
   );

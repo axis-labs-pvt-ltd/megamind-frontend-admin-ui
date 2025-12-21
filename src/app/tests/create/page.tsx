@@ -9,77 +9,82 @@ import { Image, Plus, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { CreateTestValues, createTestSchema } from '@/lib/validations/test';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2, Save } from 'lucide-react';
+import { useFieldArray, useForm } from 'react-hook-form';
+
 export default function CreateTestPage() {
   const router = useRouter();
-  const [testType, setTestType] = useState<'static' | 'dynamic'>('static');
-  const [testTitle, setTestTitle] = useState('');
-  const [testDescription, setTestDescription] = useState('');
-  const [timeLimit, setTimeLimit] = useState('60');
-  const [passingScore, setPassingScore] = useState('70');
-  const [estimatedDuration, setEstimatedDuration] = useState('45');
-  const [coverImage, setCoverImage] = useState('');
-  const [tags, setTags] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [newTag, setNewTag] = useState('');
-  const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
-  const [dynamicRules, setDynamicRules] = useState([{
-    moduleId: '',
-    questionCount: 5,
-    difficulty: 'medium' as const
-  }]);
 
-  const addQuestion = (questionId: string) => {
-    if (!selectedQuestions.includes(questionId)) {
-      setSelectedQuestions([...selectedQuestions, questionId]);
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<CreateTestValues>({
+    resolver: zodResolver(createTestSchema),
+    defaultValues: {
+      type: 'static',
+      title: '',
+      description: '',
+      timeLimit: 60,
+      passingScore: 70,
+      estimatedDuration: 45,
+      coverImage: '',
+      tags: [],
+      questions: [],
+      dynamicRules: [{ moduleId: '', questionCount: 5, difficulty: 'medium' }],
+    },
+  });
+
+  const { fields, append, remove, update } = useFieldArray({
+    control,
+    name: "dynamicRules",
+  });
+
+  const testType = watch('type');
+  const selectedQuestions = watch('questions') || [];
+  const tags = watch('tags') || [];
+  const coverImage = watch('coverImage');
+  const title = watch('title');
+  const description = watch('description');
+
+  const onSubmit = async (data: CreateTestValues) => {
+    setIsLoading(true);
+    try {
+      // await testService.createTest(data); // Simulate API call
+      console.log('Creating Test:', data);
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      router.push('/tests');
+    } catch (error) {
+      console.error('Failed to create test:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const removeQuestion = (questionId: string) => {
-    setSelectedQuestions(selectedQuestions.filter(id => id !== questionId));
-  };
-
-  const addDynamicRule = () => {
-    setDynamicRules([...dynamicRules, {
-      moduleId: '',
-      questionCount: 5,
-      difficulty: 'medium' as const
-    }]);
-  };
-
-  const removeDynamicRule = (index: number) => {
-    setDynamicRules(dynamicRules.filter((_, i) => i !== index));
-  };
-
-  const updateDynamicRule = (index: number, field: string, value: any) => {
-    const newRules = [...dynamicRules];
-    newRules[index] = { ...newRules[index], [field]: value };
-    setDynamicRules(newRules);
+  const toggleQuestion = (questionId: string) => {
+    const current = selectedQuestions;
+    const updated = current.includes(questionId)
+      ? current.filter(id => id !== questionId)
+      : [...current, questionId];
+    setValue('questions', updated, { shouldValidate: true });
   };
 
   const addTag = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
-      setTags([...tags, newTag.trim()]);
+      setValue('tags', [...tags, newTag.trim()]);
       setNewTag('');
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
-  };
-
-  const handleCreateTest = () => {
-    // Create test logic here
-    console.log('Creating test:', {
-      type: testType,
-      title: testTitle,
-      description: testDescription,
-      timeLimit: parseInt(timeLimit),
-      passingScore: parseInt(passingScore),
-      estimatedDuration: parseInt(estimatedDuration),
-      coverImage,
-      tags,
-      questions: testType === 'static' ? selectedQuestions : dynamicRules
-    });
-    router.push('/tests');
+    setValue('tags', tags.filter(t => t !== tagToRemove));
   };
 
   const suggestedCoverImages = [
@@ -92,131 +97,138 @@ export default function CreateTestPage() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-4xl mx-auto space-y-6 animate-slide-up">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Create New Test</h2>
-        <p className="text-gray-600">Build a comprehensive test for your students</p>
+        <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Create New Test</h2>
+        <p className="text-[var(--text-secondary)]">Build a comprehensive test for your students</p>
       </div>
 
       {/* Test Type Selection */}
-      <Card className="p-6 animate-slide-up animation-delay-100">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Test Type</h3>
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Test Type</h3>
         <div className="flex space-x-4">
           <div
             className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
               testType === 'static' 
-                ? 'border-blue-500 bg-blue-50' 
-                : 'border-gray-200 hover:border-gray-300'
+                ? 'border-[var(--accent-blue)] bg-[var(--accent-blue)]/10' 
+                : 'border-[var(--border-primary)] hover:border-[var(--border-hover)]'
             }`}
-            onClick={() => setTestType('static')}
+            onClick={() => setValue('type', 'static')}
           >
-            <h4 className="font-medium text-gray-900">Static Test</h4>
-            <p className="text-sm text-gray-600">Fixed set of questions</p>
+            <h4 className="font-medium text-[var(--text-primary)]">Static Test</h4>
+            <p className="text-sm text-[var(--text-secondary)]">Fixed set of questions</p>
           </div>
           <div
             className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
               testType === 'dynamic' 
-                ? 'border-blue-500 bg-blue-50' 
-                : 'border-gray-200 hover:border-gray-300'
+                ? 'border-[var(--accent-blue)] bg-[var(--accent-blue)]/10' 
+                : 'border-[var(--border-primary)] hover:border-[var(--border-hover)]'
             }`}
-            onClick={() => setTestType('dynamic')}
+            onClick={() => setValue('type', 'dynamic')}
           >
-            <h4 className="font-medium text-gray-900">Dynamic Test</h4>
-            <p className="text-sm text-gray-600">Rule-based question selection</p>
+            <h4 className="font-medium text-[var(--text-primary)]">Dynamic Test</h4>
+            <p className="text-sm text-[var(--text-secondary)]">Rule-based question selection</p>
           </div>
         </div>
+        {errors.type && <p className="text-sm text-[var(--accent-red)] mt-2">{errors.type.message}</p>}
       </Card>
 
       {/* Test Details */}
-      <Card className="p-6 animate-slide-up animation-delay-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Test Details</h3>
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Test Details</h3>
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="Test Title"
-              value={testTitle}
-              onChange={setTestTitle}
-              placeholder="Enter test title"
-              required
-            />
-            <Input
-              label="Time Limit (minutes)"
-              type="number"
-              value={timeLimit}
-              onChange={setTimeLimit}
-              placeholder="60"
-              required
-            />
-            <Input
-              label="Passing Score (%)"
-              type="number"
-              value={passingScore}
-              onChange={setPassingScore}
-              placeholder="70"
-              required
-            />
-            <Input
-              label="Estimated Duration (minutes)"
-              type="number"
-              value={estimatedDuration}
-              onChange={setEstimatedDuration}
-              placeholder="45"
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[var(--text-secondary)]">Test Title</label>
+              <Input
+                {...register('title')}
+                placeholder="Enter test title"
+                error={errors.title?.message}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[var(--text-secondary)]">Time Limit (mins)</label>
+              <Input
+                type="number"
+                {...register('timeLimit', { valueAsNumber: true })}
+                placeholder="60"
+                error={errors.timeLimit?.message}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[var(--text-secondary)]">Passing Score (%)</label>
+              <Input
+                type="number"
+                {...register('passingScore', { valueAsNumber: true })}
+                placeholder="70"
+                error={errors.passingScore?.message}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[var(--text-secondary)]">Est. Duration (mins)</label>
+              <Input
+                type="number"
+                {...register('estimatedDuration', { valueAsNumber: true })}
+                placeholder="45"
+                error={errors.estimatedDuration?.message}
+              />
+            </div>
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-[var(--text-secondary)]">
               Description
             </label>
             <textarea
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              {...register('description')}
+              className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)] focus:border-transparent"
               rows={3}
-              value={testDescription}
-              onChange={(e) => setTestDescription(e.target.value)}
               placeholder="Enter test description"
             />
           </div>
 
           {/* Cover Image */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-[var(--text-secondary)]">
               Cover Image
             </label>
             <div className="space-y-4">
               <Input
-                value={coverImage}
-                onChange={setCoverImage}
+                {...register('coverImage')}
                 placeholder="Enter image URL or upload"
                 icon={Image}
+                error={errors.coverImage?.message}
               />
               
               {/* Image Preview */}
               {coverImage && (
-                <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200">
+                <div className="relative w-full h-48 rounded-lg overflow-hidden border border-[var(--border-primary)] animate-fade-in">
                   <img
                     src={coverImage}
                     alt="Cover preview"
                     className="w-full h-full object-cover"
+                    onError={() => setValue('coverImage', '')} // Reset on error
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">
-                    <h4 className="text-white font-semibold">{testTitle || 'Test Title'}</h4>
-                    <p className="text-white/90 text-sm">{testDescription || 'Test description...'}</p>
+                    <h4 className="text-white font-semibold">{title || 'Test Title'}</h4>
+                    <p className="text-white/90 text-sm line-clamp-2">{description || 'Test description...'}</p>
                   </div>
                 </div>
               )}
 
               {/* Suggested Images */}
               <div>
-                <p className="text-sm text-gray-600 mb-2">Suggested cover images:</p>
+                <p className="text-sm text-[var(--text-secondary)] mb-2">Suggested cover images:</p>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                   {suggestedCoverImages.map((imageUrl, index) => (
                     <button
+                      type="button"
                       key={index}
                       className={`relative h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                        coverImage === imageUrl ? 'border-blue-500' : 'border-gray-200 hover:border-gray-300'
+                        coverImage === imageUrl ? 'border-blue-500' : 'border-[var(--border-primary)] hover:border-[var(--border-hover)]'
                       }`}
-                      onClick={() => setCoverImage(imageUrl)}
+                      onClick={() => setValue('coverImage', imageUrl)}
                     >
                       <img
                         src={imageUrl}
@@ -231,15 +243,15 @@ export default function CreateTestPage() {
           </div>
 
           {/* Tags */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-[var(--text-secondary)]">
               Tags
             </label>
             <div className="space-y-3">
               <div className="flex space-x-2">
                 <Input
                   value={newTag}
-                  onChange={setNewTag}
+                  onChange={(e) => setNewTag(e.target.value)}
                   placeholder="Add a tag"
                   className="flex-1"
                   onKeyPress={(e) => {
@@ -250,6 +262,7 @@ export default function CreateTestPage() {
                   }}
                 />
                 <Button
+                  type="button"
                   variant="outline"
                   onClick={addTag}
                   disabled={!newTag.trim()}
@@ -263,7 +276,7 @@ export default function CreateTestPage() {
                     <Badge
                       key={index}
                       variant="secondary"
-                      className="cursor-pointer hover:bg-red-100 hover:text-red-700"
+                      className="cursor-pointer text-[var(--accent-red)] hover:text-[var(--accent-red)] hover:bg-[var(--accent-red)]/10"
                       onClick={() => removeTag(tag)}
                     >
                       #{tag} ×
@@ -278,9 +291,9 @@ export default function CreateTestPage() {
 
       {/* Question Selection */}
       {testType === 'static' && (
-        <Card className="p-6 animate-slide-up animation-delay-300">
+        <Card className="p-6 animate-slide-up">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Select Questions</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">Select Questions</h3>
             <Badge variant="primary" size="md">
               {selectedQuestions.length} selected
             </Badge>
@@ -291,18 +304,14 @@ export default function CreateTestPage() {
                 key={question.id}
                 className={`p-4 rounded-lg border cursor-pointer transition-all ${
                   selectedQuestions.includes(question.id)
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-[var(--accent-blue)] bg-[var(--accent-blue)]/10'
+                    : 'border-[var(--border-primary)] hover:border-[var(--border-hover)]'
                 }`}
-                onClick={() => 
-                  selectedQuestions.includes(question.id) 
-                    ? removeQuestion(question.id)
-                    : addQuestion(question.id)
-                }
+                onClick={() => toggleQuestion(question.id)}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">{question.text}</p>
+                    <p className="font-medium text-[var(--text-primary)]">{question.text}</p>
                     <div className="flex items-center space-x-2 mt-2">
                       <Badge variant="secondary" size="sm">
                         {question.type.toUpperCase()}
@@ -321,45 +330,48 @@ export default function CreateTestPage() {
               </div>
             ))}
           </div>
+          {errors.questions && <p className="text-sm text-[var(--accent-red)] mt-4 text-center">Please select at least one question.</p>}
         </Card>
       )}
 
       {/* Dynamic Rules */}
       {testType === 'dynamic' && (
-        <Card className="p-6 animate-slide-up animation-delay-300">
+        <Card className="p-6 animate-slide-up">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Dynamic Rules</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">Dynamic Rules</h3>
             <Button
+              type="button"
               variant="outline"
               size="sm"
-              onClick={addDynamicRule}
+              onClick={() => append({ moduleId: '', questionCount: 5, difficulty: 'medium' })}
             >
                <Plus className="h-4 w-4 mr-2" />
               Add Rule
             </Button>
           </div>
           <div className="space-y-4">
-            {dynamicRules.map((rule, index) => (
-              <div key={index} className="p-4 border rounded-lg bg-gray-50">
+            {fields.map((field, index) => (
+              <div key={field.id} className="p-4 border rounded-lg bg-[var(--bg-secondary)] animate-fade-in">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="font-medium text-gray-900">Rule {index + 1}</h4>
+                  <h4 className="font-medium text-[var(--text-primary)]">Rule {index + 1}</h4>
                   <Button
+                    type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={() => removeDynamicRule(index)}
+                    onClick={() => remove(index)}
+                    disabled={fields.length === 1} // Prevent removing absolute last rule if desired, or allow empty
                   >
                      <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                       Module
                     </label>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={rule.moduleId}
-                      onChange={(e) => updateDynamicRule(index, 'moduleId', e.target.value)}
+                      className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)]"
+                      {...register(`dynamicRules.${index}.moduleId`)}
                     >
                       <option value="">Select Module</option>
                       {mockSubjects.flatMap(subject => 
@@ -370,27 +382,28 @@ export default function CreateTestPage() {
                         ))
                       )}
                     </select>
+                    {errors.dynamicRules?.[index]?.moduleId && (
+                      <p className="text-xs text-[var(--accent-red)]">{errors.dynamicRules[index]?.moduleId?.message}</p>
+                    )}
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Question Count
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
+                      Count
                     </label>
                     <input
                       type="number"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={rule.questionCount}
-                      onChange={(e) => updateDynamicRule(index, 'questionCount', parseInt(e.target.value))}
+                      className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)]"
+                      {...register(`dynamicRules.${index}.questionCount`, { valueAsNumber: true })}
                       min="1"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                       Difficulty
                     </label>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={rule.difficulty}
-                      onChange={(e) => updateDynamicRule(index, 'difficulty', e.target.value)}
+                      className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)]"
+                      {...register(`dynamicRules.${index}.difficulty`)}
                     >
                       <option value="easy">Easy</option>
                       <option value="medium">Medium</option>
@@ -405,21 +418,32 @@ export default function CreateTestPage() {
       )}
 
       {/* Actions */}
-      <div className="flex justify-end space-x-4">
+      <div className="flex justify-end space-x-4 pt-6 border-t border-[var(--border-primary)]">
         <Button
+          type="button"
           variant="outline"
           onClick={() => router.push('/tests')}
         >
           Cancel
         </Button>
         <Button
-          variant="primary"
-          onClick={handleCreateTest}
-          disabled={!testTitle || (testType === 'static' && selectedQuestions.length === 0)}
+          type="submit"
+          className="bg-[var(--accent-blue)] text-white hover:bg-blue-600 shadow-lg shadow-blue-500/25"
+          disabled={isLoading}
         >
-          Create Test
+          {isLoading ? (
+            <>
+               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+               Creating...
+            </>
+          ) : (
+            <>
+               <Save className="h-4 w-4 mr-2" />
+               Create Test
+            </>
+          )}
         </Button>
       </div>
-    </div>
+    </form>
   );
 }

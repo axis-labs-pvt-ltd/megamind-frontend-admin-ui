@@ -94,14 +94,14 @@ export default function SubjectsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Subject Management</h2>
-          <p className="text-gray-600">Organize your curriculum with subjects and modules</p>
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">Subject Management</h2>
+          <p className="text-[var(--text-secondary)]">Organize your curriculum with subjects and modules</p>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <Button
             variant="outline"
             onClick={() => setShowModuleForm(true)}
-            className="hover:bg-green-50 hover:border-green-200 hover:text-green-700"
+            className="hover:bg-green-50 hover:border-green-200 hover:text-green-700 w-full sm:w-auto"
           >
              <FolderPlus className="mr-2 h-4 w-4" />
             Add Module
@@ -109,7 +109,7 @@ export default function SubjectsPage() {
           <Button
             variant="primary"
             onClick={() => setShowCreateForm(true)}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 w-full sm:w-auto"
           >
              <Plus className="mr-2 h-4 w-4" />
             Create Subject
@@ -121,7 +121,7 @@ export default function SubjectsPage() {
       {showCreateForm && (
         <Card className="p-6 border-2 border-blue-200 bg-blue-50/30">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">
               {editingSubject ? 'Edit Subject' : 'Create New Subject'}
             </h3>
             <Button
@@ -140,17 +140,17 @@ export default function SubjectsPage() {
               <Input
                 placeholder="e.g., Mathematics, Physics, Computer Science"
                 value={subjectForm.name}
-                onChange={(value) => setSubjectForm({ ...subjectForm, name: value })}
+                onChange={(e) => setSubjectForm({ ...subjectForm, name: e.target.value })}
                 required
               />
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Color Theme</label>
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Color Theme</label>
                 <div className="flex space-x-2">
                   {colors.map((color) => (
                     <button
                       key={color}
                       className={`w-8 h-8 rounded-full border-2 transition-all ${
-                        subjectForm.color === color ? 'border-gray-400 scale-110' : 'border-gray-200'
+                        subjectForm.color === color ? 'border-[var(--border-hover)] scale-110' : 'border-[var(--border-primary)]'
                       }`}
                       style={{ backgroundColor: color }}
                       onClick={() => setSubjectForm({ ...subjectForm, color })}
@@ -161,9 +161,9 @@ export default function SubjectsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Description</label>
               <textarea
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 rows={3}
                 value={subjectForm.description}
                 onChange={(e) => setSubjectForm({ ...subjectForm, description: e.target.value })}
@@ -197,7 +197,7 @@ export default function SubjectsPage() {
       {showModuleForm && (
         <Card className="p-6 border-2 border-green-200 bg-green-50/30">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">
               {editingModule ? 'Edit Module' : 'Create New Module'}
             </h3>
             <Button
@@ -216,13 +216,13 @@ export default function SubjectsPage() {
               <Input
                 placeholder="e.g., Algebra, Calculus, Data Structures"
                 value={moduleForm.name}
-                onChange={(value) => setModuleForm({ ...moduleForm, name: value })}
+                onChange={(e) => setModuleForm({ ...moduleForm, name: e.target.value })}
                 required
               />
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Subject</label>
                 <select
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={moduleForm.subjectId}
                   onChange={(e) => setModuleForm({ ...moduleForm, subjectId: e.target.value })}
                 >
@@ -237,9 +237,9 @@ export default function SubjectsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Description</label>
               <textarea
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 rows={3}
                 value={moduleForm.description}
                 onChange={(e) => setModuleForm({ ...moduleForm, description: e.target.value })}
@@ -275,7 +275,7 @@ export default function SubjectsPage() {
           type="search"
           placeholder="Search subjects..."
           value={searchTerm}
-          onChange={(value) => setSearchTerm(value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           icon={Search}
           className="flex-1 max-w-md"
         />
@@ -298,8 +298,8 @@ export default function SubjectsPage() {
                       <BookOpen className="h-6 w-6 text-blue-600" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900">{subject.name}</h3>
-                      <p className="text-gray-600">{subject.description}</p>
+                      <h3 className="text-xl font-bold text-[var(--text-primary)]">{subject.name}</h3>
+                      <p className="text-[var(--text-secondary)]">{subject.description}</p>
                     </div>
                   </div>
                   <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -327,7 +327,7 @@ export default function SubjectsPage() {
                 {/* Modules */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold text-gray-900">Modules ({subject.modules.length})</h4>
+                    <h4 className="font-semibold text-[var(--text-primary)]">Modules ({subject.modules.length})</h4>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -345,11 +345,11 @@ export default function SubjectsPage() {
                     {subject.modules.map((module) => (
                       <div
                         key={module.id}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group/module"
+                        className="flex items-center justify-between p-3 bg-[var(--bg-secondary)] rounded-lg hover:bg-[var(--bg-hover)] transition-colors group/module"
                       >
                         <div>
-                          <p className="font-medium text-gray-900">{module.name}</p>
-                          <p className="text-sm text-gray-600">{module.description}</p>
+                          <p className="font-medium text-[var(--text-primary)]">{module.name}</p>
+                          <p className="text-sm text-[var(--text-secondary)]">{module.description}</p>
                         </div>
                         <div className="flex space-x-1 opacity-0 group-hover/module:opacity-100 transition-opacity">
                           <Button
@@ -383,12 +383,12 @@ export default function SubjectsPage() {
                 <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-1">
-                      <FolderPlus className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm text-gray-600">{subject.modules.length} modules</span>
+                      <FolderPlus className="h-4 w-4 text-[var(--icon-secondary)]" />
+                      <span className="text-sm text-[var(--text-secondary)]">{subject.modules.length} modules</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <Users className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm text-gray-600">0 students</span>
+                      <Users className="h-4 w-4 text-[var(--text-muted)]" />
+                      <span className="text-sm text-[var(--text-secondary)]">0 students</span>
                     </div>
                   </div>
                   <Badge variant="primary" size="sm">Active</Badge>

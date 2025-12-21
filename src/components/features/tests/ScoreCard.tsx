@@ -34,7 +34,7 @@ const getTrendColor = (trend?: string) => {
   switch (trend) {
     case 'up': return 'text-green-500';
     case 'down': return 'text-red-500';
-    default: return 'text-gray-500';
+    default: return 'text-[var(--text-secondary)]';
   }
 };
 
@@ -54,14 +54,14 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({
     <Card className={cn(className)}>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+          <h3 className="text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <Badge variant={getScoreColor(percentage)}>
             {percentage}%
           </Badge>
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="text-3xl font-bold text-gray-900">
+          <div className="text-3xl font-bold text-[var(--text-primary)]">
             {score}/{totalQuestions}
           </div>
           {trend && trendValue && (
@@ -72,7 +72,7 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({
           )}
         </div>
 
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-[var(--bg-secondary)] rounded-full h-2">
           <div
             className={cn(
               "h-2 rounded-full transition-all duration-300",
