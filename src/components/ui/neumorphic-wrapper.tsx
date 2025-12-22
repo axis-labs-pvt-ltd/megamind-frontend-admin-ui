@@ -1,7 +1,6 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { useThemeStore } from '@/store/useThemeStore';
 import React from 'react';
 
 interface NeumorphicWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -21,8 +20,8 @@ export function NeumorphicWrapper({
   onClick,
   ...props
 }: NeumorphicWrapperProps) {
-  const { theme } = useThemeStore();
-  const isNeumorphic = theme === 'neumorphic';
+  // Neumorphic look enabled for all themes now
+  const isNeumorphic = true;
 
   // Base styles that apply when NOT in neumorphic mode (can be overridden by className)
   const baseStyles = "transition-all duration-300 rounded-xl border border-transparent";
