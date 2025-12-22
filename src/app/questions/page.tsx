@@ -5,43 +5,30 @@ import { QuestionForm } from '@/components/features/questions/QuestionForm';
 import { QuestionList } from '@/components/features/questions/QuestionList';
 import { Button } from '@/components/ui/button';
 import { mockQuestions } from '@/lib/mock-data';
-import { Question } from '@/types';
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useQuestionFilters } from './hooks/useQuestionFilters';
+import { useQuestionHandlers } from './hooks/useQuestionHandlers';
 
 export default function QuestionsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState<'all' | 'mcq' | 'yes-no' | 'drag-drop'>('all');
-  const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | 'easy' | 'medium' | 'hard'>('all');
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
+  const {
+    searchTerm,
+    selectedType,
+    selectedDifficulty,
+    filteredQuestions,
+    setSearchTerm,
+    setSelectedType,
+    setSelectedDifficulty,
+  } = useQuestionFilters(mockQuestions);
 
-  const filteredQuestions = mockQuestions.filter(question => {
-    const matchesSearch = question.text.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = selectedType === 'all' || question.type === selectedType;
-    const matchesDifficulty = selectedDifficulty === 'all' || question.difficulty === selectedDifficulty;
-    return matchesSearch && matchesType && matchesDifficulty;
-  });
-
-  const handleCreateQuestion = (formData: any) => {
-    console.log('Creating question:', formData);
-    setShowCreateForm(false);
-    setEditingQuestion(null);
-  };
-
-  const handleEditQuestion = (question: Question) => {
-    setEditingQuestion(question);
-    setShowCreateForm(true);
-  };
-
-  const handleDeleteQuestion = (questionId: string) => {
-    console.log('Delete question:', questionId);
-  };
-
-  const handleCancelForm = () => {
-    setShowCreateForm(false);
-    setEditingQuestion(null);
-  };
+  const {
+    showCreateForm,
+    editingQuestion,
+    handleCreateQuestion,
+    handleEditQuestion,
+    handleDeleteQuestion,
+    handleCancelForm,
+    handleOpenCreateForm,
+  } = useQuestionHandlers();
 
   return (
     <div className="space-y-6">
@@ -53,7 +40,7 @@ export default function QuestionsPage() {
         </div>
         <Button
           variant="primary"
-          onClick={() => setShowCreateForm(true)}
+          onClick={handleOpenCreateForm}
           className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -85,7 +72,7 @@ export default function QuestionsPage() {
         questions={filteredQuestions}
         onEdit={handleEditQuestion}
         onDelete={handleDeleteQuestion}
-        onCreateNew={() => setShowCreateForm(true)}
+        onCreateNew={handleOpenCreateForm}
       />
     </div>
   );

@@ -260,7 +260,6 @@ input[type="search"]:not([type="checkbox"]):not([type="radio"]) {
 }
 
 /* Secondary Badge (Unselected State) -> Pressed/Inset */
-/* Secondary Badge (Unselected State) -> Pressed/Inset */
 .bg-\[var\(--bg-secondary\)\] {
   background-color: var(--bg-primary) !important;
   box-shadow: var(--shadow-inset) !important;
@@ -278,13 +277,6 @@ input[type="search"]:not([type="checkbox"]):not([type="radio"]) {
 /* Also target specialized containers if needed */
 [data-theme="neumorphic"] .rounded-xl {
    border-radius: var(--radius-theme) !important;
-}
-
-/* Neumorphic Buttons (Generic Primary) */
-/* This is tricky to target all buttons but we can try common patterns */
-[data-theme="neumorphic"] button:not(.group) { /* Avoid targeting simple icon wrappers */
-  /* We let specific button components handle this via variable usage if possible, 
-     but for the "Wow" effect on standard buttons: */
 }
 
 /* Specific Fix for Search Input Containers */

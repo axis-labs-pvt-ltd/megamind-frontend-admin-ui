@@ -77,8 +77,8 @@ export function MatchingConfig({
           </div>
         ))}
       </div>
-      {(errors as any).matchingPairs && (
-        <p className="text-red-500 text-sm mt-1">{(errors as any).matchingPairs.message}</p>
+      {'matchingPairs' in errors && errors.matchingPairs && 'message' in errors.matchingPairs && (
+        <p className="text-red-500 text-sm mt-1">{errors.matchingPairs.message as string}</p>
       )}
     </div>
   );
