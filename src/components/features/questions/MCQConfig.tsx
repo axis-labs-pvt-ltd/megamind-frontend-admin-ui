@@ -3,6 +3,7 @@
 
 import { Button } from '@/components/ui/button';
 import { QuestionFormData } from '@/lib/validations/question';
+import { QuestionOption } from '@/types';
 import { Plus, Trash2 } from 'lucide-react';
 import { Control, Controller, FieldErrors, UseFieldArrayAppend, UseFieldArrayRemove, UseFormWatch } from 'react-hook-form';
 
@@ -23,7 +24,7 @@ export function MCQConfig({
   removeOption,
   watch
 }: MCQConfigProps) {
-  const options = watch('options') as any[] || [];
+  const options = (watch('options') as QuestionOption[]) || [];
   
   return (
     <div className="space-y-4">
@@ -74,8 +75,8 @@ export function MCQConfig({
             </div>
           ))}
         </div>
-        {(errors as any).options && (
-          <p className="text-red-500 text-sm mt-1">{(errors as any).options.message}</p>
+        {'options' in errors && errors.options && 'message' in errors.options && (
+          <p className="text-red-500 text-sm mt-1">{errors.options.message as string}</p>
         )}
       </div>
 

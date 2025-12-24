@@ -1,7 +1,6 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { useThemeStore } from '@/store/useThemeStore';
 import React from 'react';
 
 interface NeumorphicWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -21,27 +20,22 @@ export function NeumorphicWrapper({
   onClick,
   ...props
 }: NeumorphicWrapperProps) {
-  const { theme } = useThemeStore();
-  const isNeumorphic = theme === 'neumorphic';
-
   // Base styles that apply when NOT in neumorphic mode (can be overridden by className)
   const baseStyles = "transition-all duration-300 rounded-xl border border-transparent";
   
   // Neumorphic logic
-  const neumorphicStyles = isNeumorphic 
-    ? cn(
-        "bg-[var(--bg-primary)] border-none text-[var(--text-primary)]",
-        // Active state (Selected) -> Always Popped (Outset) + Scale
-        active && "shadow-[var(--shadow-surface)] scale-[1.02] text-[var(--accent-blue)] font-semibold",
-        
-        // Inactive state depends on variant
-        !active && variant === 'secondary' && "shadow-[var(--shadow-inset)] text-[var(--text-secondary)]", // Inset (Pressed)
-        !active && variant === 'primary' && "shadow-[var(--shadow-surface)]", // Outset (Standard Card)
+  const neumorphicStyles = cn(
+    "bg-[var(--bg-primary)] border-none text-[var(--text-primary)]",
+    // Active state (Selected) -> Always Popped (Outset) + Scale
+    active && "shadow-[var(--shadow-surface)] scale-[1.02] text-[var(--accent-blue)] font-semibold",
+    
+    // Inactive state depends on variant
+    !active && variant === 'secondary' && "shadow-[var(--shadow-inset)] text-[var(--text-secondary)]", // Inset (Pressed)
+    !active && variant === 'primary' && "shadow-[var(--shadow-surface)]", // Outset (Standard Card)
 
-        // Hover Effects (only if inactive)
-        !active && hoverEffect && "hover:shadow-[var(--shadow-surface)] hover:scale-[1.01] hover:text-[var(--accent-blue)] cursor-pointer"
-      )
-    : "";
+    // Hover Effects (only if inactive)
+    !active && hoverEffect && "hover:shadow-[var(--shadow-surface)] hover:scale-[1.01] hover:text-[var(--accent-blue)] cursor-pointer"
+  );
 
   return (
     <Component

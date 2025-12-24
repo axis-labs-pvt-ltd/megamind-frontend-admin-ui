@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Question } from '@/types';
+import { Question, QuestionType } from '@/types';
 import { DragDropQuestion } from './questions/DragDropQuestion';
 import { MCQQuestion } from './questions/MCQQuestion';
 import { SimplifiedMCQQuestion } from './questions/SimplifiedMCQQuestion';
@@ -15,12 +15,79 @@ interface QuestionRendererProps {
   showResult?: boolean; // Review Mode
 }
 
-export function QuestionRenderer({
+const getHelperText = (type: QuestionType): string => {
+  switch (type) {
+    case 'mcq':
+    case 'true-false':
+    case 'yes-no':
+      return 'Select one option';
+    case 'multi-select':
+      return 'Select all correct options';
+    case 'text':
+      return 'Type your answer below';
+    case 'drag-drop':
+      return 'Arrange items in the correct order';
+    default:
+      return '';
+  }
+};
+
+const QuestionInput = ({
   question,
   userAnswer,
   onAnswerChange,
-  showResult = false,
-}: QuestionRendererProps) {
+  showResult,
+}: QuestionRendererProps) => {
+  switch (question.type) {
+    case 'mcq':
+    case 'multi-select':
+      return (
+        <MCQQuestion
+          question={question}
+          userAnswer={userAnswer}
+          onAnswerChange={onAnswerChange}
+          showResult={showResult}
+        />
+      );
+
+    case 'yes-no':
+    case 'true-false':
+      return (
+        <SimplifiedMCQQuestion
+          question={question}
+          userAnswer={userAnswer as string}
+          onAnswerChange={(val) => onAnswerChange(val)}
+          showResult={showResult}
+        />
+      );
+
+    case 'drag-drop':
+      return (
+        <DragDropQuestion
+          question={question}
+          userAnswer={userAnswer as string[]}
+          onAnswerChange={(val) => onAnswerChange(val)}
+          showResult={showResult}
+        />
+      );
+
+    case 'text':
+      return (
+        <TextQuestion
+          question={question}
+          userAnswer={userAnswer as string}
+          onAnswerChange={(val) => onAnswerChange(val)}
+          showResult={showResult}
+        />
+      );
+
+    default:
+      return null;
+  }
+};
+
+export function QuestionRenderer(props: QuestionRendererProps) {
+  const { question, showResult = false } = props;
 
   return (
     <Card className="p-6">
@@ -31,60 +98,24 @@ export function QuestionRenderer({
             {question.text}
           </h2>
           <p className="text-sm text-[var(--text-secondary)] mt-1 mb-4">
-            {question.type === 'mcq' || question.type === 'true-false' || question.type === 'yes-no' ? 'Select one option' :
-             question.type === 'multi-select' ? 'Select all correct options' :
-             question.type === 'text' ? 'Type your answer below' :
-             question.type === 'drag-drop' ? 'Arrange items in the correct order' : ''}
+            {getHelperText(question.type)}
           </p>
-           {/* Reference Video Button */}
-           {question.referenceVideoUrl && !showResult && (
-             <div className="mb-4">
-                 <Button variant="outline" size="sm" onClick={() => window.open(question.referenceVideoUrl, '_blank')}>
-                    <span className="mr-2">🎥</span> Watch Reference Video
-                 </Button>
-             </div>
+          {/* Reference Video Button */}
+          {question.referenceVideoUrl && !showResult && (
+            <div className="mb-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open(question.referenceVideoUrl!, '_blank')}
+              >
+                <span className="mr-2">🎥</span> Watch Reference Video
+              </Button>
+            </div>
           )}
         </div>
 
-        {/* MCQ & Multi-Select Options */}
-        {(question.type === 'mcq' || question.type === 'multi-select') && (
-            <MCQQuestion 
-                question={question}
-                userAnswer={userAnswer}
-                onAnswerChange={onAnswerChange}
-                showResult={showResult}
-            />
-        )}
-
-        {/* Yes/No & True/False (Simplified MCQ) */}
-        {(question.type === 'yes-no' || question.type === 'true-false') && (
-            <SimplifiedMCQQuestion
-                question={question}
-                userAnswer={userAnswer as string}
-                onAnswerChange={(val) => onAnswerChange(val)}
-                showResult={showResult}
-            />
-        )}
-
-        {/* Drag & Drop */}
-        {question.type === 'drag-drop' && (
-            <DragDropQuestion
-                question={question}
-                userAnswer={userAnswer as string[]}
-                onAnswerChange={(val) => onAnswerChange(val)}
-                showResult={showResult}
-            />
-        )}
-
-        {/* Text Question (Rich Text) */}
-        {question.type === 'text' && (
-            <TextQuestion
-                question={question}
-                userAnswer={userAnswer as string}
-                onAnswerChange={(val) => onAnswerChange(val)}
-                showResult={showResult}
-            />
-        )}
+        {/* Question Input */}
+        <QuestionInput {...props} />
       </div>
     </Card>
   );

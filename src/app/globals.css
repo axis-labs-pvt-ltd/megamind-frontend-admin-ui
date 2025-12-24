@@ -44,54 +44,82 @@
   --gradient-brand: linear-gradient(to right, #3b82f6, #6366f1);
   
   /* Shadows - light theme */
+  --shadow-light: #ffffff;
+  --shadow-dark: #cbd5e1; /* Slate 300 */
+  
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+
+  /* Semantic Neumorphic Shadows (Light) */
+  /* Softened: 4px offset, lighter dark shadow via opacity in the usage or just softer color? 
+     We'll use a calculation in the shadow definition for opacity if we could, but here we just reduce the blur slightly 
+     and maybe use a lighter color variable if we could. 
+     Instead, let's keep the variables but reduce the spread slightly to 6px.
+  */
+  --shadow-surface: 4px 4px 8px #94a3b840, -4px -4px 8px #ffffff; /* Using hex alpha for softer dark shadow */
+  --shadow-inset: inset 4px 4px 8px #94a3b840, inset -4px -4px 8px #ffffff;
+  --shadow-btn: 3px 3px 6px #94a3b840, -3px -3px 6px #ffffff;
+  --shadow-btn-active: inset 2px 2px 4px #94a3b840, inset -2px -2px 4px #ffffff;
+  
+  --radius-theme: 1rem;
 }
 
 /* Dark Theme */
 [data-theme="dark"] {
   /* Dark theme - Premium, Deep & High Contrast */
-  --bg-primary: #020617; /* Slate 950 - Deepest background */
-  --bg-secondary: #0f172a; /* Slate 900 - Secondary/Sidebar */
-  --bg-card: #1e293b; /* Slate 800 - Cards (Lighter than bg) */
-  --bg-header: rgba(15, 23, 42, 0.85); /* Slate 900 with high blur opacity */
+  --bg-primary: #0f172a; 
+  --bg-secondary: #020617; 
+  --bg-card: #1e293b; 
+  --bg-header: rgba(15, 23, 42, 0.85); 
   --bg-sidebar: rgba(15, 23, 42, 0.98); 
-  --bg-hover: #334155; /* Slate 700 */
+  --bg-hover: #334155; 
   
   /* Text colors - High Contrast */
-  --text-primary: #f8fafc; /* Slate 50 - Almost pure white for headings */
-  --text-secondary: #cbd5e1; /* Slate 300 - Clear secondary text */
-  --text-muted: #94a3b8; /* Slate 400 - Muted but readable */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
   
   /* Icon colors */
-  --icon-primary: #cbd5e1; /* Slate 300 */
-  --icon-secondary: #94a3b8; /* Slate 400 */
-  --icon-muted: #64748b; /* Slate 500 */
+  --icon-primary: #cbd5e1;
+  --icon-secondary: #94a3b8;
+  --icon-muted: #64748b;
   
   /* Border colors - Subtle separation */
-  --border-primary: #334155; /* Slate 700 - Visible card borders */
-  --border-secondary: #1e293b; /* Slate 800 */
-  --border-hover: #475569; /* Slate 600 */
+  --border-primary: #334155;
+  --border-secondary: #1e293b;
+  --border-hover: #475569;
   
   /* Accent colors - Neons/Vibrant */
-  --accent-blue: #60a5fa; /* Blue 400 - Brighter than light theme */
-  --accent-blue-light: rgba(59, 130, 246, 0.2); /* Blue 500 with opacity */
-  --accent-green: #4ade80; /* Green 400 */
-  --accent-red: #f87171; /* Red 400 */
-  --accent-yellow: #fbbf24; /* Amber 400 */
-  --accent-purple: #c084fc; /* Purple 400 */
+  --accent-blue: #60a5fa;
+  --accent-blue-light: rgba(59, 130, 246, 0.2);
+  --accent-green: #4ade80;
+  --accent-red: #f87171;
+  --accent-yellow: #fbbf24;
+  --accent-purple: #c084fc;
   
   /* Gradients */
   --gradient-primary: linear-gradient(to right, #ffffff, #94a3b8);
   --gradient-brand: linear-gradient(to right, #60a5fa, #a78bfa);
   
   /* Shadows - Glow effects for dark mode */
+  --shadow-light: rgba(255, 255, 255, 0.05); /* Lower opacity to kill the mist */
+  --shadow-dark: rgba(0, 0, 0, 0.9); /* Deep black for definition */
+  
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+
+  /* Semantic Neumorphic Shadows (Dark) */
+  /* Tighter, sharper shadows to look like 3D edges, not mist */
+  --shadow-surface: 4px 4px 8px var(--shadow-dark), -2px -2px 6px var(--shadow-light);
+  --shadow-inset: inset 4px 4px 8px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light);
+  --shadow-btn: 3px 3px 6px var(--shadow-dark), -1px -1px 3px var(--shadow-light);
+  --shadow-btn-active: inset 3px 3px 6px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light);
+  
+  --radius-theme: 1rem;
 }
 
 
@@ -157,11 +185,11 @@
 /* --- Neumorphic Global Overrides --- */
 
 /* Force Inputs to have "Pressed" Look (Inset Shadow) */
-/* Standard Neumorphic Inputs (Default to Inset/Pressed) */
-[data-theme="neumorphic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-[data-theme="neumorphic"] textarea,
-[data-theme="neumorphic"] select,
-[data-theme="neumorphic"] [role="combobox"] {
+/* Standard Inputs (Default to Inset/Pressed) */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea,
+select,
+[role="combobox"] {
   background-color: var(--bg-primary) !important;
   box-shadow: var(--shadow-inset) !important;
   border: none !important;
@@ -173,60 +201,58 @@
 
 /* 
    Dynamic State: Pop Out when Filled 
-   Specificity Boost: We match the Generic rule's specificity (Theme+Tag+3*Not) and add the Pseudo-class to win.
    We force 'placeholder=" "' in React components to ensure this works for empty strings.
 */
-[data-theme="neumorphic"] input:not(:placeholder-shown):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-[data-theme="neumorphic"] textarea:not(:placeholder-shown) {
+input:not(:placeholder-shown):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea:not(:placeholder-shown) {
   box-shadow: var(--shadow-surface) !important;
   transform: scale(1.01); 
 }
 
 /* Focus State: Deep Press (Editing Mode) */
 /* Override the popped state when focused to give tactile feedback */
-[data-theme="neumorphic"] input:focus,
-[data-theme="neumorphic"] textarea:focus {
+input:focus,
+textarea:focus {
   outline: none !important;
   box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light) !important; 
   transform: scale(1);
 }
 
 /* Ensure filled inputs return to popped state when not focused */
-/* High specificity again to maintain the pop after blur */
-[data-theme="neumorphic"] input:not(:placeholder-shown):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(:focus),
-[data-theme="neumorphic"] textarea:not(:placeholder-shown):not(:focus) {
+input:not(:placeholder-shown):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(:focus),
+textarea:not(:placeholder-shown):not(:focus) {
     box-shadow: var(--shadow-surface) !important;
 }
 
 /* Specific Fix for Inputs with Icons (Search, wrappers) */
-/* Boosted specificity to override the generic input rule (which has 3 :not attributes) */
-/* Specificity: Theme(0,1,0) + Class(0,1,0) + Type(0,0,1) + 3*Not(0,1,0) = 0,5,1 > Generic(0,4,1) */
-[data-theme="neumorphic"] .relative > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+.relative > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
     padding-left: 3rem !important; 
 }
 
 /* Ensure type="search" specifically wins too */
-[data-theme="neumorphic"] input[type="search"]:not([type="checkbox"]):not([type="radio"]) {
+input[type="search"]:not([type="checkbox"]):not([type="radio"]) {
     padding-left: 3rem !important;
 }
 
 /* Force Cards & Containers to have "Extruded" Look (Outset Shadow) */
-/* We target the specific tailwind class used by 'Card.tsx' component background or just generic cards */
-[data-theme="neumorphic"] .bg-\[var\(--bg-card\)\] {
-   background-color: var(--bg-primary) !important; /* Blend with body */
+/* Applied to all themes now. */
+.bg-\[var\(--bg-card\)\] {
+   background-color: var(--bg-primary) !important; 
    box-shadow: var(--shadow-surface) !important;
    border: none !important;
    border-radius: var(--radius-theme) !important;
-   /* padding: 2rem !important; */ /* REMOVED: Caused cards to be too large. Let component classes handle padding. */
+   /* padding: 2rem !important; */ 
 }
 
 /* Badge/Selection Item Overrides (Question Filters, etc.) */
 /* Primary Badge (Selected State) -> Popped/Extruded */
-[data-theme="neumorphic"] .bg-\[var\(--accent-blue\)\]\/10,
-[data-theme="neumorphic"] .bg-\[var\(--accent-green\)\]\/10, 
-[data-theme="neumorphic"] .bg-\[var\(--accent-yellow\)\]\/10,
-[data-theme="neumorphic"] .bg-\[var\(--accent-red\)\]\/10,
-[data-theme="neumorphic"] .bg-\[var\(--accent-purple\)\]\/10 {
+/* Badge/Selection Item Overrides (Question Filters, etc.) */
+/* Primary Badge (Selected State) -> Popped/Extruded */
+.bg-\[var\(--accent-blue\)\]\/10,
+.bg-\[var\(--accent-green\)\]\/10, 
+.bg-\[var\(--accent-yellow\)\]\/10,
+.bg-\[var\(--accent-red\)\]\/10,
+.bg-\[var\(--accent-purple\)\]\/10 {
   background-color: var(--bg-primary) !important;
   box-shadow: var(--shadow-surface) !important;
   border: none !important;
@@ -234,7 +260,7 @@
 }
 
 /* Secondary Badge (Unselected State) -> Pressed/Inset */
-[data-theme="neumorphic"] .bg-\[var\(--bg-secondary\)\] {
+.bg-\[var\(--bg-secondary\)\] {
   background-color: var(--bg-primary) !important;
   box-shadow: var(--shadow-inset) !important;
   border: none !important;
@@ -253,46 +279,39 @@
    border-radius: var(--radius-theme) !important;
 }
 
-/* Neumorphic Buttons (Generic Primary) */
-/* This is tricky to target all buttons but we can try common patterns */
-[data-theme="neumorphic"] button:not(.group) { /* Avoid targeting simple icon wrappers */
-  /* We let specific button components handle this via variable usage if possible, 
-     but for the "Wow" effect on standard buttons: */
-}
-
 /* Specific Fix for Search Input Containers */
-[data-theme="neumorphic"] .relative > input {
+.relative > input {
     /* Ensure search icons align with new padding */
     padding-left: 3rem !important; 
 }
 
 /* Navbar/Sidebar Item Overrides for Neumorphic - Fix Contrast & Style */
-[data-theme="neumorphic"] button[data-nav-item="true"] {
+button[data-nav-item="true"] {
     transition: all 0.2s ease-out;
 }
 
 /* Active State: Pressed effect with Brand Color text */
-[data-theme="neumorphic"] button[data-nav-item="true"][data-active="true"] {
+button[data-nav-item="true"][data-active="true"] {
     background: var(--bg-primary) !important; /* Remove gradient */
     box-shadow: var(--shadow-inset) !important; /* Pressed look */
     color: var(--accent-blue) !important; /* Brand color text */
     transform: scale(0.98);
 }
-[data-theme="neumorphic"] button[data-nav-item="true"][data-active="true"] .text-white {
+button[data-nav-item="true"][data-active="true"] .text-white {
     color: var(--accent-blue) !important; /* Icon color fix */
 }
-[data-theme="neumorphic"] button[data-nav-item="true"][data-active="true"] .text-blue-100 {
+button[data-nav-item="true"][data-active="true"] .text-blue-100 {
     color: var(--text-secondary) !important; /* Subtitle color fix */
 }
 /* Active icon container bg */
-[data-theme="neumorphic"] button[data-nav-item="true"][data-active="true"] > div:first-child {
+button[data-nav-item="true"][data-active="true"] > div:first-child {
     background-color: var(--bg-primary) !important;
     box-shadow: var(--shadow-surface) !important; /* Pop the icon container */
 }
 
 
 /* Hover State: Popped effect */
-[data-theme="neumorphic"] button[data-nav-item="true"]:not([data-active="true"]):hover {
+button[data-nav-item="true"]:not([data-active="true"]):hover {
     background: var(--bg-primary) !important;
     box-shadow: var(--shadow-surface) !important; /* Popped look */
     transform: translateY(-2px);

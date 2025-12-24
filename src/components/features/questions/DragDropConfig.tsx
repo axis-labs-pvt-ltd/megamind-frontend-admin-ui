@@ -6,7 +6,7 @@ import { DraggableList } from '@/components/ui/draggable-list';
 import type { QuestionFormData } from '@/lib/validations/question';
 import { Plus, Trash2 } from 'lucide-react';
 import React from 'react';
-import type { UseFieldArrayReturn, UseFormReturn } from 'react-hook-form';
+import type { Control, UseFieldArrayReturn, UseFormReturn } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
 interface DragDropConfigProps {
@@ -18,6 +18,89 @@ interface DragDropConfigProps {
   setValue: UseFormReturn<QuestionFormData>['setValue'];
 }
 
+interface DragDropItemProps {
+  index: number;
+  control: Control<QuestionFormData>;
+  canRemove: boolean;
+  onRemove: () => void;
+  onUpdate: (value: string) => void;
+}
+
+const DragDropItem = ({ index, control, canRemove, onRemove, onUpdate }: DragDropItemProps) => {
+  return (
+    <div className="flex items-center gap-3 p-3 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-lg">
+      <span className="text-sm font-medium text-[var(--text-secondary)]">
+        {index + 1}
+      </span>
+      <Controller
+        name={`options.${index}.text` as const}
+        control={control}
+        render={({ field }) => (
+          <input
+            {...field}
+            className="flex-1 px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder={`Item ${index + 1}`}
+            onChange={(e) => {
+              field.onChange(e);
+              // Update local item state to reflect typing immediately
+              onUpdate(e.target.value);
+            }}
+          />
+        )}
+      />
+      {canRemove && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={onRemove}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
+    </div>
+  );
+};
+
+// Helper types for the form data values which might be mixed legacy strings or new objects
+type FormOptionValue = string | { text: string; id?: string } | null | undefined;
+
+const createDraggableItemsFromForm = (
+  optionFields: { id: string }[],
+  formValuesOptions: FormOptionValue[] | undefined,
+  defaultValuesOptions: FormOptionValue[] | undefined
+) => {
+  return optionFields.map((field, index) => {
+    // Access the actual value from the form
+    const value = formValuesOptions?.[index] || defaultValuesOptions?.[index];
+    
+    let content = '';
+    let originalId: string | undefined = undefined;
+
+    if (typeof value === 'object' && value !== null) {
+      // It's a QuestionOption object
+      content = value.text;
+      originalId = value.id;
+    } else if (typeof value === 'string') {
+      // It's a legacy string string
+      content = value;
+    }
+
+    return {
+      id: field.id, 
+      content,
+      originalId
+    };
+  });
+};
+
+const createFormOptionsFromItems = (items: { id: string; content: string; originalId?: string }[]) => {
+  return items.map(item => ({
+    id: item.originalId || crypto.randomUUID(),
+    text: item.content
+  }));
+};
+
 export function DragDropConfig({
   control,
   errors,
@@ -26,25 +109,17 @@ export function DragDropConfig({
   removeOption,
   setValue
 }: DragDropConfigProps) {
-  const [items, setItems] = React.useState<{ id: string; content: string }[]>([]);
+  const [items, setItems] = React.useState<{ id: string; content: string; originalId?: string }[]>([]);
 
   // Sync items with optionFields
   React.useEffect(() => {
-    // We need to be careful not to create infinite loops by checking if values actually changed
-    // But for now, we map the form values to local state for the generic DraggableList
-    // We assume options are QuestionOption objects { id, text, ... }
-    const currentOptions = optionFields.map((field, index) => {
-      // Access the actual value from the form
-      // @ts-ignore - accessing internal form state for initial sync
-      const value = control._formValues.options?.[index] || control._defaultValues.options?.[index];
-      
-      return {
-        id: field.id, 
-        // If value is an object (new format), use .text. If it's string (legacy), use it directly.
-        content: typeof value === 'object' && value ? value.text : (typeof value === 'string' ? value : ''),
-        originalId: value?.id // Keep track of the real option ID
-      };
-    });
+    // @ts-ignore - accessing internal form state for initial sync
+    const formOptions = control._formValues.options as FormOptionValue[] | undefined;
+    // @ts-ignore - accessing internal form state for initial sync
+    const defaultOptions = control._defaultValues.options as FormOptionValue[] | undefined;
+    
+    // We already know optionFields has id, so we can cast if needed or just pass it
+    const currentOptions = createDraggableItemsFromForm(optionFields, formOptions, defaultOptions);
     setItems(currentOptions);
   }, [optionFields, control._formValues.options]); 
   // Note: dependency on optionFields is tricky in RHF, usually checking length is safer or deep comparison
@@ -53,14 +128,15 @@ export function DragDropConfig({
     setItems(newItems);
     
     // update form value with reordered objects
-    // We need to reconstruct the QuestionOption object
-    const newOptions = newItems.map(item => ({
-       id: item.originalId || crypto.randomUUID(),
-       text: item.content
-    }));
+    const newOptions = createFormOptionsFromItems(newItems);
     
     // We must update the entire options array field
-    setValue('options', newOptions as any);
+    // @ts-ignore - RHF types can be strict about exact matches but our structure is correct
+    setValue('options', newOptions);
+  };
+
+  const handleItemUpdate = (index: number, value: string) => {
+    setItems(prev => prev.map((it, idx) => idx === index ? { ...it, content: value } : it));
   };
 
   return (
@@ -85,42 +161,18 @@ export function DragDropConfig({
           items={items}
           onReorder={handleReorder}
           renderItem={(item, index) => (
-            <div className="flex items-center gap-3 p-3 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-lg">
-              <span className="text-sm font-medium text-[var(--text-secondary)]">
-                {index + 1}
-              </span>
-              <Controller
-                name={`options.${index}.text` as const}
-                control={control}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    className="flex-1 px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder={`Item ${index + 1}`}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      // Update local item state to reflect typing immediately
-                      setItems(prev => prev.map((it, idx) => idx === index ? { ...it, content: e.target.value } : it));
-                    }}
-                  />
-                )}
-              />
-              {optionFields.length > 2 && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeOption(index)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
+            <DragDropItem
+              index={index}
+              control={control}
+              canRemove={optionFields.length > 2}
+              onRemove={() => removeOption(index)}
+              onUpdate={(value) => handleItemUpdate(index, value)}
+            />
           )}
         />
 
-        {errors && (errors as any).options && (
-          <p className="text-red-500 text-sm mt-1">{((errors as any).options as any).message || "Invalid options"}</p>
+        {'options' in errors && errors.options && 'message' in errors.options && (
+          <p className="text-red-500 text-sm mt-1">{errors.options.message as string}</p>
         )}
       </div>
     </div>
