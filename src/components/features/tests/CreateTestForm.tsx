@@ -3,68 +3,38 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { CreateTestValues, createTestSchema } from '@/lib/validations/test';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { TestBasicInfo } from './TestBasicInfo';
 import { TestCoverImage } from './TestCoverImage';
 import { TestDynamicRules } from './TestDynamicRules';
 import { TestQuestionsSelection } from './TestQuestionsSelection';
 import { TestTags } from './TestTags';
 import { TestTypeSelection } from './TestTypeSelection';
+import { useCreateTestForm } from './useCreateTestForm';
 
 export function CreateTestForm() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const { form, isLoading, onSubmit, watchedValues } = useCreateTestForm();
 
   const {
     register,
     control,
-    handleSubmit,
     setValue,
-    watch,
     formState: { errors },
-  } = useForm<CreateTestValues>({
-    resolver: zodResolver(createTestSchema),
-    defaultValues: {
-      type: 'static',
-      title: '',
-      description: '',
-      timeLimit: 60,
-      passingScore: 70,
-      estimatedDuration: 45,
-      coverImage: '',
-      tags: [],
-      questions: [],
-      dynamicRules: [{ moduleId: '', questionCount: 5, difficulty: 'medium' }],
-    },
-  });
+  } = form;
 
-  const testType = watch('type');
-  const selectedQuestions = watch('questions') || [];
-  const tags = watch('tags') || [];
-  const coverImage = watch('coverImage');
-  const title = watch('title');
-  const description = watch('description');
-
-  const onSubmit = async (data: CreateTestValues) => {
-    setIsLoading(true);
-    try {
-      console.log('Creating Test:', data);
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      router.push('/tests');
-    } catch (error) {
-      console.error('Failed to create test:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    testType,
+    selectedQuestions,
+    tags,
+    coverImage,
+    title,
+    description,
+  } = watchedValues;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-4xl mx-auto space-y-6 animate-slide-up">
+    <form onSubmit={onSubmit} className="max-w-4xl mx-auto space-y-6 animate-slide-up">
       {/* 1. Test Type */}
       <TestTypeSelection testType={testType} setValue={setValue} errors={errors} />
 
