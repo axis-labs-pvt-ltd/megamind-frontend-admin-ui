@@ -11,6 +11,18 @@ export function Header() {
   // Simple extraction of the current page name from the path
   const currentPage = pathname === '/' ? 'dashboard' : pathname.split('/').pop()?.replace(/-/g, ' ') || 'dashboard';
 
+  const pageDescriptions: Record<string, string> = {
+    dashboard: "Welcome back! Here's your learning overview",
+    tests: "Discover and take available tests",
+    subjects: "Organize your curriculum with subjects and modules",
+    questions: "Build and manage your question collection",
+    create: "Build engaging tests for students",
+    analytics: "Track your performance and progress",
+    settings: "Manage your account preferences"
+  };
+
+  const description = pageDescriptions[currentPage] || '';
+
   return (
     <header className="bg-[var(--bg-header)] backdrop-blur-xl shadow-sm border-b-2 border-[var(--border-primary)] sticky top-0 z-40 flex-shrink-0 transition-shadow duration-300 hover:shadow-md">
       <div className="flex items-center justify-between h-20 pl-16 pr-6 lg:pl-8 lg:pr-8">
@@ -20,13 +32,7 @@ export function Header() {
               {currentPage}
             </h1>
             <p className="hidden sm:block text-sm text-[var(--text-secondary)] mt-0.5">
-              {currentPage === 'dashboard' && 'Welcome back! Here\'s your learning overview'}
-              {currentPage === 'tests' && 'Discover and take available tests'}
-              {currentPage === 'subjects' && 'Organize your curriculum with subjects and modules'}
-              {currentPage === 'questions' && 'Build and manage your question collection'}
-              {currentPage === 'create' && 'Build engaging tests for students'}
-              {currentPage === 'analytics' && 'Track your performance and progress'}
-              {currentPage === 'settings' && 'Manage your account preferences'}
+              {description}
             </p>
           </div>
         </div>

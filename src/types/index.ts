@@ -76,6 +76,7 @@ export interface StaticTest {
   coverImage?: string;
   estimatedDuration?: number;
   tags?: string[];
+  subjectId?: string;
 }
 
 export interface DynamicTestRule {
@@ -99,6 +100,7 @@ export interface DynamicTest {
   coverImage?: string;
   estimatedDuration?: number;
   tags?: string[];
+  subjectId?: string;
 }
 
 export type Test = StaticTest | DynamicTest;

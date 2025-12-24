@@ -8,8 +8,8 @@ import { cn } from '@/lib/utils';
 import { Question } from '@/types';
 import { Folder, Tag } from 'lucide-react';
 import React, { useState } from 'react';
-import { AnswerOptions } from './AnswerOptions';
 import { CorrectAnswerDisplay } from './CorrectAnswerDisplay';
+import { QuestionBody } from './QuestionBody';
 import { QuestionHeader } from './QuestionHeader';
 
 interface QuestionCardProps {
@@ -56,73 +56,11 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           onDelete={onDelete ? () => setShowDeleteConfirm(true) : undefined} 
         />
         
-        <div className="flex-1">
-          <p className="text-lg font-medium text-[var(--text-primary)] mb-4">
-            {question.text}
-          </p>
-          
-          {/* Answer Options */}
-          {(question.type === 'mcq' || question.type === 'multi-select') && question.options && (
-            <AnswerOptions
-              options={question.options}
-              correctAnswer={question.correctAnswer as string | string[]}
-              userAnswer={userAnswer}
-              showAnswer={showAnswer}
-              isMultiSelect={question.type === 'multi-select'}
-            />
-          )}
-
-          {/* Yes/No & True/False Options */}
-          {(question.type === 'yes-no' || question.type === 'true-false') && question.options && (
-            <div className="flex space-x-4">
-              {question.options.map((option) => (
-                <div
-                  key={option.id}
-                  className={cn(
-                    "flex-1 p-3 rounded-lg border text-center font-medium",
-                     showAnswer && question.correctAnswer === option.id
-                      ? 'bg-green-500/10 border-green-500/30 text-green-700'
-                      : 'bg-[var(--bg-secondary)] border-[var(--border-primary)] text-[var(--text-secondary)]'
-                  )}
-                >
-                  {option.text}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Drag and Drop */}
-          {question.type === 'drag-drop' && question.options && (
-            <div className="space-y-2">
-              <div className="text-sm font-medium text-[var(--text-secondary)] mb-2">Correct Order:</div>
-              <div className="space-y-2">
-                {(Array.isArray(question.correctAnswer) ? question.correctAnswer : []).map((id, index) => {
-                  // Find the text for the ID
-                  const option = question.options?.find(opt => opt.id === id);
-                  return (
-                    <div 
-                        key={index}
-                        className="p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)] flex items-center gap-3"
-                    >
-                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[var(--bg-card)] text-xs font-bold text-[var(--text-secondary)] border border-[var(--border-primary)]">
-                        {index + 1}
-                        </span>
-                        <span className="text-[var(--text-primary)]">{option ? option.text : id as string}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-           )}
-
-          {/* Text Type (Preview) */}
-          {question.type === 'text' && (
-             <div className="p-3 rounded-lg border bg-[var(--bg-secondary)] border-[var(--border-primary)] text-[var(--text-secondary)] italic">
-                 Rich text answer (model answer hidden)
-             </div>
-          )}
-
-        </div>
+        <QuestionBody 
+          question={question}
+          userAnswer={userAnswer}
+          showAnswer={showAnswer}
+        />
 
         {/* Correct Answer Indicator (when not showing as test answer) */}
         {!showAnswer && (
