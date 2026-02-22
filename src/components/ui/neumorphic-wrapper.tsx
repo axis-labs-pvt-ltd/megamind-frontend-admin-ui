@@ -21,7 +21,7 @@ export function NeumorphicWrapper({
   ...props
 }: NeumorphicWrapperProps) {
   // Base styles that apply when NOT in neumorphic mode (can be overridden by className)
-  const baseStyles = "transition-all duration-300 rounded-xl border border-transparent";
+  const baseStyles = "transition-all duration-300 rounded-m border border-transparent";
   
   // Neumorphic logic
   const neumorphicStyles = cn(
