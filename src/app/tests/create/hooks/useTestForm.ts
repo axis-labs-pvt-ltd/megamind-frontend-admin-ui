@@ -1,3 +1,4 @@
+import { createTest } from '@/services/api/tests';
 import { CreateTestValues, createTestSchema } from '@/lib/validations/test';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -20,29 +21,27 @@ const DEFAULT_FORM_VALUES: CreateTestValues = {
 export function useTestForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<CreateTestValues>({
     resolver: zodResolver(createTestSchema),
     defaultValues: DEFAULT_FORM_VALUES,
   });
 
+  // ✅ Raw async handler — NOT wrapped with handleSubmit
   const onSubmit = async (data: CreateTestValues) => {
+    console.log('=== SUBMITTING ===', data);
     setIsLoading(true);
+    setError(null);
     try {
-      // await testService.createTest(data); // Simulate API call
-      console.log('Creating Test:', data);
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await createTest(data);
       router.push('/tests');
-    } catch (error) {
-      console.error('Failed to create test:', error);
+    } catch (err: any) {
+      setError(err.message ?? 'Failed to create test');
     } finally {
       setIsLoading(false);
     }
   };
 
-  return {
-    form,
-    isLoading,
-    onSubmit,
-  };
+  return { form, isLoading, error, onSubmit };
 }

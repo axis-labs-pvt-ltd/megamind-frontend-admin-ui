@@ -1,6 +1,9 @@
+// TestsPage.tsx
 'use client';
 
-import { useState } from 'react';
+import { fetchTests } from '@/services/api/tests';
+import { Test } from '@/types';
+import { useCallback, useEffect, useState } from 'react';
 import { TestsAdvancedFilters } from './components/TestsAdvancedFilters';
 import { TestsEmptyState } from './components/TestsEmptyState';
 import { TestsGrid } from './components/TestsGrid';
@@ -9,33 +12,55 @@ import { TestsSearchAndFilter } from './components/TestsSearchAndFilter';
 import { useTestFilters } from './hooks/useTestFilters';
 
 export default function TestsPage() {
+  const [tests, setTests] = useState<Test[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
+  const loadTests = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchTests();
+      setTests(data);
+    } catch (err: any) {
+      setError(err.message ?? 'Failed to load tests');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { loadTests(); }, [loadTests]);
+
   const {
-    searchTerm, setSearchTerm,
-    selectedType, setSelectedType,
-    selectedDifficulty, setSelectedDifficulty,
-    selectedStatus, setSelectedStatus,
-    selectedSubject, setSelectedSubject,
-    timeLimitRange, setTimeLimitRange,
-    passingScoreRange, setPassingScoreRange,
-    sortBy, setSortBy,
-    sortedTests,
-    clearAllFilters,
-    activeFiltersCount,
-    totalTests
-  } = useTestFilters();
+  searchTerm, setSearchTerm,
+  selectedType, setSelectedType,
+  selectedDifficulty, setSelectedDifficulty,
+  selectedStatus, setSelectedStatus,
+  selectedSubject, setSelectedSubject,
+  timeLimitRange, setTimeLimitRange,
+  passingScoreRange, setPassingScoreRange,
+  sortBy, setSortBy,
+  sortedTests,
+  clearAllFilters,
+  activeFiltersCount,
+  totalTests,
+} = useTestFilters(tests); // pass real tests instead of mock  tests
+
+  if (loading) return <div className="py-12 text-center text-[var(--text-secondary)]">Loading tests...</div>;
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <TestsHeader 
-        totalTests={totalTests} 
-        availableTestsCount={sortedTests.length} 
-        activeFiltersCount={activeFiltersCount} 
+      <TestsHeader
+        totalTests={totalTests}
+        availableTestsCount={sortedTests.length}
+        activeFiltersCount={activeFiltersCount}
       />
 
-      {/* Search and Quick Filters */}
+      {error && (
+        <div className="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">{error}</div>
+      )}
+
       <TestsSearchAndFilter
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -51,7 +76,6 @@ export default function TestsPage() {
         setSelectedStatus={setSelectedStatus}
       />
 
-      {/* Advanced Filters Panel */}
       {showAdvancedFilters && (
         <TestsAdvancedFilters
           timeLimitRange={timeLimitRange}
@@ -70,19 +94,10 @@ export default function TestsPage() {
         />
       )}
 
-      {/* Tests Grid */}
-      <TestsGrid
-        tests={sortedTests}
-        totalTests={totalTests}
-        activeFiltersCount={activeFiltersCount}
-      />
+      <TestsGrid tests={sortedTests} totalTests={totalTests} activeFiltersCount={activeFiltersCount} />
 
-      {/* Empty State */}
       {sortedTests.length === 0 && (
-        <TestsEmptyState
-          activeFiltersCount={activeFiltersCount}
-          onClearFilters={clearAllFilters}
-        />
+        <TestsEmptyState activeFiltersCount={activeFiltersCount} onClearFilters={clearAllFilters} />
       )}
     </div>
   );
