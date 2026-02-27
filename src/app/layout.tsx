@@ -1,6 +1,7 @@
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { AppProviders } from '@/components/providers/AppProviders';
+import { AuthProvider } from '@/contexts/authcontext';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -20,19 +21,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AppProviders>
-          <div className="min-h-screen bg-[var(--bg-primary)] flex">
-           <Sidebar />
-           <div className="flex-1 flex flex-col min-w-0">
-             <Header />
-             <main className="flex-1 p-6 lg:p-8 overflow-y-auto overflow-x-hidden">
-               <div className="max-w-[1600px] mx-auto w-full">
-                  {children}
-               </div>
-             </main>
-           </div>
-          </div>
-        </AppProviders>
+        <AuthProvider>
+          <AppProviders>
+            <div className="min-h-screen bg-[var(--bg-primary)] flex">
+              <Sidebar />
+              <div className="flex-1 flex flex-col min-w-0">
+                <Header />
+                <main className="flex-1 p-6 lg:p-8 overflow-y-auto overflow-x-hidden">
+                  <div className="max-w-[1600px] mx-auto w-full">
+                    {children}
+                  </div>
+                </main>
+              </div>
+            </div>
+          </AppProviders>
+        </AuthProvider>
       </body>
     </html>
   );

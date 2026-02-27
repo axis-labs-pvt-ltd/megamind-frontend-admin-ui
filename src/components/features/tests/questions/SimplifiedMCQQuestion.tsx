@@ -5,9 +5,29 @@ import { Question } from '@/types';
 
 interface SimplifiedMCQQuestionProps {
   question: Question;
-  userAnswer: string | undefined;
+  userAnswer: string | string[] | undefined;
   onAnswerChange: (answer: string) => void;
   showResult?: boolean;
+}
+
+function getDefaultOptions(type: string) {
+  if (type === 'true-false') {
+    return [
+      { id: 'true', text: 'True' },
+      { id: 'false', text: 'False' },
+    ];
+  }
+  if (type === 'yes-no') {
+    return [
+      { id: 'Yes', text: 'Yes' },
+      { id: 'No', text: 'No' },
+    ];
+  }
+  return [];
+}
+
+function normalise(val: string) {
+  return val?.toString().toLowerCase().trim();
 }
 
 export function SimplifiedMCQQuestion({
@@ -16,52 +36,63 @@ export function SimplifiedMCQQuestion({
   onAnswerChange,
   showResult = false,
 }: SimplifiedMCQQuestionProps) {
-    if (!question.options) return null;
+  const options =
+    question.options && question.options.length > 0
+      ? question.options
+      : getDefaultOptions(question.type);
 
-    const handleAnswerSelect = (optionId: string) => {
-        if (showResult) return;
-        onAnswerChange(optionId);
-    };
+  if (!options.length) return null;
 
-    return (
-        <div className="flex space-x-4">
-            {question.options.map((option) => {
-            const isSelected = userAnswer === option.id;
-            const isCorrect = question.correctAnswer === option.id; // Correct answer stores ID
+  // Normalise userAnswer to string
+  const answer = Array.isArray(userAnswer) ? userAnswer[0] : userAnswer;
 
-                // Styling logic
-            let borderClass = 'border-[var(--border-primary)]';
-            let bgClass = '';
-            let textColor = 'text-[var(--text-primary)]';
+  // Normalise correctAnswer to string — handles string, string[], MatchingPair
+  const correctAnswer = Array.isArray(question.correctAnswer)
+    ? String(question.correctAnswer[0])
+    : String(question.correctAnswer ?? '');
 
-            if (showResult) {
-                if (isCorrect) {
-                        borderClass = 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300';
-                } else if (isSelected && !isCorrect) {
-                        borderClass = 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300';
-                }
-            } else if (isSelected) {
-                    borderClass = 'border-[var(--accent-blue)] bg-[var(--accent-blue)] text-white shadow-md';
-                    textColor = 'text-white';
-            } else {
-                    bgClass = 'hover:bg-[var(--bg-secondary)]';
-            }
+  return (
+    <div className="flex space-x-4">
+      {options.map((option) => {
+        const isSelected =
+          normalise(answer ?? '') === normalise(option.id) ||
+          normalise(answer ?? '') === normalise(option.text);
 
-            return (
-                <div
-                key={option.id}
-                className={cn(
-                    "flex-1 p-4 rounded-lg border cursor-pointer transition-all duration-200 text-center font-medium text-lg",
-                    borderClass,
-                    bgClass,
-                    showResult && "cursor-default"
-                )}
-                onClick={() => handleAnswerSelect(option.id)}
-                >
-                    {option.text}
-                </div>
-            );
-            })}
-        </div>
-    );
+        const isCorrect =
+          normalise(correctAnswer) === normalise(option.id) ||
+          normalise(correctAnswer) === normalise(option.text);
+
+        let borderClass = 'border-[var(--border-primary)]';
+        let bgClass = '';
+
+        if (showResult) {
+          if (isCorrect) {
+            borderClass = 'border-green-500 bg-green-50 text-green-700';
+          } else if (isSelected && !isCorrect) {
+            borderClass = 'border-red-500 bg-red-50 text-red-700';
+          }
+        } else if (isSelected) {
+          borderClass =
+            'border-[var(--accent-blue)] bg-[var(--accent-blue)] text-white shadow-md';
+        } else {
+          bgClass = 'hover:bg-[var(--bg-secondary)]';
+        }
+
+        return (
+          <div
+            key={option.id}
+            className={cn(
+              'flex-1 p-4 rounded-lg border cursor-pointer transition-all duration-200 text-center font-medium text-lg',
+              borderClass,
+              bgClass,
+              showResult && 'cursor-default'
+            )}
+            onClick={() => !showResult && onAnswerChange(option.id)}
+          >
+            {option.text}
+          </div>
+        );
+      })}
+    </div>
+  );
 }

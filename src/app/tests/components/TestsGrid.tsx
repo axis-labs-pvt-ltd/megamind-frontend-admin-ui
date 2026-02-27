@@ -24,7 +24,7 @@ export function TestsGrid({ tests, totalTests, activeFiltersCount }: TestsGridPr
             <TestCard
               test={test}
               attemptCount={mockTestAttempts.filter(attempt => attempt.testId === test.id).length}
-              onStart={() => router.push('/tests/take-test')}
+               onStart={() => router.push(`/tests/take-test?testId=${test.id}`)}
             />
           </div>
         ))}
