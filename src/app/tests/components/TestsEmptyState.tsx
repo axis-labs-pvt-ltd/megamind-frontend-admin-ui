@@ -1,5 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+// Client Component - Empty state for tests list
+'use client';
+
 import { useRouter } from 'next/navigation';
 
 interface TestsEmptyStateProps {
@@ -11,33 +12,29 @@ export function TestsEmptyState({ activeFiltersCount, onClearFilters }: TestsEmp
   const router = useRouter();
 
   return (
-    <div className="text-center py-12">
-      <div className="max-w-md mx-auto">
-        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Search className="h-8 w-8 text-[var(--icon-secondary)]" />
-        </div>
-        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">No tests found</h3>
-        <p className="text-[var(--text-secondary)] mb-6">
-          {activeFiltersCount > 0 
-            ? "Try adjusting your filters to see more results."
-            : "No tests match your search criteria."
-          }
-        </p>
-        {activeFiltersCount > 0 ? (
-          <Button
-            variant="outline"
+    <div style={{ textAlign: 'center', padding: '64px 24px' }}>
+      <div style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--bg-secondary)', border: '1.5px solid var(--border-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: 28 }}>
+        🔍
+      </div>
+      <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>No tests found</h3>
+      <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 24, maxWidth: 360, margin: '0 auto 24px' }}>
+        {activeFiltersCount > 0 ? 'Try adjusting your filters to see more results.' : 'No tests match your search criteria.'}
+      </p>
+      <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+        {activeFiltersCount > 0 && (
+          <button
             onClick={onClearFilters}
-            className="mr-3"
+            style={{ padding: '9px 20px', borderRadius: 10, border: '1.5px solid var(--border-primary)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
           >
             Clear Filters
-          </Button>
-        ) : null}
-        <Button
-          variant="primary"
+          </button>
+        )}
+        <button
           onClick={() => router.push('/tests/create')}
+          style={{ padding: '9px 20px', borderRadius: 10, border: '1.5px solid var(--border-primary)', background: 'var(--accent-blue)', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
         >
-          Create Your First Test
-        </Button>
+          Create a Test
+        </button>
       </div>
     </div>
   );

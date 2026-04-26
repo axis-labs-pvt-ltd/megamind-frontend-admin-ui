@@ -1,0 +1,55 @@
+/* Landing page / public palette design system
+   Loaded separately from globals.css so Tailwind's PostCSS layer processing
+   cannot interfere with these custom properties. */
+
+:root,
+[data-palette="coral"] {
+  --p-bg:          #FFFBF2;
+  --p-bg-alt:      #FFF2DD;
+  --p-ink:         #1A1514;
+  --p-ink-2:       #3B312E;
+  --p-muted:       #8A7A6A;
+  --p-primary:     #E8541C;
+  --p-primary-ink: #FFFBF2;
+  --p-secondary:   #F4B942;
+  --p-accent:      #6D28D9;
+  --p-card-a:      #FFE4B8;
+  --p-card-b:      #FFD4C7;
+  --p-card-c:      #D6E8FF;
+  --p-card-d:      #D4F0D4;
+  --p-card-e:      #EAD9FF;
+}
+
+[data-palette="indigo"] {
+  --p-bg:          #F5F3FF;
+  --p-bg-alt:      #EDE9FE;
+  --p-ink:         #1E1B4B;
+  --p-ink-2:       #312E81;
+  --p-muted:       #6B6B8B;
+  --p-primary:     #6D28D9;
+  --p-primary-ink: #F5F3FF;
+  --p-secondary:   #F59E0B;
+  --p-accent:      #EC4899;
+  --p-card-a:      #DDD6FE;
+  --p-card-b:      #FBCFE8;
+  --p-card-c:      #BFDBFE;
+  --p-card-d:      #FDE68A;
+  --p-card-e:      #C7D2FE;
+}
+
+[data-palette="forest"] {
+  --p-bg:          #F5F7F4;
+  --p-bg-alt:      #E8EFE5;
+  --p-ink:         #1B2E1F;
+  --p-ink-2:       #2D4A33;
+  --p-muted:       #6B7A6B;
+  --p-primary:     #2D6A4F;
+  --p-primary-ink: #F5F7F4;
+  --p-secondary:   #E4A04A;
+  --p-accent:      #D94A3D;
+  --p-card-a:      #C7E4C7;
+  --p-card-b:      #F3DCAE;
+  --p-card-c:      #CFE4E0;
+  --p-card-d:      #F5CFC8;
+  --p-card-e:      #E0D8C0;
+}

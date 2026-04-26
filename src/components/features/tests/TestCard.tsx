@@ -1,7 +1,6 @@
+// Client Component - Test card
 'use client';
 
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 import { Test } from '@/types';
 import React from 'react';
 import {
@@ -10,7 +9,7 @@ import {
   TestCardHeaderNoImage,
   TestCardPassingScore,
   TestCardStats,
-  TestCardTags
+  TestCardTags,
 } from './TestCard.components';
 
 interface TestCardProps {
@@ -23,53 +22,42 @@ interface TestCardProps {
 }
 
 export const TestCard: React.FC<TestCardProps> = ({
-  test,
-  attemptCount = 0,
-  onStart,
-  onEdit,
-  onConfigure,
-  className = '',
-}) => {
-  const handleStart = () => {
-    onStart?.();
-  };
+  test, attemptCount = 0, onStart, onEdit, onConfigure,
+}) => (
+  <div
+    className="group"
+    style={{
+      border: '1.5px solid var(--border-primary)',
+      borderRadius: 14,
+      background: 'var(--bg-card)',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+      transition: 'transform .18s, box-shadow .18s',
+    }}
+    onMouseEnter={e => {
+      (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)';
+      (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0,0,0,.1)';
+    }}
+    onMouseLeave={e => {
+      (e.currentTarget as HTMLElement).style.transform = '';
+      (e.currentTarget as HTMLElement).style.boxShadow = '';
+    }}
+  >
+    {test.coverImage && (
+      <TestCardCover test={test} onConfigure={onConfigure} onEdit={onEdit} />
+    )}
 
-  return (
-    <Card className={cn(`group hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] border-0 shadow-md overflow-hidden`, className)} hover>
-      <div className="space-y-0">
-        {/* Cover Image */}
-        {test.coverImage && (
-          <TestCardCover 
-            test={test} 
-            onConfigure={onConfigure} 
-            onEdit={onEdit} 
-          />
-        )}
-
-        {/* Content */}
-        <div className="p-3 md:p-6 space-y-3 md:space-y-4">
-          {/* Header (if no cover image) */}
-          {!test.coverImage && (
-            <TestCardHeaderNoImage 
-              test={test}
-              onConfigure={onConfigure}
-              onEdit={onEdit}
-            />
-          )}
-
-          {/* Stats Grid */}
-          <TestCardStats test={test} attemptCount={attemptCount} />
-
-          {/* Tags */}
-          <TestCardTags tags={test.tags} />
-
-          {/* Passing Score */}
-          <TestCardPassingScore passingScore={test.passingScore} />
-
-          {/* Status & Action */}
-          <TestCardActions test={test} onStart={handleStart} />
-        </div>
+    <div style={{ padding: '18px 18px 16px', display: 'flex', flexDirection: 'column', gap: 14, flex: 1 }}>
+      {!test.coverImage && (
+        <TestCardHeaderNoImage test={test} onConfigure={onConfigure} onEdit={onEdit} />
+      )}
+      <TestCardStats test={test} attemptCount={attemptCount} />
+      <TestCardTags tags={test.tags} />
+      <TestCardPassingScore passingScore={test.passingScore} />
+      <div style={{ borderTop: '1px solid var(--border-primary)', paddingTop: 12, marginTop: 'auto' }}>
+        <TestCardActions test={test} onStart={onStart} />
       </div>
-    </Card>
-  );
-};
+    </div>
+  </div>
+);

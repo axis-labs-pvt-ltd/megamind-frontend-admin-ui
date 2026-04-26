@@ -1,3 +1,6 @@
+// Client Component - Grid of test cards
+'use client';
+
 import { TestCard } from '@/components/features/tests/TestCard';
 import { mockTestAttempts } from '@/lib/mock-data';
 import { Test } from '@/types';
@@ -12,31 +15,24 @@ interface TestsGridProps {
 export function TestsGrid({ tests, totalTests, activeFiltersCount }: TestsGridProps) {
   const router = useRouter();
 
+  if (tests.length === 0) return null;
+
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tests.map((test, index) => (
-          <div 
-            key={test.id} 
-            className="animate-slide-up" 
-            style={{ animationDelay: `${index * 50}ms` }}
-          >
-            <TestCard
-              test={test}
-              attemptCount={mockTestAttempts.filter(attempt => attempt.testId === test.id).length}
-               onStart={() => router.push(`/tests/take-test?testId=${test.id}`)}
-            />
-          </div>
+    <div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
+        {tests.map(test => (
+          <TestCard
+            key={test.id}
+            test={test}
+            attemptCount={mockTestAttempts.filter(a => a.testId === test.id).length}
+            onStart={() => router.push(`/tests/take-test?testId=${test.id}`)}
+          />
         ))}
       </div>
-
-       {/* Results Summary */}
-       {tests.length > 0 && (
-        <div className="text-center text-sm text-gray-500 pt-6 border-t">
-          Showing {tests.length} of {totalTests} tests
-          {activeFiltersCount > 0 && ` with ${activeFiltersCount} filter${activeFiltersCount !== 1 ? 's' : ''} applied`}
-        </div>
-      )}
-    </>
+      <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--text-secondary)', marginTop: 24, paddingTop: 16, borderTop: '1px solid var(--border-primary)' }}>
+        Showing {tests.length} of {totalTests} test{totalTests !== 1 ? 's' : ''}
+        {activeFiltersCount > 0 && ` · ${activeFiltersCount} filter${activeFiltersCount !== 1 ? 's' : ''} applied`}
+      </p>
+    </div>
   );
 }
