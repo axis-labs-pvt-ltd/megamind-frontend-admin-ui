@@ -50,12 +50,13 @@ export interface Question {
   id: string;
   type: QuestionType;
   text: string;
-  options?: QuestionOption[]; // Refactored from string[] to object array
+  imageUrl?: string;
+  options?: QuestionOption[];
   matchingPairs?: MatchingPair[];
-  correctAnswer: string | string[] | MatchingPair[]; // For MCQ/Multi-select, this will contain Option IDs
-  acceptableAnswers?: string[]; // For fill-in-blank alternative answers
-  solutionVideoUrl?: string; // Video shown AFTER submission (explanation)
-  referenceVideoUrl?: string; // Video shown DURING exam (context)
+  correctAnswer: string | string[] | MatchingPair[];
+  acceptableAnswers?: string[];
+  solutionVideoUrl?: string;
+  referenceVideoUrl?: string;
   moduleId: string;
   categories: Category[];
   tags: Tag[];

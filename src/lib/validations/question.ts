@@ -4,6 +4,7 @@ import { z } from 'zod';
 // Base question schema
 const baseQuestionSchema = z.object({
   text: z.string().min(5, 'Question text must be at least 5 characters'),
+  imageUrl: z.string().optional(),
   difficulty: z.enum(['easy', 'medium', 'hard']),
   moduleId: z.string().min(1, 'Please select a module'),
   categoryIds: z.array(z.string()).default([]),

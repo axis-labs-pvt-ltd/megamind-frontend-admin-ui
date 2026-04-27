@@ -12,6 +12,7 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { QuestionConfigRenderer } from './QuestionConfigRenderer';
 import { getInitialFormData, resetFormFieldsForType } from './QuestionFormHelpers';
 import { QuestionMetadataFields } from './QuestionMetadataFields';
+import { QuestionTextEditor } from './QuestionTextEditor';
 import { QuestionTypeSelector } from './QuestionTypeSelector';
 
 
@@ -32,6 +33,7 @@ export function QuestionForm({ editingQuestion, onSubmit, onCancel }: QuestionFo
     defaultValues: {
       type: 'mcq',
       text: '',
+      imageUrl: undefined,
       difficulty: 'medium',
       moduleId: '',
       categoryIds: [],
@@ -103,25 +105,24 @@ export function QuestionForm({ editingQuestion, onSubmit, onCancel }: QuestionFo
           error={errors.type?.message}
         />
 
-        {/* Question Text */}
+        {/* Question Text + Image + Formula toolbar */}
         <Controller
           name="text"
           control={control}
           render={({ field }) => (
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                Question Text <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                {...field}
-                rows={3}
-                className="w-full px-4 py-3 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter your question here..."
-              />
-              {errors.text && (
-                <p className="text-red-500 text-sm mt-1">{errors.text.message}</p>
+            <Controller
+              name={'imageUrl' as any}
+              control={control}
+              render={({ field: imgField }) => (
+                <QuestionTextEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  imageUrl={imgField.value}
+                  onImageChange={imgField.onChange}
+                  error={errors.text?.message}
+                />
               )}
-            </div>
+            />
           )}
         />
 

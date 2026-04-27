@@ -28,6 +28,7 @@ export async function createQuestion(formData: QuestionFormData): Promise<Questi
     .insert({
       type: formData.type,
       text: formData.text,
+      image_url: (formData as any).imageUrl || null,
       difficulty: formData.difficulty,
       module_id: formData.moduleId || null,
       correct_answer: formData.correctAnswer,
@@ -93,6 +94,7 @@ export async function updateQuestion(id: string, formData: QuestionFormData): Pr
     .update({
       type: formData.type,
       text: formData.text,
+      image_url: (formData as any).imageUrl || null,
       difficulty: formData.difficulty,
       module_id: formData.moduleId || null,
       correct_answer: formData.correctAnswer,
@@ -156,6 +158,7 @@ function mapDbToQuestion(row: any): Question {
     id: row.id,
     type: row.type,
     text: row.text,
+    imageUrl: row.image_url ?? undefined,
     difficulty: row.difficulty,
     moduleId: row.module_id,
     correctAnswer: row.correct_answer,
