@@ -6,6 +6,7 @@ import {
     Home,
     PlusCircle,
     Settings,
+    Users,
 } from 'lucide-react';
 
 export type NavRole = 'admin' | 'teacher';
@@ -24,6 +25,7 @@ export const navigation: NavItem[] = [
   { name: 'Create Test',       page: '/tests/create',   icon: PlusCircle, description: 'Build new tests',        roles: ['admin', 'teacher'] },
   { name: 'Question Bank',     page: '/questions',      icon: HelpCircle, description: 'Manage questions',       roles: ['admin', 'teacher'] },
   { name: 'Subject Management',page: '/subjects',       icon: BookOpen,   description: 'Organise curriculum',    roles: ['admin'] },
+  { name: 'Users',             page: '/users',          icon: Users,      description: 'Manage accounts & roles', roles: ['admin'] },
   { name: 'Analytics',         page: '/analytics',      icon: BarChart3,  description: 'Performance insights',   roles: ['admin'] },
   { name: 'Settings',          page: '/settings',       icon: Settings,   description: 'Account settings',       roles: ['admin'] },
 ];
