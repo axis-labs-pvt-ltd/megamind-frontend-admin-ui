@@ -1,5 +1,6 @@
 'use client';
 
+import { AdminOnlyGate } from '@/components/layout/AdminGuard';
 import { ProfileForm } from '@/components/features/settings/ProfileForm';
 import { Card } from '@/components/ui/card';
 import { Bell, Shield, User } from 'lucide-react';
@@ -11,7 +12,7 @@ const navigationItems = [
   { id: 'security', label: 'Security', icon: Shield },
 ];
 
-export default function SettingsPage() {
+function SettingsPageContent() {
   const [activeTab, setActiveTab] = useState('profile');
 
   return (
@@ -72,4 +73,8 @@ export default function SettingsPage() {
       </div>
     </div>
   );
+}
+
+export default function SettingsPage() {
+  return <AdminOnlyGate><SettingsPageContent /></AdminOnlyGate>;
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { AdminOnlyGate } from '@/components/layout/AdminGuard';
 import { QuestionFilters } from '@/components/features/questions/QuestionFilters';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +20,7 @@ import { ModuleForm } from './components/ModuleForm';
 import { SubjectCard } from './components/SubjectCard';
 import { SubjectForm } from './components/SubjectForm';
 
-export default function SubjectsPage() {
+function SubjectsPageContent() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -200,4 +201,8 @@ export default function SubjectsPage() {
       )}
     </div>
   );
+}
+
+export default function SubjectsPage() {
+  return <AdminOnlyGate><SubjectsPageContent /></AdminOnlyGate>;
 }

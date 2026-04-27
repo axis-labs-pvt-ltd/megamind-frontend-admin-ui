@@ -1,12 +1,13 @@
 'use client';
 
+import { AdminOnlyGate } from '@/components/layout/AdminGuard';
 import { PerformanceTrend } from '@/components/features/analytics/PerformanceTrend';
 import { StatCard } from '@/components/features/analytics/StatCard';
 import { TestPerformanceItem } from '@/components/features/analytics/TestPerformanceItem';
 import { Card } from '@/components/ui/card';
 import { useAnalyticsData } from './hooks/useAnalyticsData';
 
-export default function AnalyticsPage() {
+function AnalyticsPageContent() {
   const {
     totalAttempts,
     averageScore,
@@ -90,4 +91,8 @@ export default function AnalyticsPage() {
       </Card>
     </div>
   );
+}
+
+export default function AnalyticsPage() {
+  return <AdminOnlyGate><AnalyticsPageContent /></AdminOnlyGate>;
 }

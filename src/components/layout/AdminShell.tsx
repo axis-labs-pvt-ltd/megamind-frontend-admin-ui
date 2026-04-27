@@ -2,10 +2,11 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { AdminGuard } from './AdminGuard';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 
-const PUBLIC_PATHS = ['/', '/auth', '/tests/take-test', '/marketplace'];
+const PUBLIC_PATHS = ['/', '/auth', '/tests/take-test', '/marketplace', '/my-tests', '/student'];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,16 +17,18 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   if (isPublic) return <>{children}</>;
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] flex">
-      <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0">
-        <Header />
-        <main className="flex-1 p-6 lg:p-8 overflow-y-auto overflow-x-hidden">
-          <div className="max-w-[1600px] mx-auto w-full">
-            {children}
-          </div>
-        </main>
+    <AdminGuard>
+      <div className="min-h-screen bg-[var(--bg-primary)] flex">
+        <Sidebar />
+        <div className="flex-1 flex flex-col min-w-0">
+          <Header />
+          <main className="flex-1 p-6 lg:p-8 overflow-y-auto overflow-x-hidden">
+            <div className="max-w-[1600px] mx-auto w-full">
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </AdminGuard>
   );
 }

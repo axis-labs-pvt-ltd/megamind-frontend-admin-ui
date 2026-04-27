@@ -135,3 +135,25 @@ export interface TestSession {
   answers: Record<string, string | string[]>;
   isCompleted: boolean;
 }
+
+export interface Purchase {
+  id: string;
+  studentId: string;
+  testId: string;
+  price: number;
+  purchasedAt: Date;
+  test?: Test;
+}
+
+export interface TestHistory {
+  id: string;
+  testId: string;
+  testTitle: string;
+  passingScore: number;
+  score: number;
+  passed: boolean;
+  timeSpent: number;
+  completedAt: Date;
+  correctAnswers: number;
+  totalQuestions: number;
+}

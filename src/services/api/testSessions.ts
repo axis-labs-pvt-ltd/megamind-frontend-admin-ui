@@ -4,11 +4,12 @@ import { Question, TestSession } from '@/types';
 
 // ---- Start a new session ----
 export async function startTestSession(testId: string, questions: Question[]): Promise<string> {
+  const { data: { user } } = await supabase.auth.getUser();
   const { data, error } = await supabase
     .from('test_sessions')
     .insert({
       test_id: testId,
-      student_id: null, // replace with auth.user.id when auth is set up
+      student_id: user?.id ?? null,
       is_completed: false,
     })
     .select()

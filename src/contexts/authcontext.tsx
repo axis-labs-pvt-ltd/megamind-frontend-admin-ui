@@ -11,6 +11,7 @@ interface Profile {
   phone: string;
   role: 'student' | 'admin' | 'teacher';
   avatar_url: string;
+  address: string;
 }
 
 interface AuthContextType {

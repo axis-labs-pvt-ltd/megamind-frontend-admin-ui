@@ -19,7 +19,13 @@ export function TestsGrid({ tests, totalTests, activeFiltersCount }: TestsGridPr
 
   return (
     <div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: 20,
+      }}
+        className="tests-grid"
+      >
         {tests.map(test => (
           <TestCard
             key={test.id}
@@ -29,10 +35,16 @@ export function TestsGrid({ tests, totalTests, activeFiltersCount }: TestsGridPr
           />
         ))}
       </div>
+
       <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--text-secondary)', marginTop: 24, paddingTop: 16, borderTop: '1px solid var(--border-primary)' }}>
         Showing {tests.length} of {totalTests} test{totalTests !== 1 ? 's' : ''}
         {activeFiltersCount > 0 && ` · ${activeFiltersCount} filter${activeFiltersCount !== 1 ? 's' : ''} applied`}
       </p>
+
+      <style>{`
+        @media (max-width: 1024px) { .tests-grid { grid-template-columns: repeat(2,1fr) !important; } }
+        @media (max-width: 640px)  { .tests-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
     </div>
   );
 }

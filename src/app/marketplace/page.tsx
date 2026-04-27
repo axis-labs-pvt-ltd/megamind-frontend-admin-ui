@@ -1,46 +1,78 @@
 'use client';
 
+import { useAuth } from '@/contexts/authcontext';
+import { purchaseTest } from '@/services/api/purchases';
+import { fetchTests } from '@/services/api/tests';
+import { Test } from '@/types';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 
-const TESTS = [
-  { subj: 'Physics',     title: 'A/L Mechanics · Full paper',        qs: 50, time: '90 min',  price: 1500, tag: 'A/L', color: 'var(--p-card-a)', bestseller: true,  rating: 4.9, reviews: 184 },
-  { subj: 'Chemistry',   title: 'Organic Chem · Past paper set',      qs: 40, time: '75 min',  price: 1200, tag: 'A/L', color: 'var(--p-card-d)', rating: 4.8, reviews: 122 },
-  { subj: 'ICT',         title: 'Database Management · Module test',  qs: 30, time: '45 min',  price: 1000, tag: 'O/L', color: 'var(--p-card-c)', rating: 4.7, reviews: 96  },
-  { subj: 'Mathematics', title: 'Calculus · Diagnostic',              qs: 25, time: '60 min',  price: 1000, tag: 'A/L', color: 'var(--p-card-e)', isNew: true,       rating: 4.9, reviews: 41  },
-  { subj: 'English',     title: 'Grammar & Essay · Paper',            qs: 35, time: '60 min',  price: 1200, tag: 'O/L', color: 'var(--p-card-b)', rating: 4.6, reviews: 78  },
-  { subj: 'Physics',     title: 'Waves & Oscillations',               qs: 30, time: '50 min',  price: 1200, tag: 'A/L', color: 'var(--p-card-a)', rating: 4.8, reviews: 64  },
-  { subj: 'Chemistry',   title: 'Periodic Table mastery',             qs: 25, time: '40 min',  price: 1000, tag: 'O/L', color: 'var(--p-card-d)', rating: 4.5, reviews: 52  },
-  { subj: 'ICT',         title: 'Programming fundamentals',           qs: 35, time: '55 min',  price: 1200, tag: 'O/L', color: 'var(--p-card-c)', rating: 4.7, reviews: 88  },
-  { subj: 'Mathematics', title: 'Combined Maths · Pure',              qs: 60, time: '120 min', price: 2000, tag: 'A/L', color: 'var(--p-card-e)', bestseller: true,  rating: 5.0, reviews: 156 },
-  { subj: 'English',     title: 'Reading Comprehension · Set A',      qs: 30, time: '45 min',  price: 1000, tag: 'O/L', color: 'var(--p-card-b)', rating: 4.6, reviews: 61  },
-  { subj: 'Physics',     title: 'Modern Physics · Nuclear',           qs: 30, time: '60 min',  price: 1500, tag: 'A/L', color: 'var(--p-card-a)', rating: 4.8, reviews: 49  },
-  { subj: 'Mathematics', title: 'Statistics & Probability',           qs: 35, time: '70 min',  price: 1200, tag: 'A/L', color: 'var(--p-card-e)', isNew: true,       rating: 4.7, reviews: 28  },
-];
+const BAND_COLORS = ['var(--p-card-a)', 'var(--p-card-c)', 'var(--p-card-d)', 'var(--p-card-e)', 'var(--p-card-b)'];
 
-const SUBJECTS = ['All', 'Physics', 'Chemistry', 'ICT', 'Mathematics', 'English'];
-const GRADES   = ['All grades', 'O/L', 'A/L', 'Uni entrance'];
-const SORTS    = ['Most popular', 'Newest', 'Price ↑', 'Price ↓'];
+function getQuestionCount(t: Test) {
+  return t.type === 'static' ? t.questionIds.length : t.rules.reduce((s, r) => s + r.questionCount, 0);
+}
+function getPrice(count: number) {
+  if (count <= 20) return 1000;
+  if (count <= 40) return 1500;
+  return 2000;
+}
+function getEmoji(tags: string[]) {
+  const t = tags.join(' ').toLowerCase();
+  if (t.includes('physics')) return '⚛️';
+  if (t.includes('chemistry')) return '🧪';
+  if (t.includes('math')) return '📐';
+  if (t.includes('ict') || t.includes('computer')) return '💻';
+  if (t.includes('english')) return '📝';
+  if (t.includes('biology')) return '🌿';
+  return '📋';
+}
 
-export default function MarketplacePage() {
-  const [search,  setSearch]  = useState('');
-  const [subject, setSubject] = useState('All');
-  const [grade,   setGrade]   = useState('All grades');
-  const [sort,    setSort]    = useState('Most popular');
+function MarketplaceContent() {
+  const router     = useRouter();
+  const params     = useSearchParams();
+  const { user }   = useAuth();
+  const [tests, setTests]     = useState<Test[]>([]);
+  const [search, setSearch]   = useState('');
+  const [loading, setLoading] = useState(true);
+  const [buying, setBuying]   = useState<Test | null>(null);
+  const [buyLoading, setBuyLoading] = useState(false);
+  const [buyError, setBuyError]     = useState<string | null>(null);
+  const [buySuccess, setBuySuccess] = useState(false);
 
-  const filtered = TESTS.filter(t => {
-    const matchSubj  = subject === 'All' || t.subj === subject;
-    const matchGrade = grade   === 'All grades' || t.tag === grade;
-    const matchSearch = !search || t.title.toLowerCase().includes(search.toLowerCase()) || t.subj.toLowerCase().includes(search.toLowerCase());
-    return matchSubj && matchGrade && matchSearch;
-  }).sort((a, b) => {
-    if (sort === 'Price ↑') return a.price - b.price;
-    if (sort === 'Price ↓') return b.price - a.price;
-    if (sort === 'Newest')  return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
-    return b.reviews - a.reviews;
-  });
+  useEffect(() => {
+    fetchTests().then(data => { setTests(data.filter(t => t.isActive)); setLoading(false); });
+  }, []);
 
-  const countFor = (s: string) => s === 'All' ? TESTS.length : TESTS.filter(t => t.subj === s).length;
+  // Auto-open purchase modal if testId param is present
+  useEffect(() => {
+    const testId = params.get('testId');
+    if (testId && tests.length > 0) {
+      const t = tests.find(x => x.id === testId);
+      if (t) setBuying(t);
+    }
+  }, [params, tests]);
+
+  const filtered = tests.filter(t =>
+    !search || t.title.toLowerCase().includes(search.toLowerCase()) || (t.tags ?? []).some(tag => tag.toLowerCase().includes(search.toLowerCase()))
+  );
+
+  const handleBuy = async () => {
+    if (!buying) return;
+    if (!user) { router.push('/auth/signin'); return; }
+    setBuyLoading(true);
+    setBuyError(null);
+    try {
+      await purchaseTest(buying.id, getPrice(getQuestionCount(buying)));
+      setBuySuccess(true);
+      setTimeout(() => { setBuying(null); setBuySuccess(false); router.push('/my-tests'); }, 1800);
+    } catch (err: any) {
+      setBuyError(err.message ?? 'Purchase failed');
+    } finally {
+      setBuyLoading(false);
+    }
+  };
 
   return (
     <div style={{ background: 'var(--p-bg)', minHeight: '100vh' }}>
@@ -53,179 +85,156 @@ export default function MarketplacePage() {
             <span style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 22, letterSpacing: '-0.03em', color: 'var(--p-ink)' }}>megamind<span style={{ color: 'var(--p-primary)' }}>.</span></span>
           </Link>
           <div style={{ display: 'flex', gap: 10 }}>
-            <Link href="/auth/login" style={{ padding: '9px 16px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-bg)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, boxShadow: '2px 2px 0 var(--p-ink)', textDecoration: 'none' }}>Log in</Link>
-            <Link href="/auth/signup" style={{ padding: '9px 16px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-primary)', color: 'var(--p-primary-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, boxShadow: '2px 2px 0 var(--p-ink)', textDecoration: 'none' }}>Start free →</Link>
+            {user ? (
+              <>
+                <Link href="/my-tests" style={navBtn('var(--p-bg)', 'var(--p-ink)')}>My Tests</Link>
+                <Link href="/student/profile" style={navBtn('var(--p-primary)', 'var(--p-primary-ink)')}>Profile →</Link>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/signin" style={navBtn('var(--p-bg)', 'var(--p-ink)')}>Log in</Link>
+                <Link href="/auth/signup" style={navBtn('var(--p-primary)', 'var(--p-primary-ink)')}>Start free →</Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section style={{ padding: '64px 0 0', borderBottom: '2px solid var(--p-ink)', background: 'var(--p-bg)' }}>
-        <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 28px' }}>
-
-          {/* Breadcrumb */}
-          <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, color: 'var(--p-muted)', marginBottom: 28, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <section style={{ padding: '56px 0 0', borderBottom: '2px solid var(--p-ink)' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 28px 40px' }}>
+          <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, color: 'var(--p-muted)', marginBottom: 28, display: 'flex', gap: 8 }}>
             <Link href="/" style={{ color: 'var(--p-primary)', textDecoration: 'none' }}>Home</Link>
-            <span>/</span>
-            <span>Test store</span>
+            <span>/</span><span>Test store</span>
           </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 40, alignItems: 'center', marginBottom: 40 }} className="mp-hero-grid">
-            <div>
-              <span style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--p-ink-2)', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ width: 22, height: 2, background: 'var(--p-primary)', display: 'inline-block' }} />
-                Buy single tests
-              </span>
-              <h1 style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 'clamp(32px,4.5vw,64px)', letterSpacing: '-0.02em', lineHeight: 1.05, marginTop: 16, marginBottom: 20, color: 'var(--p-ink)' }}>
-                No subscription?{' '}
-                <span style={{ display: 'inline-block', position: 'relative' }}>
-                  No problem.
-                  <span style={{ position: 'absolute', left: 0, right: 0, bottom: -6, height: 8, background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'><path d='M0 5 Q 15 0 30 5 T 60 5 T 90 5 T 120 5' fill='none' stroke='%232D6A4F' stroke-width='3' stroke-linecap='round'/></svg>\") center/100% 100% no-repeat" }} />
-                </span>
-              </h1>
-              <p style={{ fontSize: 17, color: 'var(--p-ink-2)', maxWidth: 540, lineHeight: 1.6 }}>
-                One-time purchase. Yours forever. Pick a test, pay Rs.&nbsp;1,000–2,000, and review your answers and AI feedback anytime.
-              </p>
-            </div>
-
-            {/* Bundle promo card */}
-            <div style={{ padding: '22px 26px', border: '2px solid var(--p-ink)', borderRadius: 18, background: 'var(--p-secondary)', boxShadow: '6px 6px 0 var(--p-ink)', display: 'flex', gap: 16, alignItems: 'center' }}>
-              <div style={{ fontSize: 44, lineHeight: 1 }}>🎁</div>
-              <div>
-                <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 18, color: 'var(--p-ink)', marginBottom: 6 }}>Bundle 3, save 15%</div>
-                <div style={{ fontSize: 13, color: 'var(--p-ink-2)' }}>Use code <b style={{ fontFamily: 'var(--font-mono,monospace)', background: 'var(--p-ink)', color: 'var(--p-bg)', padding: '1px 6px', borderRadius: 4 }}>MIND3</b> at checkout.</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Search & filters */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr auto auto auto', gap: 12, paddingBottom: 32, alignItems: 'center' }} className="mp-filters">
-            <div style={{ position: 'relative' }}>
-              <svg style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--p-muted)', pointerEvents: 'none' }} width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
-              <input
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Search tests, topics, syllabus…"
-                style={{ width: '100%', padding: '12px 16px 12px 44px', border: '2px solid var(--p-ink)', borderRadius: 999, fontFamily: 'inherit', fontSize: 14, background: 'var(--p-bg)', color: 'var(--p-ink)', outline: 'none', boxSizing: 'border-box' }}
-              />
-            </div>
-            {[
-              { value: grade,   onChange: setGrade,   options: GRADES },
-              { value: sort,    onChange: setSort,    options: SORTS  },
-            ].map(({ value, onChange, options }) => (
-              <select key={options[0]} value={value} onChange={e => onChange(e.target.value)} style={{ padding: '12px 16px', border: '2px solid var(--p-ink)', borderRadius: 999, fontFamily: 'inherit', fontSize: 13, background: 'var(--p-bg)', color: 'var(--p-ink)', cursor: 'pointer', outline: 'none' }}>
-                {options.map(o => <option key={o}>{o}</option>)}
-              </select>
-            ))}
+          <h1 style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 'clamp(32px,5vw,64px)', letterSpacing: '-0.02em', lineHeight: 1.05, color: 'var(--p-ink)', marginBottom: 20 }}>
+            No subscription?{' '}
+            <span style={{ position: 'relative', display: 'inline-block' }}>
+              No problem.
+              <span style={{ position: 'absolute', left: 0, right: 0, bottom: -6, height: 8, background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'><path d='M0 5 Q 15 0 30 5 T 60 5 T 90 5 T 120 5' fill='none' stroke='%232D6A4F' stroke-width='3' stroke-linecap='round'/></svg>\") center/100% 100% no-repeat" }} />
+            </span>
+          </h1>
+          <div style={{ position: 'relative', maxWidth: 520 }}>
+            <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 16, pointerEvents: 'none' }}>🔍</span>
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search tests, topics…"
+              style={{ width: '100%', padding: '14px 16px 14px 46px', border: '2px solid var(--p-ink)', borderRadius: 999, fontFamily: 'inherit', fontSize: 14, background: 'var(--p-bg)', color: 'var(--p-ink)', outline: 'none', boxSizing: 'border-box' }} />
           </div>
         </div>
       </section>
 
-      {/* Listing */}
+      {/* Grid */}
       <section style={{ padding: '44px 0 80px' }}>
         <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 28px' }}>
-
-          {/* Subject chips */}
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 28 }}>
-            {SUBJECTS.map(s => (
-              <button key={s} onClick={() => setSubject(s)} style={{
-                padding: '8px 16px', border: '2px solid var(--p-ink)', borderRadius: 999,
-                background: subject === s ? 'var(--p-ink)' : 'var(--p-bg)',
-                color: subject === s ? 'var(--p-bg)' : 'var(--p-ink)',
-                fontFamily: 'var(--font-mono,monospace)', fontSize: 12, fontWeight: 600,
-                cursor: 'pointer', boxShadow: subject === s ? '3px 3px 0 var(--p-primary)' : 'none',
-              }}>
-                {s} <span style={{ opacity: 0.65, marginLeft: 4 }}>· {countFor(s)}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Result count */}
-          <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, color: 'var(--p-muted)', marginBottom: 20 }}>
-            {filtered.length} test{filtered.length !== 1 ? 's' : ''} found
-          </div>
-
-          {/* Grid */}
-          {filtered.length === 0 ? (
-            <div style={{ padding: '80px 0', textAlign: 'center', color: 'var(--p-muted)', fontFamily: 'var(--font-mono,monospace)' }}>
-              No tests match your search.
-            </div>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '80px 0', fontFamily: 'var(--font-mono,monospace)', fontSize: 13, color: 'var(--p-muted)' }}>Loading tests…</div>
+          ) : filtered.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '80px 0', fontFamily: 'var(--font-mono,monospace)', fontSize: 13, color: 'var(--p-muted)' }}>No tests found.</div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }} className="mp-grid">
-              {filtered.map((t, i) => (
-                <div key={i} style={{ border: '2px solid var(--p-ink)', borderRadius: 18, background: 'var(--p-bg)', boxShadow: '6px 6px 0 var(--p-ink)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-
-                  {/* Coloured header */}
-                  <div style={{ background: t.color, padding: '18px 22px', borderBottom: '2px solid var(--p-ink)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, fontWeight: 700, color: 'var(--p-ink)', letterSpacing: '0.08em' }}>{t.subj.toUpperCase()}</span>
-                    <div style={{ display: 'flex', gap: 6 }}>
-                      {t.bestseller && (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', padding: '3px 10px', border: '1.5px solid var(--p-ink)', borderRadius: 999, fontFamily: 'var(--font-mono,monospace)', fontSize: 9, fontWeight: 600, background: 'var(--p-ink)', color: 'var(--p-bg)' }}>★ bestseller</span>
-                      )}
-                      {t.isNew && (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', padding: '3px 10px', border: '1.5px solid var(--p-ink)', borderRadius: 999, fontFamily: 'var(--font-mono,monospace)', fontSize: 9, fontWeight: 600, background: 'var(--p-primary)', color: 'var(--p-primary-ink)' }}>new</span>
-                      )}
-                      <span style={{ display: 'inline-flex', alignItems: 'center', padding: '3px 10px', border: '1.5px solid var(--p-ink)', borderRadius: 999, fontFamily: 'var(--font-mono,monospace)', fontSize: 9, background: 'var(--p-bg)', color: 'var(--p-ink)' }}>{t.tag}</span>
+              {filtered.map((t, i) => {
+                const qCount = getQuestionCount(t);
+                const price  = getPrice(qCount);
+                const color  = BAND_COLORS[i % BAND_COLORS.length];
+                const emoji  = getEmoji(t.tags ?? []);
+                return (
+                  <div key={t.id} style={{ border: '2px solid var(--p-ink)', borderRadius: 18, background: 'var(--p-bg)', boxShadow: '6px 6px 0 var(--p-ink)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    <div style={{ background: color, padding: '16px 20px', borderBottom: '2px solid var(--p-ink)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, fontWeight: 700, color: 'var(--p-ink)', letterSpacing: '0.08em' }}>
+                        {emoji} {(t.tags?.[0] ?? 'General').toUpperCase()}
+                      </span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', padding: '3px 10px', border: '1.5px solid var(--p-ink)', borderRadius: 999, fontFamily: 'var(--font-mono,monospace)', fontSize: 9, background: 'var(--p-bg)', color: 'var(--p-ink)' }}>
+                        {t.type === 'dynamic' ? 'AI' : 'Fixed'}
+                      </span>
                     </div>
-                  </div>
-
-                  {/* Body */}
-                  <div style={{ padding: 22, display: 'flex', flexDirection: 'column', flex: 1 }}>
-                    <h3 style={{ fontFamily: 'var(--font-display,sans-serif)', fontSize: 19, fontWeight: 700, lineHeight: 1.3, marginBottom: 10, color: 'var(--p-ink)' }}>{t.title}</h3>
-
-                    {/* Rating */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12, fontSize: 13 }}>
-                      <span style={{ color: 'var(--p-secondary)', letterSpacing: 1 }}>★★★★★</span>
-                      <span style={{ fontWeight: 700, color: 'var(--p-ink)' }}>{t.rating}</span>
-                      <span style={{ color: 'var(--p-muted)' }}>· {t.reviews} reviews</span>
-                    </div>
-
-                    {/* Meta */}
-                    <div style={{ display: 'flex', gap: 18, marginBottom: 18, fontSize: 13, color: 'var(--p-ink-2)' }}>
-                      <span>📋 {t.qs} questions</span>
-                      <span>⏱ {t.time}</span>
-                    </div>
-
-                    <div style={{ flex: 1 }} />
-
-                    {/* Price row */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1.5px dashed var(--p-ink)', paddingTop: 16 }}>
-                      <div>
-                        <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 10, color: 'var(--p-muted)', marginBottom: 2, letterSpacing: '0.08em', textTransform: 'uppercase' }}>One-time</div>
-                        <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 24, color: 'var(--p-ink)', letterSpacing: '-0.02em' }}>
-                          Rs. {t.price.toLocaleString()}
-                        </div>
+                    <div style={{ padding: 22, display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <h3 style={{ fontFamily: 'var(--font-display,sans-serif)', fontSize: 19, fontWeight: 700, lineHeight: 1.3, marginBottom: 12, color: 'var(--p-ink)' }}>{t.title}</h3>
+                      {t.description && <p style={{ fontSize: 13, color: 'var(--p-ink-2)', lineHeight: 1.5, marginBottom: 14 }}>{t.description}</p>}
+                      <div style={{ display: 'flex', gap: 18, marginBottom: 16, fontSize: 13, color: 'var(--p-ink-2)' }}>
+                        <span>📋 {qCount} questions</span>
+                        <span>⏱ {t.timeLimit} min</span>
                       </div>
-                      <button style={{ padding: '11px 20px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-primary)', color: 'var(--p-primary-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, cursor: 'pointer', boxShadow: '3px 3px 0 var(--p-ink)' }}>
-                        Buy →
-                      </button>
+                      {t.tags && t.tags.length > 0 && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
+                          {t.tags.slice(0, 3).map(tag => (
+                            <span key={tag} style={{ padding: '3px 10px', borderRadius: 999, border: '1.5px solid var(--p-ink)', fontFamily: 'var(--font-mono,monospace)', fontSize: 10, background: 'var(--p-bg-alt)', color: 'var(--p-ink-2)' }}>{tag}</span>
+                          ))}
+                        </div>
+                      )}
+                      <div style={{ flex: 1 }} />
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1.5px dashed var(--p-ink)', paddingTop: 16 }}>
+                        <div>
+                          <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 10, color: 'var(--p-muted)', marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.08em' }}>One-time</div>
+                          <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 24, color: 'var(--p-ink)', letterSpacing: '-0.02em' }}>Rs. {price.toLocaleString()}</div>
+                        </div>
+                        <button onClick={() => setBuying(t)} style={{ padding: '11px 20px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-primary)', color: 'var(--p-primary-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, cursor: 'pointer', boxShadow: '3px 3px 0 var(--p-ink)' }}>
+                          Buy →
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
-
-          {/* Load more */}
-          <div style={{ textAlign: 'center', marginTop: 50 }}>
-            <button style={{ padding: '14px 32px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-bg)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '4px 4px 0 var(--p-ink)' }}>
-              Load more tests →
-            </button>
-          </div>
         </div>
       </section>
 
+      {/* Purchase modal */}
+      {buying && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+          <div style={{ background: 'var(--p-bg)', border: '2px solid var(--p-ink)', borderRadius: 20, boxShadow: '8px 8px 0 var(--p-ink)', maxWidth: 460, width: '100%', overflow: 'hidden' }}>
+            <div style={{ background: 'var(--p-bg-alt)', borderBottom: '2px solid var(--p-ink)', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--p-ink-2)' }}>Confirm purchase</span>
+              <button onClick={() => { setBuying(null); setBuyError(null); setBuySuccess(false); }} style={{ width: 30, height: 30, border: '1.5px solid var(--p-ink)', borderRadius: 8, background: 'var(--p-bg)', cursor: 'pointer', display: 'grid', placeItems: 'center', fontSize: 16, color: 'var(--p-ink)' }}>✕</button>
+            </div>
+            <div style={{ padding: 24 }}>
+              {buySuccess ? (
+                <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                  <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
+                  <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 20, color: 'var(--p-ink)', marginBottom: 8 }}>Purchase complete!</div>
+                  <div style={{ fontSize: 13, color: 'var(--p-ink-2)' }}>Redirecting to My Tests…</div>
+                </div>
+              ) : (
+                <>
+                  <h3 style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 20, color: 'var(--p-ink)', marginBottom: 6 }}>{buying.title}</h3>
+                  <div style={{ fontSize: 13, color: 'var(--p-ink-2)', marginBottom: 20 }}>{getQuestionCount(buying)} questions · {buying.timeLimit} min</div>
+                  <div style={{ display: 'flex', gap: 16, padding: '16px 20px', background: 'var(--p-bg-alt)', border: '2px solid var(--p-ink)', borderRadius: 14, marginBottom: 20 }}>
+                    {[['Rs. ' + getPrice(getQuestionCount(buying)).toLocaleString(), 'Price'], ['∞', 'Access'], [String(buying.passingScore) + '%', 'Pass mark']].map(([val, lbl]) => (
+                      <div key={lbl} style={{ flex: 1, textAlign: 'center' }}>
+                        <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 20, color: 'var(--p-ink)' }}>{val}</div>
+                        <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--p-muted)', marginTop: 4 }}>{lbl}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20, fontSize: 13, color: 'var(--p-ink-2)' }}>
+                    {['Lifetime access to this test', 'AI-powered feedback on every answer', 'Theory snippets for every question'].map(f => (
+                      <div key={f} style={{ display: 'flex', gap: 8 }}><span style={{ color: 'var(--p-primary)', fontWeight: 700 }}>✓</span>{f}</div>
+                    ))}
+                  </div>
+                  {buyError && <div style={{ padding: '10px 14px', background: 'rgba(217,74,61,.08)', border: '1.5px solid var(--p-accent)', borderRadius: 10, fontSize: 13, color: 'var(--p-accent)', marginBottom: 16 }}>{buyError}</div>}
+                  {!user && <div style={{ padding: '10px 14px', background: 'var(--p-card-a)', border: '1.5px solid var(--p-ink)', borderRadius: 10, fontSize: 13, color: 'var(--p-ink)', marginBottom: 16 }}>⚠ You need to sign in to purchase.</div>}
+                  <button onClick={handleBuy} disabled={buyLoading} style={{ width: '100%', padding: '15px 24px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-primary)', color: 'var(--p-primary-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 15, cursor: 'pointer', boxShadow: '4px 4px 0 var(--p-ink)', opacity: buyLoading ? 0.7 : 1 }}>
+                    {buyLoading ? 'Processing…' : !user ? 'Sign in to buy →' : `Buy now · Rs. ${getPrice(getQuestionCount(buying)).toLocaleString()} →`}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <style>{`
-        @media (max-width: 960px) {
-          .mp-hero-grid { grid-template-columns: 1fr !important; }
-          .mp-filters   { grid-template-columns: 1fr 1fr !important; }
-          .mp-grid      { grid-template-columns: repeat(2,1fr) !important; }
-        }
-        @media (max-width: 600px) {
-          .mp-filters { grid-template-columns: 1fr !important; }
-          .mp-grid    { grid-template-columns: 1fr !important; }
-        }
+        @media (max-width: 960px) { .mp-grid { grid-template-columns: repeat(2,1fr) !important; } }
+        @media (max-width: 600px) { .mp-grid { grid-template-columns: 1fr !important; } }
       `}</style>
     </div>
   );
+}
+
+function navBtn(bg: string, color: string): React.CSSProperties {
+  return { padding: '9px 16px', border: '2px solid var(--p-ink)', borderRadius: 999, background: bg, color, fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, boxShadow: '2px 2px 0 var(--p-ink)', textDecoration: 'none', display: 'inline-block' };
+}
+
+export default function MarketplacePage() {
+  return <Suspense><MarketplaceContent /></Suspense>;
 }
