@@ -1,8 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/authcontext';
-import { fetchMyPurchases } from '@/services/api/purchases';
-import { fetchStudentAttempts } from '@/services/api/testSessions';
+import { useMyPurchases, useStudentAttempts } from '@/hooks/queries/usePurchases';
 import { Purchase, TestHistory } from '@/types';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -13,38 +12,15 @@ const BAND_COLORS = ['var(--p-card-a)', 'var(--p-card-c)', 'var(--p-card-d)', 'v
 export default function MyTestsPage() {
   const { user, profile, loading: authLoading } = useAuth();
   const router = useRouter();
-  const [tab, setTab]             = useState<'tests' | 'history'>('tests');
-  const [purchases, setPurchases] = useState<Purchase[]>([]);
-  const [history, setHistory]     = useState<TestHistory[]>([]);
-  const [loading, setLoading]     = useState(true);
+  const [tab, setTab] = useState<'tests' | 'history'>('tests');
+
+  const { data: purchases = [], isLoading: purchasesLoading } = useMyPurchases();
+  const { data: history = [],   isLoading: historyLoading   } = useStudentAttempts(user?.id);
+  const loading = purchasesLoading || historyLoading;
 
   useEffect(() => {
     if (!authLoading && !user) router.push('/auth/signin');
   }, [user, authLoading, router]);
-
-  useEffect(() => {
-    if (!user) return;
-    (async () => {
-      const [p, h] = await Promise.all([
-        fetchMyPurchases().catch(() => []),
-        fetchStudentAttempts(user.id).catch(() => []),
-      ]);
-      setPurchases(p);
-      setHistory(h.map((s: any) => ({
-        id: s.id,
-        testId: s.test_id,
-        testTitle: s.tests?.title ?? 'Unknown test',
-        passingScore: s.tests?.passing_score ?? 0,
-        score: s.score ?? 0,
-        passed: (s.score ?? 0) >= (s.tests?.passing_score ?? 100),
-        timeSpent: s.time_spent ?? 0,
-        completedAt: new Date(s.completed_at),
-        correctAnswers: (s.test_session_answers ?? []).filter((a: any) => a.is_correct).length,
-        totalQuestions: (s.test_session_answers ?? []).length,
-      })));
-      setLoading(false);
-    })();
-  }, [user]);
 
   if (authLoading || !user) return null;
 

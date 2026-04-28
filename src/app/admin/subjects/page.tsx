@@ -1,127 +1,86 @@
 'use client';
 
 import { AdminOnlyGate } from '@/components/layout/AdminGuard';
-import { QuestionFilters } from '@/components/features/questions/QuestionFilters';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
-  createModule,
-  createSubject,
-  deleteModule,
-  deleteSubject,
-  fetchSubjects,
-  updateModule,
-  updateSubject,
-} from '@/services/api/subjects';
+  useSubjects,
+  useCreateSubject, useUpdateSubject, useDeleteSubject,
+  useCreateModule,  useUpdateModule,  useDeleteModule,
+} from '@/hooks/queries/useSubjects';
 import { Module, Subject } from '@/types';
 import { BookOpen, FolderPlus, Plus, Search } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ModuleForm } from './components/ModuleForm';
 import { SubjectCard } from './components/SubjectCard';
 import { SubjectForm } from './components/SubjectForm';
 
 function SubjectsPageContent() {
-  const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: subjects = [], isLoading, error } = useSubjects();
+  const createSubject = useCreateSubject();
+  const updateSubject = useUpdateSubject();
+  const deleteSubject = useDeleteSubject();
+  const createModule  = useCreateModule();
+  const updateModule  = useUpdateModule();
+  const deleteModule  = useDeleteModule();
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [showModuleForm, setShowModuleForm] = useState(false);
-  const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
-  const [editingModule, setEditingModule] = useState<Module | null>(null);
+  const [showCreateForm, setShowCreateForm]   = useState(false);
+  const [showModuleForm, setShowModuleForm]   = useState(false);
+  const [editingSubject, setEditingSubject]   = useState<Subject | null>(null);
+  const [editingModule,  setEditingModule]    = useState<Module | null>(null);
   const [selectedSubjectIdForModule, setSelectedSubjectIdForModule] = useState('');
 
-  const loadSubjects = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchSubjects();
-      setSubjects(data);
-    } catch (err: any) {
-      setError(err.message ?? 'Failed to load subjects');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => { loadSubjects(); }, [loadSubjects]);
-
-  const filteredSubjects = subjects.filter(subject =>
-    subject.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    subject.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredSubjects = subjects.filter(s =>
+    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const mutationError = [createSubject, updateSubject, deleteSubject, createModule, updateModule, deleteModule]
+    .find(m => m.error)?.error;
+
   const handleCreateSubject = async (data: Partial<Subject>) => {
-    try {
-      if (editingSubject) {
-        await updateSubject(editingSubject.id, data);
-      } else {
-        await createSubject(data);
-      }
-      setShowCreateForm(false);
-      setEditingSubject(null);
-      await loadSubjects();
-    } catch (err: any) {
-      setError(err.message ?? 'Failed to save subject');
+    if (editingSubject) {
+      await updateSubject.mutateAsync({ id: editingSubject.id, data });
+    } else {
+      await createSubject.mutateAsync(data);
     }
+    setShowCreateForm(false);
+    setEditingSubject(null);
   };
 
   const handleCreateModule = async (data: Partial<Module>) => {
-    try {
-      if (editingModule) {
-        await updateModule(editingModule.id, data);
-      } else {
-        await createModule(data);
-      }
-      setShowModuleForm(false);
-      setEditingModule(null);
-      setSelectedSubjectIdForModule('');
-      await loadSubjects();
-    } catch (err: any) {
-      setError(err.message ?? 'Failed to save module');
+    if (editingModule) {
+      await updateModule.mutateAsync({ id: editingModule.id, data });
+    } else {
+      await createModule.mutateAsync(data);
     }
+    setShowModuleForm(false);
+    setEditingModule(null);
+    setSelectedSubjectIdForModule('');
   };
 
   const handleDeleteSubject = async (id: string) => {
     if (!confirm('Delete this subject and all its modules?')) return;
-    try {
-      await deleteSubject(id);
-      await loadSubjects();
-    } catch (err: any) {
-      setError(err.message ?? 'Failed to delete subject');
-    }
+    await deleteSubject.mutateAsync(id);
   };
 
   const handleDeleteModule = async (id: string) => {
     if (!confirm('Delete this module?')) return;
-    try {
-      await deleteModule(id);
-      await loadSubjects();
-    } catch (err: any) {
-      setError(err.message ?? 'Failed to delete module');
-    }
+    await deleteModule.mutateAsync(id);
   };
 
-  const handleEditSubject = (subject: Subject) => {
-    setEditingSubject(subject);
-    setShowCreateForm(true);
-  };
-
-  const handleEditModule = (module: Module) => {
-    setEditingModule(module);
-    setShowModuleForm(true);
-  };
-
-  const handleAddModule = (subjectId?: string) => {
+  const handleEditSubject = (subject: Subject) => { setEditingSubject(subject); setShowCreateForm(true); };
+  const handleEditModule  = (module: Module)   => { setEditingModule(module);   setShowModuleForm(true); };
+  const handleAddModule   = (subjectId?: string) => {
     if (subjectId) setSelectedSubjectIdForModule(subjectId);
     setShowModuleForm(true);
   };
 
-  if (loading) return <div className="py-12 text-center text-[var(--text-secondary)]">Loading subjects...</div>;
+  if (isLoading) return <div className="py-12 text-center text-[var(--text-secondary)]">Loading subjects...</div>;
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-[var(--text-primary)]">Subject Management</h2>
@@ -141,12 +100,12 @@ function SubjectsPageContent() {
         </div>
       </div>
 
-      {/* Error Banner */}
-      {error && (
-        <div className="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">{error}</div>
+      {(error || mutationError) && (
+        <div className="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+          {(error as Error)?.message ?? (mutationError as Error)?.message}
+        </div>
       )}
 
-      {/* Forms */}
       <SubjectForm
         isOpen={showCreateForm}
         onClose={() => { setShowCreateForm(false); setEditingSubject(null); }}
@@ -162,35 +121,25 @@ function SubjectsPageContent() {
         initialSubjectId={selectedSubjectIdForModule}
       />
 
-      {/* Search */}
       <div className="flex items-center space-x-4">
         <Input
-          type="search"
-          placeholder="Search subjects..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          icon={Search}
-          className="flex-1 max-w-md"
+          type="search" placeholder="Search subjects..."
+          value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+          icon={Search} className="flex-1 max-w-md"
         />
       </div>
 
-      {/* Subjects Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {filteredSubjects.map((subject, index) => (
           <SubjectCard
-            key={subject.id}
-            subject={subject}
-            index={index}
-            onEditSubject={handleEditSubject}
-            onDeleteSubject={handleDeleteSubject}
-            onAddModule={handleAddModule}
-            onEditModule={handleEditModule}
-            onDeleteModule={handleDeleteModule}
+            key={subject.id} subject={subject} index={index}
+            onEditSubject={handleEditSubject} onDeleteSubject={handleDeleteSubject}
+            onAddModule={handleAddModule} onEditModule={handleEditModule} onDeleteModule={handleDeleteModule}
           />
         ))}
       </div>
 
-      {filteredSubjects.length === 0 && !loading && (
+      {filteredSubjects.length === 0 && (
         <div className="text-center py-12">
           <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 mb-4">No subjects found.</p>

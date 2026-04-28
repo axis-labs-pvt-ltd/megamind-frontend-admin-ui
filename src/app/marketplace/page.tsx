@@ -1,8 +1,8 @@
 'use client';
 
 import { useAuth } from '@/contexts/authcontext';
-import { purchaseTest } from '@/services/api/purchases';
-import { fetchTests } from '@/services/api/tests';
+import { useActiveTests } from '@/hooks/queries/useTests';
+import { usePurchaseTest } from '@/hooks/queries/usePurchases';
 import { Test } from '@/types';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -30,20 +30,15 @@ function getEmoji(tags: string[]) {
 }
 
 function MarketplaceContent() {
-  const router     = useRouter();
-  const params     = useSearchParams();
-  const { user }   = useAuth();
-  const [tests, setTests]     = useState<Test[]>([]);
-  const [search, setSearch]   = useState('');
-  const [loading, setLoading] = useState(true);
-  const [buying, setBuying]   = useState<Test | null>(null);
-  const [buyLoading, setBuyLoading] = useState(false);
-  const [buyError, setBuyError]     = useState<string | null>(null);
+  const router   = useRouter();
+  const params   = useSearchParams();
+  const { user } = useAuth();
+  const { data: tests = [], isLoading: loading } = useActiveTests();
+  const purchaseMutation = usePurchaseTest();
+  const [search, setSearch]     = useState('');
+  const [buying, setBuying]     = useState<Test | null>(null);
+  const [buyError, setBuyError] = useState<string | null>(null);
   const [buySuccess, setBuySuccess] = useState(false);
-
-  useEffect(() => {
-    fetchTests().then(data => { setTests(data.filter(t => t.isActive)); setLoading(false); });
-  }, []);
 
   // Auto-open purchase modal if testId param is present
   useEffect(() => {
@@ -61,16 +56,13 @@ function MarketplaceContent() {
   const handleBuy = async () => {
     if (!buying) return;
     if (!user) { router.push('/auth/signin'); return; }
-    setBuyLoading(true);
     setBuyError(null);
     try {
-      await purchaseTest(buying.id, getPrice(getQuestionCount(buying)));
+      await purchaseMutation.mutateAsync({ testId: buying.id, price: getPrice(getQuestionCount(buying)) });
       setBuySuccess(true);
       setTimeout(() => { setBuying(null); setBuySuccess(false); router.push('/my-tests'); }, 1800);
     } catch (err: any) {
       setBuyError(err.message ?? 'Purchase failed');
-    } finally {
-      setBuyLoading(false);
     }
   };
 
@@ -213,8 +205,8 @@ function MarketplaceContent() {
                   </div>
                   {buyError && <div style={{ padding: '10px 14px', background: 'rgba(217,74,61,.08)', border: '1.5px solid var(--p-accent)', borderRadius: 10, fontSize: 13, color: 'var(--p-accent)', marginBottom: 16 }}>{buyError}</div>}
                   {!user && <div style={{ padding: '10px 14px', background: 'var(--p-card-a)', border: '1.5px solid var(--p-ink)', borderRadius: 10, fontSize: 13, color: 'var(--p-ink)', marginBottom: 16 }}>⚠ You need to sign in to purchase.</div>}
-                  <button onClick={handleBuy} disabled={buyLoading} style={{ width: '100%', padding: '15px 24px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-primary)', color: 'var(--p-primary-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 15, cursor: 'pointer', boxShadow: '4px 4px 0 var(--p-ink)', opacity: buyLoading ? 0.7 : 1 }}>
-                    {buyLoading ? 'Processing…' : !user ? 'Sign in to buy →' : `Buy now · Rs. ${getPrice(getQuestionCount(buying)).toLocaleString()} →`}
+                  <button onClick={handleBuy} disabled={purchaseMutation.isPending} style={{ width: '100%', padding: '15px 24px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-primary)', color: 'var(--p-primary-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 15, cursor: 'pointer', boxShadow: '4px 4px 0 var(--p-ink)', opacity: purchaseMutation.isPending ? 0.7 : 1 }}>
+                    {purchaseMutation.isPending ? 'Processing…' : !user ? 'Sign in to buy →' : `Buy now · Rs. ${getPrice(getQuestionCount(buying)).toLocaleString()} →`}
                   </button>
                 </>
               )}

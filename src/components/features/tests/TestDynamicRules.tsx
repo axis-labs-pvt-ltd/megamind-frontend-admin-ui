@@ -3,11 +3,9 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { fetchSubjects } from '@/services/api/subjects';
+import { useSubjects } from '@/hooks/queries/useSubjects';
 import { CreateTestValues } from '@/lib/validations/test';
-import { Subject } from '@/types';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { Control, FieldErrors, useFieldArray, UseFormRegister } from 'react-hook-form';
 
 interface TestDynamicRulesProps {
@@ -17,14 +15,7 @@ interface TestDynamicRulesProps {
 }
 
 export function TestDynamicRules({ control, register, errors }: TestDynamicRulesProps) {
-  const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchSubjects()
-      .then(setSubjects)
-      .finally(() => setLoading(false));
-  }, []);
+  const { data: subjects = [], isLoading: loading } = useSubjects();
 
   const { fields, append, remove } = useFieldArray({
     control: control as any,

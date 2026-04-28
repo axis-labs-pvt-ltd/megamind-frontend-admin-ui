@@ -2,32 +2,16 @@
 'use client';
 
 import { AdminOnlyGate } from '@/components/layout/AdminGuard';
-import { useAuth } from '@/contexts/authcontext';
+import { useUsers } from '@/hooks/queries/useUsers';
 import { UserPlus } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CreateUserModal } from './components/CreateUserModal';
-import { AdminUser, UserTable } from './components/UserTable';
+import { UserTable } from './components/UserTable';
 
 function UsersPageContent() {
-  const { session } = useAuth();
-  const [users, setUsers]         = useState<AdminUser[]>([]);
-  const [loading, setLoading]     = useState(true);
+  const { data: users = [], isLoading, refetch } = useUsers();
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch]       = useState('');
-
-  const loadUsers = useCallback(async () => {
-    if (!session?.access_token) return;
-    setLoading(true);
-    const res = await fetch('/api/admin/users', {
-      headers: { Authorization: `Bearer ${session.access_token}` },
-    });
-    if (res.ok) setUsers(await res.json());
-    setLoading(false);
-  }, [session]);
-
-  useEffect(() => { loadUsers(); }, [loadUsers]);
-
-  const handleCreated = () => { setShowModal(false); loadUsers(); };
 
   const filtered = users.filter(u =>
     !search ||
@@ -44,7 +28,6 @@ function UsersPageContent() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-[var(--text-primary)]">User Management</h2>
@@ -58,10 +41,9 @@ function UsersPageContent() {
         </button>
       </div>
 
-      {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: 'Total users', value: counts.total, color: 'text-[var(--text-primary)]' },
+          { label: 'Total users', value: counts.total,   color: 'text-[var(--text-primary)]' },
           { label: 'Admins',      value: counts.admin,   color: 'text-purple-600' },
           { label: 'Teachers',    value: counts.teacher, color: 'text-blue-600' },
           { label: 'Students',    value: counts.student, color: 'text-green-600' },
@@ -73,23 +55,24 @@ function UsersPageContent() {
         ))}
       </div>
 
-      {/* Search */}
       <input
-        type="search"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
+        type="search" value={search} onChange={e => setSearch(e.target.value)}
         placeholder="Search by name or email…"
         className="w-full max-w-sm px-4 py-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
 
-      {/* Table */}
-      {loading ? (
+      {isLoading ? (
         <div className="text-center py-16 text-[var(--text-secondary)] text-sm">Loading users…</div>
       ) : (
-        <UserTable users={filtered} onRefresh={loadUsers} />
+        <UserTable users={filtered} onRefresh={refetch} />
       )}
 
-      {showModal && <CreateUserModal onClose={() => setShowModal(false)} onCreated={handleCreated} />}
+      {showModal && (
+        <CreateUserModal
+          onClose={() => setShowModal(false)}
+          onCreated={() => { setShowModal(false); refetch(); }}
+        />
+      )}
     </div>
   );
 }

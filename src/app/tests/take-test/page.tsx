@@ -1,11 +1,11 @@
 'use client';
 
-import { fetchQuestions } from '@/services/api/quections';
 import { completeTestSession, startTestSession } from '@/services/api/testSessions';
-import { fetchTests } from '@/services/api/tests';
+import { useQuestions } from '@/hooks/queries/useQuestions';
+import { useTests } from '@/hooks/queries/useTests';
 import { Question, Test } from '@/types';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useMemo, useRef, useState } from 'react';
 import { QuizActiveScreen } from './components/QuizActiveScreen';
 import { QuizPreScreen } from './components/QuizPreScreen';
 import { QuizResultScreen } from './components/QuizResultScreen';
@@ -23,10 +23,15 @@ function TakeTestPageInner() {
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
 
-  const [test, setTest] = useState<Test | null>(null);
-  const [allQuestions, setAllQuestions] = useState<Question[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: allTests = [], isLoading: testsLoading, error: testsError } = useTests();
+  const { data: allQuestions = [], isLoading: questionsLoading, error: questionsError } = useQuestions();
+
+  const loading = testsLoading || questionsLoading;
+  const loadError = testsError ?? questionsError;
+  const test = useMemo(
+    () => testId ? allTests.find(t => t.id === testId) ?? null : allTests[0] ?? null,
+    [allTests, testId]
+  );
 
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessionQuestions, setSessionQuestions] = useState<Question[]>([]);
@@ -35,23 +40,9 @@ function TakeTestPageInner() {
   const [testStarted, setTestStarted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testResult, setTestResult] = useState<{ score: number; correctAnswers: number; totalQuestions: number; timeSpent: number } | null>(null);
+  const [sessionError, setSessionError] = useState<string | null>(null);
+  const error = loadError ? (loadError as Error).message : sessionError;
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const [tests, questions] = await Promise.all([fetchTests(), fetchQuestions()]);
-        const selected = testId ? tests.find(t => t.id === testId) : tests[0];
-        if (!selected) throw new Error('Test not found');
-        setTest(selected);
-        setAllQuestions(questions);
-      } catch (err: any) {
-        setError(err.message ?? 'Failed to load test');
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [testId]);
 
   const resolveQuestions = (t: Test): Question[] => {
     if (t.type === 'static') {
@@ -77,7 +68,7 @@ function TakeTestPageInner() {
       startTimeRef.current = new Date();
       setTestStarted(true);
     } catch (err: any) {
-      setError(err.message ?? 'Failed to start test');
+      setSessionError(err.message ?? 'Failed to start test');
     }
   };
 
@@ -99,7 +90,7 @@ function TakeTestPageInner() {
       await completeTestSession(sessionId, score, timeSpent, answers, sessionQuestions);
       setTestResult({ score, correctAnswers, totalQuestions: sessionQuestions.length, timeSpent });
     } catch (err: any) {
-      setError(err.message ?? 'Failed to submit test');
+      setSessionError(err.message ?? 'Failed to submit test');
     } finally {
       setIsSubmitting(false);
     }
@@ -112,7 +103,7 @@ function TakeTestPageInner() {
     startTimeRef.current = null;
     setTestStarted(false);
     setTestResult(null);
-    setError(null);
+    setSessionError(null);
   };
 
   if (loading) {
@@ -133,7 +124,7 @@ function TakeTestPageInner() {
           <div style={{ fontSize: 40, marginBottom: 14 }}>⚠️</div>
           <p style={{ fontSize: 15, color: '#D94A3D', marginBottom: 20, fontWeight: 500 }}>{error}</p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-            <button onClick={() => { setError(null); retakeTest(); }} style={ghostBtn}>Try Again</button>
+            <button onClick={() => { setSessionError(null); retakeTest(); }} style={ghostBtn}>Try Again</button>
             <button onClick={() => router.push('/my-tests')} style={primaryBtn}>Back to Tests</button>
           </div>
         </div>

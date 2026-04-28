@@ -3,11 +3,10 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { fetchQuestions } from '@/services/api/quections';
+import { useQuestions } from '@/hooks/queries/useQuestions';
 import { CreateTestValues } from '@/lib/validations/test';
-import { Question } from '@/types';
 import { Loader2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FieldErrors, UseFormSetValue } from 'react-hook-form';
 
 interface TestQuestionsSelectionProps {
@@ -17,26 +16,11 @@ interface TestQuestionsSelectionProps {
 }
 
 export function TestQuestionsSelection({ selectedQuestions, setValue, errors }: TestQuestionsSelectionProps) {
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: questions = [], isLoading: loading, error: queryError } = useQuestions();
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [filterDifficulty, setFilterDifficulty] = useState('all');
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const data = await fetchQuestions();
-        setQuestions(data);
-      } catch (err: any) {
-        setError(err.message ?? 'Failed to load questions');
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
+  const error = queryError ? (queryError as Error).message : null;
 
   const toggleQuestion = (questionId: string) => {
     const updated = selectedQuestions.includes(questionId)
