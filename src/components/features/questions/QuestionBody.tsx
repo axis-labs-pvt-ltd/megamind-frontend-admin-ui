@@ -25,15 +25,23 @@ const renderAnswerOptions = (props: QuestionBodyProps, isMultiSelect: boolean) =
   ) : null
 );
 
-const renderBooleanOptions = (props: QuestionBodyProps) => (
-  props.question.options ? (
+const BOOLEAN_OPTIONS: Record<string, { id: string; text: string }[]> = {
+  'yes-no':    [{ id: 'Yes',  text: 'Yes'  }, { id: 'No',    text: 'No'    }],
+  'true-false':[{ id: 'True', text: 'True' }, { id: 'False', text: 'False' }],
+};
+
+const renderBooleanOptions = (props: QuestionBodyProps) => {
+  const options = props.question.options?.length
+    ? props.question.options
+    : BOOLEAN_OPTIONS[props.question.type] ?? [];
+  return (
     <BooleanOptions
-      options={props.question.options}
+      options={options}
       correctAnswer={props.question.correctAnswer as string | string[]}
       showAnswer={props.showAnswer}
     />
-  ) : null
-);
+  );
+};
 
 const RENDERERS = {
   'mcq':          (p: QuestionBodyProps) => renderAnswerOptions(p, false),

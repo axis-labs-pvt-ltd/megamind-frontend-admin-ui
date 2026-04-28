@@ -34,7 +34,7 @@ export function useCreateTestForm() {
     setError(null);
     try {
       await createTest(data);
-      router.push('/tests');
+      router.push('/admin/tests');
     } catch (err: any) {
       setError(err.message ?? 'Failed to create test');
     } finally {

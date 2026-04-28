@@ -14,7 +14,7 @@ export function TestFormActions({ isLoading }: TestFormActionsProps) {
       <Button
         type="button"
         variant="outline"
-        onClick={() => router.push('/tests')}
+        onClick={() => router.push('/admin/tests')}
       >
         Cancel
       </Button>

@@ -30,7 +30,7 @@ export function TestsEmptyState({ activeFiltersCount, onClearFilters }: TestsEmp
           </button>
         )}
         <button
-          onClick={() => router.push('/tests/create')}
+          onClick={() => router.push('/admin/tests/create')}
           style={{ padding: '9px 20px', borderRadius: 10, border: '1.5px solid var(--border-primary)', background: 'var(--accent-blue)', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
         >
           Create a Test

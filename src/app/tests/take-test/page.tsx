@@ -5,12 +5,20 @@ import { completeTestSession, startTestSession } from '@/services/api/testSessio
 import { fetchTests } from '@/services/api/tests';
 import { Question, Test } from '@/types';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { QuizActiveScreen } from './components/QuizActiveScreen';
 import { QuizPreScreen } from './components/QuizPreScreen';
 import { QuizResultScreen } from './components/QuizResultScreen';
 
 export default function TakeTestPage() {
+  return (
+    <Suspense>
+      <TakeTestPageInner />
+    </Suspense>
+  );
+}
+
+function TakeTestPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
@@ -126,7 +134,7 @@ export default function TakeTestPage() {
           <p style={{ fontSize: 15, color: '#D94A3D', marginBottom: 20, fontWeight: 500 }}>{error}</p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
             <button onClick={() => { setError(null); retakeTest(); }} style={ghostBtn}>Try Again</button>
-            <button onClick={() => router.push('/tests')} style={primaryBtn}>Back to Tests</button>
+            <button onClick={() => router.push('/my-tests')} style={primaryBtn}>Back to Tests</button>
           </div>
         </div>
       </div>
@@ -136,7 +144,7 @@ export default function TakeTestPage() {
   if (!test) return null;
 
   if (testResult) {
-    return <QuizResultScreen test={test} result={testResult} questions={sessionQuestions} answers={answers} onRetake={retakeTest} onBack={() => router.push('/tests')} />;
+    return <QuizResultScreen test={test} result={testResult} questions={sessionQuestions} answers={answers} onRetake={retakeTest} onBack={() => router.push('/my-tests')} />;
   }
 
   if (testStarted && sessionId) {
@@ -148,12 +156,12 @@ export default function TakeTestPage() {
         onAnswerChange={handleAnswerChange}
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
-        onExit={() => router.push('/tests')}
+        onExit={() => router.push('/my-tests')}
       />
     );
   }
 
-  return <QuizPreScreen test={test} onStart={startTest} onBack={() => router.push('/tests')} />;
+  return <QuizPreScreen test={test} onStart={startTest} onBack={() => router.push('/my-tests')} />;
 }
 
 const primaryBtn: React.CSSProperties = {

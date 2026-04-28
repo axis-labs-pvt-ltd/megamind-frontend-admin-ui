@@ -18,7 +18,7 @@ export function SignInForm() {
     setError(null);
     try {
       await authService.login({ email, password });
-      router.push('/dashboard');
+      router.push('/admin/dashboard');
     } catch (err: any) {
       setError(err.message ?? 'Invalid email or password');
     } finally {

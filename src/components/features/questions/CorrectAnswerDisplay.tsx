@@ -34,11 +34,12 @@ function formatFillInBlankAnswer(question: Question): string {
 
 function formatCorrectAnswer(question: Question): string {
   switch (question.type) {
+    case 'yes-no':
+    case 'true-false':
+      return String(question.correctAnswer);
     case 'mcq':
     case 'multi-select':
     case 'drag-drop':
-    case 'yes-no':
-    case 'true-false':
       return formatChoiceAnswer(question);
     case 'fill-in-blank':
       return formatFillInBlankAnswer(question);

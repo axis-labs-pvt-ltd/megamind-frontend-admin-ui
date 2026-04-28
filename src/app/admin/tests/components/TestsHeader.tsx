@@ -27,7 +27,7 @@ export function TestsHeader({ totalTests, availableTestsCount, activeFiltersCoun
         </p>
       </div>
       <button
-        onClick={() => router.push('/tests/create')}
+        onClick={() => router.push('/admin/tests/create')}
         style={{
           padding: '10px 20px',
           border: '2px solid var(--border-primary)',

@@ -6,7 +6,6 @@ import { useThemeStore } from '@/store/useThemeStore';
 import { ChevronLeft, ChevronRight, LogOut, Palette, Settings, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { NeumorphicWrapper } from '../ui/neumorphic-wrapper';
 import { ThemeSelector } from './ThemeSelector';
 
 export function ProfileDropdown() {
@@ -14,7 +13,7 @@ export function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme } = useThemeStore();
   const { user, profile } = useAuth();
-  const themeLabel = theme === 'neumorphic' ? 'Neumorphic' : theme.charAt(0).toUpperCase() + theme.slice(1);
+  const themeLabel = theme.charAt(0).toUpperCase() + theme.slice(1);
 
   const displayName = profile?.full_name ?? user?.email ?? 'Admin';
   const roleLabel   = profile?.role ? profile.role.charAt(0).toUpperCase() + profile.role.slice(1) : 'Staff';
@@ -63,7 +62,7 @@ function AvatarBadge({ avatarUrl, initials, size = 32 }: { avatarUrl: string | n
     return <img src={avatarUrl} alt="avatar" className={base} style={{ width: s, height: s }} />;
   }
   return (
-    <div className={`rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center ring-2 ring-white shadow-sm`} style={{ width: s, height: s }}>
+    <div className="rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center ring-2 ring-white shadow-sm" style={{ width: s, height: s }}>
       <span className="text-white font-bold" style={{ fontSize: size * 0.38 }}>{initials}</span>
     </div>
   );
@@ -129,37 +128,30 @@ function MainMenu({ themeLabel, onNavigateToThemes, onClose }: {
     router.push('/auth/signin');
   };
 
+  const btnBase = "w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors hover:bg-[var(--bg-hover)] group/item";
+
   return (
     <div className="animate-slide-right">
-      <div className="p-2">
-        <NeumorphicWrapper
-          as="button"
-          active={false}
-          variant="secondary"
-          onClick={() => { router.push('/settings'); onClose(); }}
-          className="w-full flex items-center space-x-3 px-3 py-2 text-left mb-2 group/item"
+      <div className="p-2 space-y-0.5">
+        <button
+          onClick={() => { router.push('/admin/settings'); onClose(); }}
+          className={btnBase}
         >
           <User className="h-4 w-4 text-[var(--text-secondary)] group-hover/item:text-[var(--accent-blue)] transition-colors" />
           <span className="text-sm text-[var(--text-primary)] group-hover/item:text-[var(--accent-blue)] transition-colors">View Profile</span>
-        </NeumorphicWrapper>
+        </button>
 
-        <NeumorphicWrapper
-          as="button"
-          active={false}
-          variant="secondary"
-          onClick={() => { router.push('/settings'); onClose(); }}
-          className="w-full flex items-center space-x-3 px-3 py-2 text-left mb-2 group/item"
+        <button
+          onClick={() => { router.push('/admin/settings'); onClose(); }}
+          className={btnBase}
         >
           <Settings className="h-4 w-4 text-[var(--text-secondary)] group-hover/item:text-[var(--accent-blue)] transition-colors" />
           <span className="text-sm text-[var(--text-primary)] group-hover/item:text-[var(--accent-blue)] transition-colors">Settings</span>
-        </NeumorphicWrapper>
+        </button>
 
-        <NeumorphicWrapper
-          as="button"
-          active={false}
-          variant="secondary"
-          onClick={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); onNavigateToThemes(); }}
-          className="w-full flex items-center justify-between px-3 py-2 text-left group/item"
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onNavigateToThemes(); }}
+          className={cn(btnBase, "justify-between")}
         >
           <div className="flex items-center space-x-3">
             <Palette className="h-4 w-4 text-[var(--text-secondary)] group-hover/item:text-[var(--accent-blue)] transition-colors" />
@@ -169,20 +161,17 @@ function MainMenu({ themeLabel, onNavigateToThemes, onClose }: {
             <span className="text-xs text-[var(--text-muted)] group-hover/item:text-[var(--accent-blue)]">{themeLabel}</span>
             <ChevronRight className="h-4 w-4 text-[var(--text-secondary)] group-hover/item:text-[var(--accent-blue)]" />
           </div>
-        </NeumorphicWrapper>
+        </button>
       </div>
 
       <div className="p-2 border-t border-[var(--border-primary)]">
-        <NeumorphicWrapper
-          as="button"
-          active={false}
-          variant="secondary"
+        <button
           onClick={handleSignOut}
-          className="w-full flex items-center space-x-3 px-3 py-2 text-left text-[var(--accent-red)] hover:bg-[var(--accent-red-light)] group/logout"
+          className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors text-[var(--accent-red)] hover:bg-[var(--accent-red-light)] group/logout"
         >
           <LogOut className="h-4 w-4 group-hover/logout:scale-110 transition-transform" />
           <span className="text-sm">Sign Out</span>
-        </NeumorphicWrapper>
+        </button>
       </div>
     </div>
   );

@@ -16,8 +16,8 @@ export default function DashboardPage() {
       {/* Welcome Section */}
       <DashboardWelcome 
         stats={stats} 
-        onTakeTest={() => router.push('/tests')} 
-        onViewAnalytics={() => router.push('/analytics')} 
+        onTakeTest={() => router.push('/admin/tests')}
+        onViewAnalytics={() => router.push('/admin/analytics')}
       />
 
       {/* Quick Stats */}

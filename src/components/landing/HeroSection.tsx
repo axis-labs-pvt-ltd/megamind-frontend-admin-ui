@@ -66,7 +66,7 @@ export function HeroSection() {
                 fontFamily: 'var(--font-display, sans-serif)', fontSize: 15,
                 boxShadow: '3px 3px 0 var(--p-ink)', textDecoration: 'none',
               }}>Try a free quiz →</a>
-              <Link href="/tests" style={{
+              <Link href="/my-tests" style={{
                 display: 'inline-flex', alignItems: 'center', gap: 10,
                 padding: '14px 22px', border: '2px solid var(--p-ink)', borderRadius: 999,
                 background: 'var(--p-bg)', color: 'var(--p-ink)', fontWeight: 600,

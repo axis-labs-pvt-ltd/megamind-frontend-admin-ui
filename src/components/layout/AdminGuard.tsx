@@ -37,7 +37,7 @@ export function AdminOnlyGate({ children }: { children: React.ReactNode }) {
     if (loading) return;
     if (!user) { router.replace('/auth/signin'); return; }
     if (profile && profile.role !== 'admin') {
-      router.replace('/dashboard');
+      router.replace('/admin/dashboard');
     }
   }, [user, profile, loading, router]);
 

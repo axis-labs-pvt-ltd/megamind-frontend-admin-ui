@@ -19,7 +19,7 @@ export function AvailableTestsList() {
         </div>
         <Button
           variant="outline"
-          onClick={() => router.push('/tests')}
+          onClick={() => router.push('/admin/tests')}
           className="hover:bg-[var(--accent-blue)]/10 hover:border-[var(--accent-blue)] hover:text-[var(--accent-blue)]"
         >
           View All Tests
