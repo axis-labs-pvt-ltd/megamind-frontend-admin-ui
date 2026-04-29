@@ -1,5 +1,5 @@
+import { useSubjects } from '@/hooks/queries/useSubjects';
 import { Input } from '@/components/ui/input';
-import { mockSubjects } from '@/lib/mock-data';
 import { QuestionFormData } from '@/lib/validations/question';
 import { Video } from 'lucide-react';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
@@ -10,6 +10,8 @@ interface QuestionMetadataFieldsProps {
 }
 
 export function QuestionMetadataFields({ control, errors }: QuestionMetadataFieldsProps) {
+  const { data: subjects = [] } = useSubjects();
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -26,7 +28,7 @@ export function QuestionMetadataFields({ control, errors }: QuestionMetadataFiel
                 className="w-full px-4 py-3 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Module</option>
-                {mockSubjects.flatMap(subject =>
+                {subjects.flatMap(subject =>
                   subject.modules.map(module => (
                     <option key={module.id} value={module.id}>
                       {subject.name} - {module.name}

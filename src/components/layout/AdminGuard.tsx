@@ -12,18 +12,14 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (loading) return;
-    if (!user) {
+    if (!user) { router.replace('/auth/signin'); return; }
+    if (!profile || !['admin', 'teacher'].includes(profile.role)) {
       router.replace('/auth/signin');
-      return;
-    }
-    if (profile && !['admin', 'teacher'].includes(profile.role)) {
-      router.replace('/marketplace');
     }
   }, [user, profile, loading, router]);
 
-  if (loading || !user || !profile) return <AdminLoadingScreen />;
-
-  if (!['admin', 'teacher'].includes(profile.role)) return null;
+  if (loading) return <AdminLoadingScreen />;
+  if (!user || !profile || !['admin', 'teacher'].includes(profile.role)) return null;
 
   return <>{children}</>;
 }

@@ -1,6 +1,6 @@
 import { queryClient } from '@/lib/query-client';
 import { fetchMyPurchases, purchaseTest } from '@/services/api/purchases';
-import { fetchStudentAttempts } from '@/services/api/testSessions';
+import { fetchSessionDetails, fetchStudentAttempts } from '@/services/api/testSessions';
 import { TestHistory } from '@/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -34,6 +34,15 @@ export function useStudentAttempts(userId: string | undefined) {
       }));
     },
     enabled: !!userId,
+  });
+}
+
+export function useSessionDetails(sessionId: string | null) {
+  return useQuery({
+    queryKey: ['session-details', sessionId],
+    queryFn: () => fetchSessionDetails(sessionId!),
+    enabled: !!sessionId,
+    staleTime: Infinity,
   });
 }
 

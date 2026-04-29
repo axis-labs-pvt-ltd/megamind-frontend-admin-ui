@@ -1,99 +1,29 @@
 import { QuestionType } from '@/types';
 import { z } from 'zod';
 
-// Base question schema
-const baseQuestionSchema = z.object({
+// Flat schema — avoids discriminated union issues with react-hook-form + Zod 4
+export const questionFormSchema = z.object({
+  type: z.enum(['mcq', 'multi-select', 'yes-no', 'true-false', 'fill-in-blank', 'drag-drop', 'matching', 'text']),
   text: z.string().min(5, 'Question text must be at least 5 characters'),
   imageUrl: z.string().optional(),
   difficulty: z.enum(['easy', 'medium', 'hard']),
   moduleId: z.string().min(1, 'Please select a module'),
   categoryIds: z.array(z.string()).default([]),
   tagIds: z.array(z.string()).default([]),
-  solutionVideoUrl: z.string().url().optional().or(z.literal('')),
-});
-
-// Option Schema
-const questionOptionSchema = z.object({
-  id: z.string(),
-  text: z.string().min(1, 'Option text cannot be empty'),
-  isCorrect: z.boolean().optional(),
-  media: z.object({
-    type: z.enum(['image', 'video']),
-    url: z.string().url(),
-    altText: z.string().optional(),
-  }).optional(),
-});
-
-// MCQ Schema
-const mcqSchema = baseQuestionSchema.extend({
-  type: z.literal('mcq'),
-  options: z.array(questionOptionSchema).min(2, 'At least 2 options required'),
-  correctAnswer: z.string().min(1, 'Please select a correct answer'),
-});
-
-// Multi-Select Schema
-const multiSelectSchema = baseQuestionSchema.extend({
-  type: z.literal('multi-select'),
-  options: z.array(questionOptionSchema).min(2, 'At least 2 options required'),
-  correctAnswer: z.array(z.string()).min(1, 'At least one correct answer required'),
-});
-
-// Yes-No Schema
-const yesNoSchema = baseQuestionSchema.extend({
-  type: z.literal('yes-no'),
-  correctAnswer: z.enum(['Yes', 'No'], { message: 'Please select Yes or No' }),
-});
-
-// True-False Schema
-const trueFalseSchema = baseQuestionSchema.extend({
-  type: z.literal('true-false'),
-  correctAnswer: z.enum(['True', 'False'], { message: 'Please select True or False' }),
-});
-
-// Fill in Blank Schema
-const fillInBlankSchema = baseQuestionSchema.extend({
-  type: z.literal('fill-in-blank'),
-  correctAnswer: z.string().min(1, 'Please provide the correct answer'),
+  solutionVideoUrl: z.string().optional(),
+  options: z.array(z.object({
+    id: z.string(),
+    text: z.string(),
+    isCorrect: z.boolean().optional(),
+  })).optional(),
+  correctAnswer: z.union([z.string(), z.array(z.any())]).optional(),
+  matchingPairs: z.array(z.object({
+    left: z.string(),
+    right: z.string(),
+  })).optional(),
   acceptableAnswers: z.array(z.string()).optional(),
-  caseSensitive: z.boolean().default(false),
+  caseSensitive: z.boolean().optional(),
 });
-
-// Drag-Drop Schema
-const dragDropSchema = baseQuestionSchema.extend({
-  type: z.literal('drag-drop'),
-  options: z.array(questionOptionSchema).min(2, 'At least 2 options required'),
-  correctAnswer: z.array(z.string()).min(2, 'Please set the correct order'),
-});
-
-// Text Schema
-const textSchema = baseQuestionSchema.extend({
-  type: z.literal('text'),
-  correctAnswer: z.string().min(1, 'Please provide a model answer'),
-});
-
-// Matching Schema
-const matchingPairSchema = z.object({
-  left: z.string().min(1, 'Left item cannot be empty'),
-  right: z.string().min(1, 'Right item cannot be empty'),
-});
-
-const matchingSchema = baseQuestionSchema.extend({
-  type: z.literal('matching'),
-  matchingPairs: z.array(matchingPairSchema).min(2, 'At least 2 pairs required'),
-  correctAnswer: z.array(matchingPairSchema),
-});
-
-// Discriminated union for all question types
-export const questionFormSchema = z.discriminatedUnion('type', [
-  mcqSchema,
-  multiSelectSchema,
-  yesNoSchema,
-  trueFalseSchema,
-  fillInBlankSchema,
-  dragDropSchema,
-  matchingSchema,
-  textSchema,
-]);
 
 export type QuestionFormData = z.infer<typeof questionFormSchema>;
 

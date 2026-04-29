@@ -1,8 +1,9 @@
 'use client';
 
 import { useAuth } from '@/contexts/authcontext';
-import { useMyPurchases, useStudentAttempts } from '@/hooks/queries/usePurchases';
-import { Purchase, TestHistory } from '@/types';
+import { useMyPurchases, useSessionDetails, useStudentAttempts } from '@/hooks/queries/usePurchases';
+import { TestHistory, StaticTest } from '@/types';
+import { QuizResultScreen } from '@/app/tests/take-test/components/QuizResultScreen';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -13,9 +14,11 @@ export default function MyTestsPage() {
   const { user, profile, loading: authLoading } = useAuth();
   const router = useRouter();
   const [tab, setTab] = useState<'tests' | 'history'>('tests');
+  const [viewingSession, setViewingSession] = useState<TestHistory | null>(null);
 
   const { data: purchases = [], isLoading: purchasesLoading } = useMyPurchases();
   const { data: history = [],   isLoading: historyLoading   } = useStudentAttempts(user?.id);
+  const { data: sessionDetails, isLoading: detailsLoading  } = useSessionDetails(viewingSession?.id ?? null);
   const loading = purchasesLoading || historyLoading;
 
   useEffect(() => {
@@ -26,6 +29,49 @@ export default function MyTestsPage() {
 
   const formatTime = (sec: number) => `${Math.floor(sec / 60)}m ${sec % 60}s`;
   const formatDate = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  // Show result screen overlay when viewing a past session
+  if (viewingSession) {
+    if (detailsLoading || !sessionDetails) {
+      return (
+        <div style={{ minHeight: '100vh', background: 'var(--p-bg)', display: 'grid', placeItems: 'center' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
+            <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontSize: 20, fontWeight: 600, color: 'var(--p-ink)' }}>Loading results…</div>
+          </div>
+        </div>
+      );
+    }
+
+    // Construct a minimal Test object from the history entry for QuizResultScreen
+    const fakeTest: StaticTest = {
+      id: viewingSession.testId,
+      title: viewingSession.testTitle,
+      description: '',
+      type: 'static',
+      questionIds: sessionDetails.questions.map(q => q.id),
+      timeLimit: 0,
+      passingScore: viewingSession.passingScore,
+      isActive: true,
+      createdAt: viewingSession.completedAt,
+    };
+
+    return (
+      <QuizResultScreen
+        test={fakeTest}
+        result={{
+          score: viewingSession.score,
+          correctAnswers: viewingSession.correctAnswers,
+          totalQuestions: viewingSession.totalQuestions,
+          timeSpent: viewingSession.timeSpent,
+        }}
+        questions={sessionDetails.questions}
+        answers={sessionDetails.answers}
+        onRetake={() => { setViewingSession(null); router.push(`/tests/take-test?testId=${viewingSession.testId}`); }}
+        onBack={() => setViewingSession(null)}
+      />
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>
@@ -153,9 +199,17 @@ export default function MyTestsPage() {
                       <span style={{ width: 6, height: 6, borderRadius: 999, background: h.passed ? 'var(--p-primary)' : 'var(--p-accent)', flexShrink: 0 }} />
                       {h.passed ? 'Passed' : 'Failed'}
                     </span>
-                    <Link href={`/tests/take-test?testId=${h.testId}`} style={{ padding: '9px 16px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-bg-alt)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, textDecoration: 'none', flexShrink: 0 }}>
-                      Retry →
-                    </Link>
+                    <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                      <button
+                        onClick={() => setViewingSession(h)}
+                        style={{ padding: '9px 16px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-primary)', color: 'var(--p-primary-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, cursor: 'pointer', boxShadow: '3px 3px 0 var(--p-ink)' }}
+                      >
+                        View results →
+                      </button>
+                      <Link href={`/tests/take-test?testId=${h.testId}`} style={{ padding: '9px 16px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-bg-alt)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, textDecoration: 'none' }}>
+                        Retry →
+                      </Link>
+                    </div>
                   </div>
                 ))}
               </div>

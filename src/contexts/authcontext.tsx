@@ -37,12 +37,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async (userId: string) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .single();
-    setProfile(data);
+    if (error && error.code !== 'PGRST116') {
+      console.error('[AuthContext] fetchProfile error:', error.message);
+    }
+    setProfile(data ?? null);
   };
 
   useEffect(() => {
