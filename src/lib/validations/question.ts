@@ -11,6 +11,7 @@ export const questionFormSchema = z.object({
   categoryIds: z.array(z.string()).default([]),
   tagIds: z.array(z.string()).default([]),
   solutionVideoUrl: z.string().optional(),
+  solutionText: z.string().optional(),
   options: z.array(z.object({
     id: z.string(),
     text: z.string(),

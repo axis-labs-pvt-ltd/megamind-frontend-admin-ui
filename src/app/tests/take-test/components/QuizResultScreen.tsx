@@ -2,6 +2,8 @@
 'use client';
 
 import { Question, Test } from '@/types';
+import { useState } from 'react';
+import { SolutionDialog } from './SolutionDialog';
 
 interface Props {
   test: Test;
@@ -13,6 +15,7 @@ interface Props {
 }
 
 export function QuizResultScreen({ test, result, questions, answers, onRetake, onBack }: Props) {
+  const [solutionQuestion, setSolutionQuestion] = useState<Question | null>(null);
   const passed  = result.score >= test.passingScore;
   const mins    = Math.floor(result.timeSpent / 60);
   const secs    = result.timeSpent % 60;
@@ -201,12 +204,12 @@ export function QuizResultScreen({ test, result, questions, answers, onRetake, o
                     <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--p-muted)', marginBottom: 3 }}>Q {String(i + 1).padStart(2, '0')}</div>
                     <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 500, fontSize: 15, color: 'var(--p-ink)', lineHeight: 1.4 }}>{q.text}</div>
                   </div>
-                  {q.solutionVideoUrl ? (
-                    <a href={q.solutionVideoUrl} target="_blank" rel="noreferrer" style={smGhost}>
+                  {(q.solutionVideoUrl || q.solutionText) ? (
+                    <button onClick={() => setSolutionQuestion(q)} style={smGhost}>
                       {isCorrect ? 'Review' : 'See solution'} →
-                    </a>
+                    </button>
                   ) : (
-                    <span style={{ ...smGhost, opacity: 0.4, cursor: 'default' }}>{isCorrect ? 'Review' : 'See solution'} →</span>
+                    <span style={{ ...smGhost, opacity: 0.3, cursor: 'default' }}>{isCorrect ? 'Review' : 'See solution'} →</span>
                   )}
                 </div>
               );
@@ -225,6 +228,10 @@ export function QuizResultScreen({ test, result, questions, answers, onRetake, o
           .res-grid, .ai-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
+
+      {solutionQuestion && (
+        <SolutionDialog question={solutionQuestion} onClose={() => setSolutionQuestion(null)} />
+      )}
     </div>
   );
 }

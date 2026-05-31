@@ -33,6 +33,7 @@ export async function createQuestion(formData: QuestionFormData): Promise<Questi
       module_id: formData.moduleId || null,
       correct_answer: formData.correctAnswer,
       solution_video_url: formData.solutionVideoUrl || null,
+      solution_text: (formData as any).solutionText || null,
     })
     .select()
     .single();
@@ -99,6 +100,7 @@ export async function updateQuestion(id: string, formData: QuestionFormData): Pr
       module_id: formData.moduleId || null,
       correct_answer: formData.correctAnswer,
       solution_video_url: formData.solutionVideoUrl || null,
+      solution_text: (formData as any).solutionText || null,
     })
     .eq('id', id);
 
@@ -152,6 +154,23 @@ export async function deleteQuestion(id: string): Promise<void> {
   if (error) throw error;
 }
 
+// ---- Fetch specific questions by ID list (used by session details) ----
+export async function fetchQuestionsByIds(ids: string[]): Promise<Question[]> {
+  if (!ids.length) return [];
+  const { data, error } = await supabase
+    .from('questions')
+    .select(`
+      *,
+      question_options(*),
+      question_matching_pairs(*),
+      question_categories(category_id, categories(*)),
+      question_tags(tag_id, tags(*))
+    `)
+    .in('id', ids);
+  if (error) throw error;
+  return (data ?? []).map(mapDbToQuestion);
+}
+
 // ---- Map DB row → Question type ----
 function mapDbToQuestion(row: any): Question {
   return {
@@ -162,7 +181,8 @@ function mapDbToQuestion(row: any): Question {
     difficulty: row.difficulty,
     moduleId: row.module_id,
     correctAnswer: row.correct_answer,
-    solutionVideoUrl: row.solution_video_url,
+    solutionVideoUrl: row.solution_video_url ?? undefined,
+    solutionText: row.solution_text ?? undefined,
     createdAt: new Date(row.created_at),
     options: row.question_options
       ?.sort((a: any, b: any) => a.sort_order - b.sort_order)

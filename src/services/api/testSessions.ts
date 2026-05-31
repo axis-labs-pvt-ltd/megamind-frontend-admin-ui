@@ -1,5 +1,6 @@
 // lib/api/testSessions.ts
 import { supabase } from '@/lib/supabase';
+import { fetchQuestionsByIds } from './quections';
 import { Question, TestSession } from '@/types';
 
 // ---- Start a new session ----
@@ -104,49 +105,27 @@ export async function fetchSessionDetails(sessionId: string): Promise<{
   questions: Question[];
   answers: Record<string, string | string[]>;
 }> {
-  const { data, error } = await supabase
+  // Step 1: get the stored answers (question_id + student's answer)
+  const { data: answerRows, error: answerErr } = await supabase
     .from('test_session_answers')
-    .select(`
-      question_id,
-      answer,
-      questions!inner(
-        id, type, text, image_url, difficulty, module_id,
-        correct_answer, solution_video_url, created_at,
-        question_options(option_key, text, sort_order),
-        question_matching_pairs(left_text, right_text, sort_order),
-        question_categories(category_id, categories(id, name, color)),
-        question_tags(tag_id, tags(id, name, color))
-      )
-    `)
+    .select('question_id, answer')
     .eq('session_id', sessionId);
 
-  if (error) throw error;
+  if (answerErr) throw answerErr;
+  if (!answerRows?.length) return { questions: [], answers: {} };
 
-  const questions: Question[] = (data ?? []).map((row: any) => {
-    const q = row.questions;
-    return {
-      id: q.id,
-      type: q.type,
-      text: q.text,
-      imageUrl: q.image_url ?? undefined,
-      difficulty: q.difficulty,
-      moduleId: q.module_id,
-      correctAnswer: q.correct_answer,
-      solutionVideoUrl: q.solution_video_url ?? undefined,
-      createdAt: new Date(q.created_at),
-      options: (q.question_options ?? [])
-        .sort((a: any, b: any) => a.sort_order - b.sort_order)
-        .map((o: any) => ({ id: o.option_key, text: o.text })),
-      matchingPairs: (q.question_matching_pairs ?? [])
-        .sort((a: any, b: any) => a.sort_order - b.sort_order)
-        .map((p: any) => ({ left: p.left_text, right: p.right_text })),
-      categories: (q.question_categories ?? []).map((qc: any) => qc.categories ?? { id: '', name: '', color: '' }),
-      tags: (q.question_tags ?? []).map((qt: any) => qt.tags ?? { id: '', name: '', color: '' }),
-    } as Question;
-  });
+  // Step 2: fetch full question data using the IDs
+  const questionIds = answerRows.map((r: any) => r.question_id as string);
+  const questions = await fetchQuestionsByIds(questionIds);
 
+  // Preserve the original question order from the session
+  const orderMap: Record<string, number> = {};
+  questionIds.forEach((id, i) => { orderMap[id] = i; });
+  questions.sort((a, b) => (orderMap[a.id] ?? 0) - (orderMap[b.id] ?? 0));
+
+  // Build answers map
   const answers: Record<string, string | string[]> = {};
-  (data ?? []).forEach((row: any) => {
+  answerRows.forEach((row: any) => {
     if (row.answer !== null && row.answer !== undefined) {
       answers[row.question_id] = row.answer;
     }

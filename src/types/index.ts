@@ -56,6 +56,7 @@ export interface Question {
   correctAnswer: string | string[] | MatchingPair[];
   acceptableAnswers?: string[];
   solutionVideoUrl?: string;
+  solutionText?: string;
   referenceVideoUrl?: string;
   moduleId: string;
   categories: Category[];

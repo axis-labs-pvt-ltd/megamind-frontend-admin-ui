@@ -18,7 +18,7 @@ export default function MyTestsPage() {
 
   const { data: purchases = [], isLoading: purchasesLoading } = useMyPurchases();
   const { data: history = [],   isLoading: historyLoading   } = useStudentAttempts(user?.id);
-  const { data: sessionDetails, isLoading: detailsLoading  } = useSessionDetails(viewingSession?.id ?? null);
+  const { data: sessionDetails, isLoading: detailsLoading, error: detailsError } = useSessionDetails(viewingSession?.id ?? null);
   const loading = purchasesLoading || historyLoading;
 
   useEffect(() => {
@@ -32,12 +32,27 @@ export default function MyTestsPage() {
 
   // Show result screen overlay when viewing a past session
   if (viewingSession) {
-    if (detailsLoading || !sessionDetails) {
+    if (detailsLoading) {
       return (
         <div style={{ minHeight: '100vh', background: 'var(--p-bg)', display: 'grid', placeItems: 'center' }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
             <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontSize: 20, fontWeight: 600, color: 'var(--p-ink)' }}>Loading results…</div>
+          </div>
+        </div>
+      );
+    }
+
+    if (detailsError || !sessionDetails) {
+      return (
+        <div style={{ minHeight: '100vh', background: 'var(--p-bg)', display: 'grid', placeItems: 'center' }}>
+          <div style={{ textAlign: 'center', maxWidth: 420 }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
+            <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontSize: 20, fontWeight: 600, color: 'var(--p-ink)', marginBottom: 8 }}>Couldn't load results</div>
+            <p style={{ color: 'var(--p-ink-2)', fontSize: 14, marginBottom: 24 }}>{(detailsError as Error)?.message ?? 'Something went wrong fetching the session.'}</p>
+            <button onClick={() => setViewingSession(null)} style={{ padding: '11px 24px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-primary)', color: 'var(--p-primary-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 14, cursor: 'pointer', boxShadow: '3px 3px 0 var(--p-ink)' }}>
+              ← Back to history
+            </button>
           </div>
         </div>
       );
