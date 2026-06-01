@@ -1,334 +1,162 @@
 'use client';
 
 import { useAuth } from '@/contexts/authcontext';
-import { Avatar } from '@/components/landing/LandingNav';
-import { supabase } from '@/lib/supabase';
-import { fetchMyPurchases } from '@/services/api/purchases';
-import { fetchStudentAttempts } from '@/services/api/testSessions';
+import { useMyPurchases, useSessionDetails, useStudentAttempts } from '@/hooks/queries/usePurchases';
+import { QuizResultScreen } from '@/app/tests/take-test/components/QuizResultScreen';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useRef, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { TestHistory } from '@/types';
+import { KpiStrip } from './components/KpiStrip';
+import { PerformancePanel } from './components/PerformancePanel';
+import { RecentActivity } from './components/RecentActivity';
+import { FlashcardDecks } from './components/FlashcardDecks';
+import { ProfileSettings } from './components/ProfileSettings';
 
-export default function StudentProfilePage() {
-  const { user, profile, loading: authLoading } = useAuth();
+type Tab = 'overview' | 'performance' | 'purchases' | 'settings';
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'overview',    label: 'Overview' },
+  { id: 'performance', label: 'Performance' },
+  { id: 'purchases',   label: 'Purchases' },
+  { id: 'settings',    label: 'Settings' },
+];
+
+function ProfileContent() {
+  const { user, profile, loading: authLoading, logout } = useAuth();
   const router = useRouter();
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [tab, setTab] = useState<Tab>('overview');
+  const [viewing, setViewing] = useState<TestHistory | null>(null);
 
-  const [fullName, setFullName]       = useState('');
-  const [phone, setPhone]             = useState('');
-  const [address, setAddress]         = useState('');
-  const [avatarUrl, setAvatarUrl]     = useState<string | null>(null);
-  const [uploading, setUploading]     = useState(false);
-  const [saving, setSaving]           = useState(false);
-  const [saveMsg, setSaveMsg]         = useState('');
-  const [stats, setStats]             = useState({ purchased: 0, completed: 0, avgScore: 0 });
-  const [statsLoading, setStatsLoading] = useState(true);
+  const { data: purchases = [], isLoading: purchLoading } = useMyPurchases();
+  const { data: history = [],   isLoading: histLoading  } = useStudentAttempts(user?.id);
+  const { data: sessionDetails, isLoading: detailsLoading } = useSessionDetails(viewing?.id ?? null);
 
-  useEffect(() => {
-    if (!authLoading && !user) router.push('/auth/signin');
-  }, [user, authLoading, router]);
-
-  useEffect(() => {
-    if (profile) {
-      setFullName(profile.full_name ?? '');
-      setPhone(profile.phone ?? '');
-      setAddress(profile.address ?? '');
-      setAvatarUrl(profile.avatar_url ?? null);
-    }
-  }, [profile]);
-
-  useEffect(() => {
-    if (!user) return;
-    (async () => {
-      const [purchases, attempts] = await Promise.all([
-        fetchMyPurchases().catch(() => []),
-        fetchStudentAttempts(user.id).catch(() => []),
-      ]);
-      const scores = attempts.map((a: any) => a.score ?? 0);
-      const avg = scores.length
-        ? Math.round(scores.reduce((s: number, v: number) => s + v, 0) / scores.length)
-        : 0;
-      setStats({ purchased: purchases.length, completed: attempts.length, avgScore: avg });
-      setStatsLoading(false);
-    })();
-  }, [user]);
-
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
-    setUploading(true);
-    setSaveMsg('');
-
-    const ext  = file.name.split('.').pop();
-    const path = `${user.id}/avatar.${ext}`;
-
-    const { error: upErr } = await supabase.storage
-      .from('avatars')
-      .upload(path, file, { upsert: true });
-
-    if (upErr) {
-      setSaveMsg('Upload failed. Try again.');
-      setUploading(false);
-      return;
-    }
-
-    const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path);
-    const bust = `${publicUrl}?t=${Date.now()}`;
-
-    await supabase.from('profiles').update({ avatar_url: bust }).eq('id', user.id);
-    setAvatarUrl(bust);
-    setUploading(false);
-    setSaveMsg('Photo updated!');
-    setTimeout(() => setSaveMsg(''), 2500);
-  };
-
-  const handleSave = async () => {
-    if (!user) return;
-    setSaving(true);
-    setSaveMsg('');
-    const { error } = await supabase
-      .from('profiles')
-      .update({ full_name: fullName.trim(), phone: phone.trim(), address: address.trim() })
-      .eq('id', user.id);
-    setSaving(false);
-    setSaveMsg(error ? 'Failed to save. Try again.' : 'Saved successfully!');
-    setTimeout(() => setSaveMsg(''), 2500);
-  };
+  useEffect(() => { if (!authLoading && !user) router.push('/auth/signin'); }, [user, authLoading, router]);
 
   if (authLoading || !user) return null;
 
-  const initials = (fullName || user.email || '?').slice(0, 2).toUpperCase();
-  const joinedDate = new Date(user.created_at).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  const loading  = purchLoading || histLoading;
+  const scores   = history.map((a: any) => a.score ?? 0);
+  const avgScore = scores.length ? Math.round(scores.reduce((s: number, v: number) => s + v, 0) / scores.length) : 0;
+  const xp       = history.reduce((s: number, a: any) => s + (a.correctAnswers ?? 0) * 15, 0);
+  const initials = (profile?.full_name || user.email || '?').slice(0, 2).toUpperCase();
+  const joinedDate = new Date(user.created_at).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+
+  // Full-screen result review overlay
+  if (viewing) {
+    if (detailsLoading) return <div style={{ minHeight: '100vh', background: 'var(--p-bg)', display: 'grid', placeItems: 'center' }}><div style={{ fontSize: 48 }}>⏳</div></div>;
+    if (sessionDetails) return (
+      <QuizResultScreen
+        test={{ id: '', title: viewing.testTitle, type: 'static', questionIds: [], timeLimit: 0, passingScore: viewing.passingScore, isActive: true, createdAt: new Date(), description: '' }}
+        result={{ score: viewing.score, correctAnswers: viewing.correctAnswers, totalQuestions: viewing.totalQuestions, timeSpent: viewing.timeSpent }}
+        questions={sessionDetails.questions} answers={sessionDetails.answers}
+        onRetake={() => setViewing(null)} onBack={() => setViewing(null)} />
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>
-
       {/* Nav */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--p-bg)', borderBottom: '2px solid var(--p-ink)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '14px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '13px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
             <span style={{ width: 32, height: 32, background: 'var(--p-primary)', border: '2px solid var(--p-ink)', borderRadius: 10, display: 'grid', placeItems: 'center', color: 'var(--p-primary-ink)', fontSize: 18, fontWeight: 700, transform: 'rotate(-8deg)', fontFamily: 'var(--font-display,sans-serif)' }}>M</span>
             <span style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 22, letterSpacing: '-0.03em', color: 'var(--p-ink)' }}>megamind<span style={{ color: 'var(--p-primary)' }}>.</span></span>
           </Link>
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <Link href="/marketplace" style={ghostBtn}>Browse tests</Link>
-            <Link href="/my-tests" style={ghostBtn}>My tests</Link>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <Link href="/marketplace" style={ghostBtn}>Tests</Link>
+            <Link href="/flashcards"  style={ghostBtn}>Flashcards</Link>
           </div>
         </div>
       </nav>
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 28px 80px' }}>
-
-        {/* Page title */}
-        <div style={{ marginBottom: 36 }}>
-          <span style={eyebrow}>Student account</span>
-          <h1 style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 'clamp(28px,4vw,44px)', letterSpacing: '-0.02em', color: 'var(--p-ink)', marginTop: 10 }}>
-            Your profile<span style={{ color: 'var(--p-primary)' }}>.</span>
-          </h1>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: 28 }} className="profile-grid">
-
-          {/* Left column */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-
-            {/* Avatar card */}
-            <div style={card}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-
-                {/* Avatar circle */}
-                <div style={{ position: 'relative', width: 96, height: 96 }}>
-                  <Avatar url={avatarUrl} initials={initials} size={96} radius={22} />
-                  {/* Upload overlay */}
-                  <button
-                    onClick={() => fileRef.current?.click()}
-                    disabled={uploading}
-                    title="Change photo"
-                    style={{ position: 'absolute', bottom: -8, right: -8, width: 30, height: 30, borderRadius: 999, border: '2px solid var(--p-ink)', background: 'var(--p-primary)', color: 'var(--p-primary-ink)', display: 'grid', placeItems: 'center', cursor: uploading ? 'default' : 'pointer', fontSize: 14 }}
-                  >
-                    {uploading ? '…' : '📷'}
-                  </button>
-                  <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
-                </div>
-
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 17, color: 'var(--p-ink)', marginBottom: 4 }}>
-                    {profile?.full_name || 'Student'}
-                  </div>
-                  <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 11, color: 'var(--p-ink-2)', marginBottom: 10, wordBreak: 'break-all' }}>{user.email}</div>
-                  <span style={{ display: 'inline-block', padding: '4px 14px', borderRadius: 999, border: '1.5px solid var(--p-ink)', fontFamily: 'var(--font-mono,monospace)', fontSize: 11, fontWeight: 600, background: 'var(--p-primary)', color: 'var(--p-primary-ink)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    {profile?.role ?? 'student'}
-                  </span>
-                </div>
-              </div>
-              <div style={{ borderTop: '1.5px dashed var(--p-ink)', marginTop: 18, paddingTop: 14, fontFamily: 'var(--font-mono,monospace)', fontSize: 11, color: 'var(--p-ink-2)', textAlign: 'center' }}>
-                Member since {joinedDate}
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div style={card}>
-              <div style={sectionLabel}>Stats</div>
-              {statsLoading ? (
-                <div style={{ textAlign: 'center', padding: '20px 0', fontFamily: 'var(--font-mono,monospace)', fontSize: 12, color: 'var(--p-muted)' }}>Loading…</div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <StatRow label="Purchased tests" value={stats.purchased} color="var(--p-card-a)" />
-                  <StatRow label="Tests completed"  value={stats.completed}  color="var(--p-card-d)" />
-                  <StatRow label="Average score"    value={`${stats.avgScore}%`} color="var(--p-card-c)" />
-                </div>
-              )}
-            </div>
-
-            {/* Quick links */}
-            <div style={card}>
-              <div style={sectionLabel}>Quick links</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <Link href="/marketplace" style={quickLink}>Browse marketplace →</Link>
-                <Link href="/my-tests" style={quickLink}>My purchased tests →</Link>
-                <Link href="/my-tests?tab=history" style={quickLink}>Test history →</Link>
-              </div>
-            </div>
-
+      {/* Hero */}
+      <section style={{ background: 'var(--p-bg)', borderBottom: '2px solid var(--p-ink)', padding: '44px 0' }}>
+        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 28px' }}>
+          <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, color: 'var(--p-muted)', marginBottom: 24, display: 'flex', gap: 6 }}>
+            <Link href="/" style={{ color: 'var(--p-primary)', textDecoration: 'none' }}>Home</Link> / <span>My profile</span>
           </div>
-
-          {/* Right column — edit form */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-
-            <div style={card}>
-              <div style={sectionLabel}>Personal information</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-
-                <Field label="Full name">
-                  <input
-                    value={fullName}
-                    onChange={e => setFullName(e.target.value)}
-                    placeholder="Your full name"
-                    style={inputStyle}
-                  />
-                </Field>
-
-                <Field label="Email address">
-                  <input
-                    value={user.email ?? ''}
-                    disabled
-                    style={{ ...inputStyle, opacity: 0.5, cursor: 'not-allowed' }}
-                  />
-                  <span style={hint}>Email cannot be changed here.</span>
-                </Field>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                  <Field label="Contact number">
-                    <input
-                      value={phone}
-                      onChange={e => setPhone(e.target.value)}
-                      placeholder="+94 7X XXX XXXX"
-                      style={inputStyle}
-                    />
-                  </Field>
-                </div>
-
-                <Field label="Address">
-                  <textarea
-                    value={address}
-                    onChange={e => setAddress(e.target.value)}
-                    placeholder="No. 12, Temple Road, Colombo 07"
-                    rows={3}
-                    style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.5 }}
-                  />
-                </Field>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingTop: 4 }}>
-                  <button
-                    onClick={handleSave}
-                    disabled={saving}
-                    style={saveBtnStyle(saving)}
-                  >
-                    {saving ? 'Saving…' : 'Save changes'}
-                  </button>
-                  {saveMsg && (
-                    <span style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 13, fontWeight: 600, color: saveMsg.startsWith('Saved') || saveMsg.startsWith('Photo') ? 'var(--p-primary)' : '#c0392b' }}>
-                      {saveMsg}
-                    </span>
-                  )}
-                </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: 28, alignItems: 'center' }} className="prof-hero">
+            {/* Avatar */}
+            <div style={{ width: 110, height: 110, borderRadius: 999, background: 'var(--p-card-a)', border: '2px solid var(--p-ink)', boxShadow: '6px 6px 0 var(--p-ink)', display: 'grid', placeItems: 'center', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 44, transform: 'rotate(-4deg)', color: 'var(--p-ink)', flexShrink: 0, overflow: 'hidden' }}>
+              {profile?.avatar_url ? <img src={profile.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 999 }} /> : initials}
+            </div>
+            {/* Identity */}
+            <div>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
+                <span style={{ padding: '4px 12px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-secondary)', fontFamily: 'var(--font-mono,monospace)', fontSize: 11, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--p-primary)' }} />{profile?.role ?? 'student'}
+                </span>
+                <span style={{ padding: '4px 12px', border: '2px solid var(--p-ink)', borderRadius: 999, fontFamily: 'var(--font-mono,monospace)', fontSize: 11 }}>🔥 {history.length} tests done</span>
+              </div>
+              <h1 style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 'clamp(30px,4vw,56px)', letterSpacing: '-0.02em', color: 'var(--p-ink)', lineHeight: 1.05, marginBottom: 10 }}>
+                {profile?.full_name || 'Student'}
+              </h1>
+              <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', color: 'var(--p-ink-2)', fontSize: 14 }}>
+                <span style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12 }}>{user.email}</span>
+                <span style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12 }}>Joined {joinedDate}</span>
               </div>
             </div>
-
-            {/* Account actions */}
-            <div style={card}>
-              <div style={sectionLabel}>Account</div>
-              <p style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, color: 'var(--p-ink-2)', marginBottom: 16 }}>
-                Sign out from all devices and return to the home page.
-              </p>
-              <SignOutButton />
+            {/* Actions */}
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+              <button onClick={() => setTab('settings')} style={ghostBtn}>⚙ Settings</button>
+              <button onClick={async () => { await logout(); router.push('/'); }} style={{ ...ghostBtn, background: 'var(--p-ink)', color: 'var(--p-bg)', boxShadow: '2px 2px 0 var(--p-ink-2)' }}>Sign out</button>
             </div>
-
           </div>
         </div>
-      </div>
+      </section>
 
-      <style>{`
-        @media (max-width: 760px) { .profile-grid { grid-template-columns: 1fr !important; } }
-      `}</style>
+      {/* Main content */}
+      <section style={{ padding: '50px 0 100px' }}>
+        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 28px' }}>
+          {/* Tabs */}
+          <div style={{ display: 'flex', gap: 4, borderBottom: '2px solid var(--p-ink)', marginBottom: 36, flexWrap: 'wrap' }}>
+            {TABS.map(t => (
+              <button key={t.id} onClick={() => setTab(t.id)}
+                style={{ padding: '12px 20px', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 15, color: tab === t.id ? 'var(--p-ink)' : 'var(--p-ink-2)', cursor: 'pointer', background: 'transparent', border: 'none', borderBottom: tab === t.id ? '3px solid var(--p-primary)' : '3px solid transparent', marginBottom: -2 }}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Overview */}
+          {tab === 'overview' && <>
+            <KpiStrip quizzes={history.length} avgScore={avgScore} xp={xp} testsOwned={purchases.length} loading={loading} />
+            <PerformancePanel attempts={history as any} loading={histLoading} />
+            {/* AI insight */}
+            <div style={{ padding: 28, border: '2px solid var(--p-ink)', borderRadius: 18, background: 'var(--p-ink)', color: 'var(--p-bg)', boxShadow: '5px 5px 0 rgba(0,0,0,0.3)', display: 'grid', gridTemplateColumns: '1fr auto', gap: 24, alignItems: 'center', marginBottom: 40, flexWrap: 'wrap' }} className="ai-row">
+              <div>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', border: '1.5px solid var(--p-bg)', borderRadius: 999, fontFamily: 'var(--font-mono,monospace)', fontSize: 10, background: 'var(--p-accent,#6D28D9)', color: '#fff', marginBottom: 14, fontWeight: 700 }}>
+                  <span style={{ width: 5, height: 5, borderRadius: 999, background: '#fff' }} />AI TUTOR WEEKLY NOTE
+                </span>
+                <h3 style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 22, marginBottom: 10, lineHeight: 1.2 }}>
+                  {avgScore >= 80 ? "You're on a great streak — keep pushing harder topics." : avgScore >= 60 ? "Good progress — target your weak topics with focused practice." : "Let's build momentum — short daily sessions make a big difference."}
+                </h3>
+                <p style={{ opacity: 0.85, maxWidth: 720, fontSize: 14, lineHeight: 1.6 }}>
+                  Your average score is <strong>{avgScore}%</strong> across {history.length} tests. {history.length > 0 ? 'Keep up the consistency and aim for 2–3 tests per week.' : 'Start with a short test to build your performance profile.'}
+                </p>
+              </div>
+              <Link href="/marketplace" style={{ padding: '13px 22px', border: '2px solid var(--p-bg)', borderRadius: 999, background: 'var(--p-secondary)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 14, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '3px 3px 0 rgba(0,0,0,0.3)', flexShrink: 0 }}>
+                Start practice →
+              </Link>
+            </div>
+            <RecentActivity history={history as any} purchases={purchases} loading={loading} onReview={setViewing} />
+            <FlashcardDecks />
+          </>}
+
+          {tab === 'performance' && <PerformancePanel attempts={history as any} loading={histLoading} />}
+          {tab === 'purchases'   && <RecentActivity history={history as any} purchases={purchases} loading={loading} onReview={setViewing} />}
+          {tab === 'settings'    && <ProfileSettings userId={user.id} email={user.email ?? ''} initialName={profile?.full_name ?? ''} initialPhone={profile?.phone ?? ''} initialAddress={profile?.address ?? ''} />}
+        </div>
+      </section>
+
+      <style>{`@media(max-width:960px){.prof-hero{grid-template-columns:1fr!important;}.ai-row{grid-template-columns:1fr!important;}}`}</style>
     </div>
   );
 }
 
-function StatRow({ label, value, color }: { label: string; value: string | number; color: string }) {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', borderRadius: 10, border: '1.5px solid var(--p-ink)', background: color }}>
-      <span style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, color: 'var(--p-ink)' }}>{label}</span>
-      <span style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 16, color: 'var(--p-ink)' }}>{value}</span>
-    </div>
-  );
+export default function StudentProfilePage() {
+  return <Suspense><ProfileContent /></Suspense>;
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-      <label style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, fontWeight: 600, color: 'var(--p-ink)', letterSpacing: '0.04em' }}>{label}</label>
-      {children}
-    </div>
-  );
-}
-
-function SignOutButton() {
-  const { logout } = useAuth();
-  const router = useRouter();
-  const [busy, setBusy] = useState(false);
-
-  const handleSignOut = async () => {
-    setBusy(true);
-    await logout();
-    router.push('/');
-  };
-
-  return (
-    <button
-      onClick={handleSignOut}
-      disabled={busy}
-      style={{ padding: '10px 22px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-bg-alt)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, cursor: busy ? 'default' : 'pointer', boxShadow: '2px 2px 0 var(--p-ink)', alignSelf: 'flex-start', display: 'inline-block' }}
-    >
-      {busy ? 'Signing out…' : 'Sign out'}
-    </button>
-  );
-}
-
-const saveBtnStyle = (disabled: boolean): React.CSSProperties => ({
-  padding: '11px 28px', border: '2px solid var(--p-ink)', borderRadius: 999,
-  background: disabled ? 'var(--p-bg-alt)' : 'var(--p-primary)',
-  color: disabled ? 'var(--p-ink-2)' : 'var(--p-primary-ink)',
-  fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 14,
-  cursor: disabled ? 'default' : 'pointer',
-  boxShadow: disabled ? 'none' : '3px 3px 0 var(--p-ink)',
-  transition: 'all 0.15s',
-});
-
-const card: React.CSSProperties         = { border: '2px solid var(--p-ink)', borderRadius: 18, background: 'var(--p-bg)', padding: '24px', boxShadow: '4px 4px 0 var(--p-ink)' };
-const eyebrow: React.CSSProperties      = { fontFamily: 'var(--font-mono,monospace)', fontSize: 12, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--p-ink-2)' };
-const sectionLabel: React.CSSProperties = { fontFamily: 'var(--font-mono,monospace)', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--p-ink-2)', textTransform: 'uppercase', marginBottom: 18 };
-const ghostBtn: React.CSSProperties     = { padding: '9px 16px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-bg)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, boxShadow: '2px 2px 0 var(--p-ink)', textDecoration: 'none' };
-const inputStyle: React.CSSProperties   = { width: '100%', padding: '11px 14px', border: '2px solid var(--p-ink)', borderRadius: 12, background: 'var(--p-bg-alt)', color: 'var(--p-ink)', fontFamily: 'var(--font-mono,monospace)', fontSize: 14, outline: 'none', boxSizing: 'border-box' };
-const quickLink: React.CSSProperties    = { display: 'block', padding: '9px 14px', border: '1.5px solid var(--p-ink)', borderRadius: 10, background: 'var(--p-bg-alt)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, textDecoration: 'none', boxShadow: '2px 2px 0 var(--p-ink)' };
-const hint: React.CSSProperties         = { fontFamily: 'var(--font-mono,monospace)', fontSize: 11, color: 'var(--p-muted)', marginTop: 4 };
+const ghostBtn: React.CSSProperties = { padding: '9px 16px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-bg)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, boxShadow: '2px 2px 0 var(--p-ink)', textDecoration: 'none', cursor: 'pointer' };
