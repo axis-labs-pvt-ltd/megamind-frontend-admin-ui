@@ -1,5 +1,6 @@
 // Server Component - Public landing page
 import { FAQSection } from '@/components/landing/FAQSection';
+import { FlashcardsSection } from '@/components/landing/FlashcardsSection';
 import { HeroSection } from '@/components/landing/HeroSection';
 import { HowSection } from '@/components/landing/HowSection';
 import { IndividualTestsSection } from '@/components/landing/IndividualTestsSection';
@@ -19,6 +20,7 @@ export default function LandingPage() {
       <HowSection />
       <SubjectsSection />
       <IndividualTestsSection />
+      <FlashcardsSection />
       <QuizPreviewSection />
       <TestimonialsSection />
       <PricingSection />

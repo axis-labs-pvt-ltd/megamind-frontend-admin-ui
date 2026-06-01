@@ -4,7 +4,7 @@
 export function LandingFooter() {
   const cols = [
     { h: 'Learn',   l: ['Subjects', 'Sample quiz', 'How it works', 'Free trial'] },
-    { h: 'Shop',    l: ['Test marketplace', 'Pricing', 'Gift a plan', 'Discounts'] },
+    { h: 'Shop',    l: ['Test marketplace', 'Flashcards', 'Pricing', 'Gift a plan'] },
     { h: 'Company', l: ['About', 'Careers', 'Press', 'Contact'] },
     { h: 'Help',    l: ['FAQ', 'Support', 'Terms', 'Privacy'] },
   ];

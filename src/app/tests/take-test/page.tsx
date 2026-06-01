@@ -1,6 +1,7 @@
 'use client';
 
 import { completeTestSession, startTestSession } from '@/services/api/testSessions';
+import { useConfetti } from '@/hooks/useConfetti';
 import { useQuestions } from '@/hooks/queries/useQuestions';
 import { useTests } from '@/hooks/queries/useTests';
 import { Question, Test } from '@/types';
@@ -21,6 +22,7 @@ export default function TakeTestPage() {
 function TakeTestPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { fireTestPassed } = useConfetti();
   const testId = searchParams.get('testId');
 
   const { data: allTests = [], isLoading: testsLoading, error: testsError } = useTests();
@@ -89,6 +91,7 @@ function TakeTestPageInner() {
       const score = Math.round((correctAnswers / sessionQuestions.length) * 100);
       await completeTestSession(sessionId, score, timeSpent, answers, sessionQuestions);
       setTestResult({ score, correctAnswers, totalQuestions: sessionQuestions.length, timeSpent });
+      if (score >= test.passingScore) setTimeout(fireTestPassed, 100);
     } catch (err: any) {
       setSessionError(err.message ?? 'Failed to submit test');
     } finally {

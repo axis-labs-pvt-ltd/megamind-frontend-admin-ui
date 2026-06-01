@@ -42,6 +42,9 @@ export function LandingNav() {
               {label}
             </a>
           ))}
+          <Link href="/flashcards" style={{ color: 'var(--p-primary)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            🃏 Flashcards
+          </Link>
         </div>
 
         {/* CTA / Avatar */}

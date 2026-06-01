@@ -3,7 +3,10 @@
     "allow": [
       "Bash(npx tsc *)",
       "Bash(npm run *)",
-      "Bash(grep -v \"^C:\\\\\\\\\")"
+      "Bash(grep -v \"^C:\\\\\\\\\")",
+      "PowerShell(Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [System.IO.Compression.ZipFile]::OpenRead\\(\"C:\\\\Users\\\\Chanaka Chathuranga\\\\Downloads\\\\megamind \\(2\\).zip\"\\); $zip.Entries | Select-Object FullName; $zip.Dispose\\(\\))",
+      "Bash(xargs grep -l \"signup\\\\|SignUp\\\\|register\")",
+      "Bash(xargs grep -l \"QuizResult\\\\|result\\\\|complete\")"
     ]
   }
 }

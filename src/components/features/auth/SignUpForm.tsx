@@ -1,6 +1,7 @@
 // Client Component - Sign up form with Supabase auth
 'use client';
 
+import { useConfetti } from '@/hooks/useConfetti';
 import { authService } from '@/services/api/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -10,6 +11,7 @@ const GRADES   = ['Grade 11 (O/L)', 'Grade 12 (A/L)', 'Grade 13 (A/L)', 'Uni ent
 
 export function SignUpForm() {
   const router = useRouter();
+  const { fireSignup } = useConfetti();
   const [name, setName]           = useState('');
   const [grade, setGrade]         = useState(GRADES[0]);
   const [email, setEmail]         = useState('');
@@ -29,6 +31,7 @@ export function SignUpForm() {
     setError(null);
     try {
       await authService.register({ name, email, password, role: 'student' });
+      fireSignup();
       router.push('/marketplace');
     } catch (err: any) {
       setError(err.message ?? 'Registration failed. Please try again.');

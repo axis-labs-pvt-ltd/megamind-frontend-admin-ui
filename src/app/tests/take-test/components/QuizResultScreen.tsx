@@ -16,6 +16,13 @@ interface Props {
 
 export function QuizResultScreen({ test, result, questions, answers, onRetake, onBack }: Props) {
   const [solutionQuestion, setSolutionQuestion] = useState<Question | null>(null);
+  const [solutionAnswer, setSolutionAnswer] = useState<{ userAnswer: string | string[] | null; isCorrect: boolean } | null>(null);
+
+  const openSolution = (q: Question, userAns: string | string[] | undefined, correct: boolean) => {
+    setSolutionQuestion(q);
+    setSolutionAnswer({ userAnswer: userAns ?? null, isCorrect: correct });
+  };
+  const closeSolution = () => { setSolutionQuestion(null); setSolutionAnswer(null); };
   const passed  = result.score >= test.passingScore;
   const mins    = Math.floor(result.timeSpent / 60);
   const secs    = result.timeSpent % 60;
@@ -204,13 +211,9 @@ export function QuizResultScreen({ test, result, questions, answers, onRetake, o
                     <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--p-muted)', marginBottom: 3 }}>Q {String(i + 1).padStart(2, '0')}</div>
                     <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 500, fontSize: 15, color: 'var(--p-ink)', lineHeight: 1.4 }}>{q.text}</div>
                   </div>
-                  {(q.solutionVideoUrl || q.solutionText) ? (
-                    <button onClick={() => setSolutionQuestion(q)} style={smGhost}>
-                      {isCorrect ? 'Review' : 'See solution'} →
-                    </button>
-                  ) : (
-                    <span style={{ ...smGhost, opacity: 0.3, cursor: 'default' }}>{isCorrect ? 'Review' : 'See solution'} →</span>
-                  )}
+                  <button onClick={() => openSolution(q, userAns, isCorrect)} style={smGhost}>
+                    {isCorrect ? 'Review' : 'See solution'} →
+                  </button>
                 </div>
               );
             })}
@@ -229,8 +232,13 @@ export function QuizResultScreen({ test, result, questions, answers, onRetake, o
         }
       `}</style>
 
-      {solutionQuestion && (
-        <SolutionDialog question={solutionQuestion} onClose={() => setSolutionQuestion(null)} />
+      {solutionQuestion && solutionAnswer && (
+        <SolutionDialog
+          question={solutionQuestion}
+          userAnswer={solutionAnswer.userAnswer}
+          isCorrect={solutionAnswer.isCorrect}
+          onClose={closeSolution}
+        />
       )}
     </div>
   );
