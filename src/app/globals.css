@@ -5,319 +5,84 @@
   --foreground: #171717;
 }
 
-/* Light Theme (Default) */
+/* ─── Light Theme ─────────────────────────────────────────── */
 :root,
 [data-theme="light"] {
-  /* Light theme - Clean, professional look */
-  --bg-primary: #f8fafc;
+  --bg-primary:   #f8fafc;
   --bg-secondary: #f1f5f9;
-  --bg-card: #ffffff;
-  --bg-header: rgba(255, 255, 255, 0.8);
-  --bg-sidebar: rgba(255, 255, 255, 0.95);
-  --bg-hover: #f1f5f9;
-  
-  /* Text colors */
-  --text-primary: #0f172a;
+  --bg-card:      #ffffff;
+  --bg-header:    rgba(255, 255, 255, 0.9);
+  --bg-sidebar:   rgba(255, 255, 255, 0.98);
+  --bg-hover:     #f1f5f9;
+
+  --text-primary:   #0f172a;
   --text-secondary: #64748b;
-  --text-muted: #94a3b8;
-  
-  /* Icon colors */
-  --icon-primary: #64748b;
+  --text-muted:     #94a3b8;
+
+  --icon-primary:   #64748b;
   --icon-secondary: #94a3b8;
-  --icon-muted: #cbd5e1;
-  
-  /* Border colors */
-  --border-primary: #e2e8f0;
+  --icon-muted:     #cbd5e1;
+
+  --border-primary:   #e2e8f0;
   --border-secondary: #f1f5f9;
-  --border-hover: #cbd5e1;
-  
-  /* Accent colors */
-  --accent-blue: #3b82f6;
-  --accent-blue-light: #dbeafe;
-  --accent-green: #10b981;
-  --accent-red: #ef4444;
-  --accent-yellow: #f59e0b;
-  --accent-purple: #8b5cf6;
-  
-  /* Gradients */
+  --border-hover:     #cbd5e1;
+
+  --accent-blue:        #3b82f6;
+  --accent-blue-light:  #dbeafe;
+  --accent-green:       #10b981;
+  --accent-green-light: #d1fae5;
+  --accent-red:         #ef4444;
+  --accent-red-light:   #fee2e2;
+  --accent-yellow:      #f59e0b;
+  --accent-purple:      #8b5cf6;
+
   --gradient-primary: linear-gradient(to right, #0f172a, #1e293b);
-  --gradient-brand: linear-gradient(to right, #3b82f6, #6366f1);
-  
-  /* Shadows - light theme */
-  --shadow-light: #ffffff;
-  --shadow-dark: #cbd5e1; /* Slate 300 */
-  
+  --gradient-brand:   linear-gradient(to right, #3b82f6, #6366f1);
+
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-
-  /* Semantic Neumorphic Shadows (Light) */
-  /* Softened: 4px offset, lighter dark shadow via opacity in the usage or just softer color? 
-     We'll use a calculation in the shadow definition for opacity if we could, but here we just reduce the blur slightly 
-     and maybe use a lighter color variable if we could. 
-     Instead, let's keep the variables but reduce the spread slightly to 6px.
-  */
-  --shadow-surface: 4px 4px 8px #94a3b840, -4px -4px 8px #ffffff; /* Using hex alpha for softer dark shadow */
-  --shadow-inset: inset 4px 4px 8px #94a3b840, inset -4px -4px 8px #ffffff;
-  --shadow-btn: 3px 3px 6px #94a3b840, -3px -3px 6px #ffffff;
-  --shadow-btn-active: inset 2px 2px 4px #94a3b840, inset -2px -2px 4px #ffffff;
-  
-  --radius-theme: 1rem;
+  --shadow-md: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
 }
 
-/* Dark Theme */
+/* ─── Dark Theme ──────────────────────────────────────────── */
 [data-theme="dark"] {
-  /* Dark theme - Premium, Deep & High Contrast */
-  --bg-primary: #0f172a; 
-  --bg-secondary: #020617; 
-  --bg-card: #1e293b; 
-  --bg-header: rgba(15, 23, 42, 0.85); 
-  --bg-sidebar: rgba(15, 23, 42, 0.98); 
-  --bg-hover: #334155; 
-  
-  /* Text colors - High Contrast */
-  --text-primary: #f8fafc;
+  --bg-primary:   #0f172a;
+  --bg-secondary: #020617;
+  --bg-card:      #1e293b;
+  --bg-header:    rgba(15, 23, 42, 0.9);
+  --bg-sidebar:   rgba(15, 23, 42, 0.98);
+  --bg-hover:     #334155;
+
+  --text-primary:   #f8fafc;
   --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  
-  /* Icon colors */
-  --icon-primary: #cbd5e1;
+  --text-muted:     #94a3b8;
+
+  --icon-primary:   #cbd5e1;
   --icon-secondary: #94a3b8;
-  --icon-muted: #64748b;
-  
-  /* Border colors - Subtle separation */
-  --border-primary: #334155;
+  --icon-muted:     #64748b;
+
+  --border-primary:   #334155;
   --border-secondary: #1e293b;
-  --border-hover: #475569;
-  
-  /* Accent colors - Neons/Vibrant */
-  --accent-blue: #60a5fa;
-  --accent-blue-light: rgba(59, 130, 246, 0.2);
-  --accent-green: #4ade80;
-  --accent-red: #f87171;
-  --accent-yellow: #fbbf24;
-  --accent-purple: #c084fc;
-  
-  /* Gradients */
+  --border-hover:     #475569;
+
+  --accent-blue:        #60a5fa;
+  --accent-blue-light:  rgba(59, 130, 246, 0.15);
+  --accent-green:       #4ade80;
+  --accent-green-light: rgba(74, 222, 128, 0.15);
+  --accent-red:         #f87171;
+  --accent-red-light:   rgba(248, 113, 113, 0.15);
+  --accent-yellow:      #fbbf24;
+  --accent-purple:      #c084fc;
+
   --gradient-primary: linear-gradient(to right, #ffffff, #94a3b8);
-  --gradient-brand: linear-gradient(to right, #60a5fa, #a78bfa);
-  
-  /* Shadows - Glow effects for dark mode */
-  --shadow-light: rgba(255, 255, 255, 0.05); /* Lower opacity to kill the mist */
-  --shadow-dark: rgba(0, 0, 0, 0.9); /* Deep black for definition */
-  
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+  --gradient-brand:   linear-gradient(to right, #60a5fa, #a78bfa);
 
-  /* Semantic Neumorphic Shadows (Dark) */
-  /* Tighter, sharper shadows to look like 3D edges, not mist */
-  --shadow-surface: 4px 4px 8px var(--shadow-dark), -2px -2px 6px var(--shadow-light);
-  --shadow-inset: inset 4px 4px 8px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light);
-  --shadow-btn: 3px 3px 6px var(--shadow-dark), -1px -1px 3px var(--shadow-light);
-  --shadow-btn-active: inset 3px 3px 6px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light);
-  
-  --radius-theme: 1rem;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-md: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
 }
 
-
-
-/* Neumorphic Theme */
-/* Neumorphic Theme */
-[data-theme="neumorphic"] {
-  /* Soft, clay-morphism base - #E0E5EC matches reference */
-  --bg-primary: #e0e5ec;
-  --bg-secondary: #e0e5ec;
-  --bg-card: #e0e5ec; /* Cards blend into background to pop */
-  --bg-header: rgba(224, 229, 236, 0.9);
-  --bg-sidebar: #e0e5ec;
-  --bg-hover: linear-gradient(145deg, #eff3f8, #e0e5ec); /* Subtle gradient for hover */
-
-  /* Typography - High Contrast Dark Gray #4A5568 */
-  --text-primary: #4a5568;
-  --text-secondary: #718096;
-  --text-muted: #a0aec0;
-
-  /* Icons */
-  --icon-primary: #718096;
-  --icon-secondary: #a0aec0;
-  --icon-muted: #cbd5e0;
-
-  /* Borders - Removed/Transparent as shadows define shapes */
-  --border-primary: transparent;
-  --border-secondary: transparent;
-  --border-hover: rgba(255, 255, 255, 0.4);
-
-  /* Shadows - The Secret Sauce (Refined from Plan) */
-  --shadow-light: #ffffff;
-  --shadow-dark: #a3b1c6;
-  
-  /* Generic Shadows - Reduced for subtlety */
-  --shadow-sm: 2px 2px 4px var(--shadow-dark), -2px -2px 4px var(--shadow-light);
-  --shadow-md: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
-  --shadow-lg: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
-  --shadow-xl: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
-
-  /* Semantic Neumorphic Shadows - Reduced to prevent covering labels */
-  --shadow-surface: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); /* Cards/Containers */
-  --shadow-inset: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); /* Inputs/Wells */
-  --shadow-btn: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light); /* Buttons */
-  --shadow-btn-active: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light); /* Pressed Button */
-
-  /* Accents - Retaining Blue brand for actions, but softer/integrated */
-  --accent-blue: #3b82f6;
-  --accent-blue-light: rgba(59, 130, 246, 0.15);
-  --accent-green: #10b981;
-  --accent-red: #ef4444;
-  --accent-yellow: #f59e0b;
-  --accent-purple: #8b5cf6;
-
-  /* Gradients */
-  --gradient-primary: linear-gradient(145deg, #e0e5ec, #ffffff);
-  --gradient-brand: linear-gradient(145deg, #3b82f6, #60a5fa);
-  
-  /* Global Radius for Soft Look */
-  --radius-theme: 1rem;
-}
-
-/* --- Neumorphic Global Overrides --- */
-
-/* Force Inputs to have "Pressed" Look (Inset Shadow) */
-/* Standard Inputs (Default to Inset/Pressed) */
-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-textarea,
-select,
-[role="combobox"] {
-  background-color: var(--bg-primary) !important;
-  box-shadow: var(--shadow-inset) !important;
-  border: none !important;
-  border-radius: var(--radius-theme) !important;
-  padding: 0.6rem 1rem !important;
-  color: var(--text-primary) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 
-   Dynamic State: Pop Out when Filled 
-   We force 'placeholder=" "' in React components to ensure this works for empty strings.
-*/
-input:not(:placeholder-shown):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-textarea:not(:placeholder-shown) {
-  box-shadow: var(--shadow-surface) !important;
-  transform: scale(1.01); 
-}
-
-/* Focus State: Deep Press (Editing Mode) */
-/* Override the popped state when focused to give tactile feedback */
-input:focus,
-textarea:focus {
-  outline: none !important;
-  box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light) !important; 
-  transform: scale(1);
-}
-
-/* Ensure filled inputs return to popped state when not focused */
-input:not(:placeholder-shown):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(:focus),
-textarea:not(:placeholder-shown):not(:focus) {
-    box-shadow: var(--shadow-surface) !important;
-}
-
-/* Specific Fix for Inputs with Icons (Search, wrappers) */
-.relative > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
-    padding-left: 3rem !important; 
-}
-
-/* Ensure type="search" specifically wins too */
-input[type="search"]:not([type="checkbox"]):not([type="radio"]) {
-    padding-left: 3rem !important;
-}
-
-/* Force Cards & Containers to have "Extruded" Look (Outset Shadow) */
-/* Applied to all themes now. */
-.bg-\[var\(--bg-card\)\] {
-   background-color: var(--bg-primary) !important; 
-   box-shadow: var(--shadow-surface) !important;
-   border: none !important;
-   border-radius: var(--radius-theme) !important;
-   /* padding: 2rem !important; */ 
-}
-
-/* Badge/Selection Item Overrides (Question Filters, etc.) */
-/* Primary Badge (Selected State) -> Popped/Extruded */
-/* Badge/Selection Item Overrides (Question Filters, etc.) */
-/* Primary Badge (Selected State) -> Popped/Extruded */
-.bg-\[var\(--accent-blue\)\]\/10,
-.bg-\[var\(--accent-green\)\]\/10, 
-.bg-\[var\(--accent-yellow\)\]\/10,
-.bg-\[var\(--accent-red\)\]\/10,
-.bg-\[var\(--accent-purple\)\]\/10 {
-  background-color: var(--bg-primary) !important;
-  box-shadow: var(--shadow-surface) !important;
-  border: none !important;
-  font-weight: 600 !important;
-}
-
-/* Secondary Badge (Unselected State) -> Pressed/Inset */
-.bg-\[var\(--bg-secondary\)\] {
-  background-color: var(--bg-primary) !important;
-  box-shadow: var(--shadow-inset) !important;
-  border: none !important;
-  color: var(--text-secondary) !important;
-  opacity: 0.8;
-}
-
-/* Hover effect for clickable badges */
-[data-theme="neumorphic"] .cursor-pointer:hover {
-    box-shadow: var(--shadow-surface) !important;
-    transform: translateY(-1px);
-}
-
-/* Also target specialized containers if needed */
-[data-theme="neumorphic"] .rounded-xl {
-   border-radius: var(--radius-theme) !important;
-}
-
-/* Specific Fix for Search Input Containers */
-.relative > input {
-    /* Ensure search icons align with new padding */
-    padding-left: 3rem !important; 
-}
-
-/* Navbar/Sidebar Item Overrides for Neumorphic - Fix Contrast & Style */
-button[data-nav-item="true"] {
-    transition: all 0.2s ease-out;
-}
-
-/* Active State: Pressed effect with Brand Color text */
-button[data-nav-item="true"][data-active="true"] {
-    background: var(--bg-primary) !important; /* Remove gradient */
-    box-shadow: var(--shadow-inset) !important; /* Pressed look */
-    color: var(--accent-blue) !important; /* Brand color text */
-    transform: scale(0.98);
-}
-button[data-nav-item="true"][data-active="true"] .text-white {
-    color: var(--accent-blue) !important; /* Icon color fix */
-}
-button[data-nav-item="true"][data-active="true"] .text-blue-100 {
-    color: var(--text-secondary) !important; /* Subtitle color fix */
-}
-/* Active icon container bg */
-button[data-nav-item="true"][data-active="true"] > div:first-child {
-    background-color: var(--bg-primary) !important;
-    box-shadow: var(--shadow-surface) !important; /* Pop the icon container */
-}
-
-
-/* Hover State: Popped effect */
-button[data-nav-item="true"]:not([data-active="true"]):hover {
-    background: var(--bg-primary) !important;
-    box-shadow: var(--shadow-surface) !important; /* Popped look */
-    transform: translateY(-2px);
-    z-index: 10;
-}
-
+/* ─── Base ────────────────────────────────────────────────── */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -325,137 +90,133 @@ button[data-nav-item="true"]:not([data-active="true"]):hover {
   --font-mono: var(--font-geist-mono);
 }
 
-/* Base styles */
-body {
-  @apply antialiased;
-}
+body { @apply antialiased; }
+html { scroll-behavior: smooth; }
 
-/* Custom scrollbar styles */
+/* ─── Scrollbar ───────────────────────────────────────────── */
 @layer utilities {
-  .scrollbar-thin {
-    scrollbar-width: thin;
-  }
-  
-  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
-    background-color: rgb(209 213 219);
-    border-radius: 0.375rem;
-  }
-  
-  .scrollbar-track-transparent::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-  
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-  }
-  
+  .scrollbar-thin { scrollbar-width: thin; }
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; }
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: rgb(209 213 219);
     border-radius: 0.375rem;
   }
-  
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(156 163 175);
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover { background-color: rgb(156 163 175); }
+  .scrollbar-thin::-webkit-scrollbar-track { background-color: transparent; }
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+    background-color: rgb(209 213 219);
+    border-radius: 0.375rem;
   }
-  
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
+  .scrollbar-track-transparent::-webkit-scrollbar-track { background-color: transparent; }
+}
 
-  /* Animation Utilities */
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out both;
-  }
-  
-  .animate-slide-up {
-    animation: slideUp 0.5s ease-out both;
-  }
-  
-  .animate-slide-down {
-    animation: slideDown 0.5s ease-out both;
-  }
-  
-  .animate-slide-right {
-    animation: slideRight 0.5s ease-out both;
-  }
-  
-  .animate-scale-in {
-    animation: scaleIn 0.3s ease-out both;
-  }
-  
-  .animation-delay-75 { animation-delay: 75ms; }
-  .animation-delay-100 { animation-delay: 100ms; }
-  .animation-delay-150 { animation-delay: 150ms; }
-  .animation-delay-200 { animation-delay: 200ms; }
-  .animation-delay-300 { animation-delay: 300ms; }
-  .animation-delay-400 { animation-delay: 400ms; }
-  .animation-delay-500 { animation-delay: 500ms; }
-  .animation-delay-700 { animation-delay: 700ms; }
+@media (max-width: 1024px) {
+  main { scrollbar-width: none; -ms-overflow-style: none; }
+  main::-webkit-scrollbar { display: none; }
+}
+
+/* ─── Animations ──────────────────────────────────────────── */
+@layer utilities {
+  .animate-fade-in     { animation: fadeIn     0.3s ease-out both; }
+  .animate-slide-up    { animation: slideUp    0.3s ease-out both; }
+  .animate-slide-down  { animation: slideDown  0.3s ease-out both; }
+  .animate-slide-right { animation: slideRight 0.3s ease-out both; }
+  .animate-scale-in    { animation: scaleIn    0.2s ease-out both; }
+
+  .animation-delay-75   { animation-delay: 75ms;   }
+  .animation-delay-100  { animation-delay: 100ms;  }
+  .animation-delay-150  { animation-delay: 150ms;  }
+  .animation-delay-200  { animation-delay: 200ms;  }
+  .animation-delay-300  { animation-delay: 300ms;  }
+  .animation-delay-400  { animation-delay: 400ms;  }
+  .animation-delay-500  { animation-delay: 500ms;  }
+  .animation-delay-700  { animation-delay: 700ms;  }
   .animation-delay-1000 { animation-delay: 1000ms; }
 }
 
-/* Ensure smooth scrolling */
-html {
-  scroll-behavior: smooth;
+@keyframes fadeIn    { from { opacity: 0; }                          to { opacity: 1; } }
+@keyframes slideUp   { from { opacity: 0; transform: translateY(16px);  } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideRight{ from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes scaleIn   { from { opacity: 0; transform: scale(0.97); }      to { opacity: 1; transform: scale(1);    } }
+
+/* ─── Public page mobile utilities ────────────────────────── */
+/* Shared responsive helpers used by all p-* (public/landing) pages */
+
+/* Wrap padding scales down on mobile */
+@media (max-width: 600px) {
+  .p-wrap { padding-left: 16px !important; padding-right: 16px !important; }
+  .p-section { padding-top: 60px !important; padding-bottom: 60px !important; }
+  .p-section-sm { padding-top: 40px !important; padding-bottom: 40px !important; }
 }
 
-/* Hide scrollbar for main content on mobile while keeping functionality */
-@media (max-width: 1024px) {
-  main {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  
-  main::-webkit-scrollbar {
-    display: none;
-  }
+/* 3-col → 2-col → 1-col grid */
+@media (max-width: 960px) { .p-grid-3 { grid-template-columns: repeat(2,1fr) !important; } }
+@media (max-width: 580px)  { .p-grid-3 { grid-template-columns: 1fr !important; } }
+
+/* 4-col → 2-col → 1-col */
+@media (max-width: 1060px) { .p-grid-4 { grid-template-columns: repeat(2,1fr) !important; } }
+@media (max-width: 480px)  { .p-grid-4 { grid-template-columns: 1fr !important; } }
+
+/* 2-col → 1-col hero/split */
+@media (max-width: 860px) { .p-hero { grid-template-columns: 1fr !important; } }
+
+/* KPI / stats strip: 4 → 2 on mobile */
+@media (max-width: 700px) { .p-kpi { grid-template-columns: repeat(2,1fr) !important; } }
+
+/* Nav: full-width on mobile */
+@media (max-width: 600px) {
+  .p-nav-inner { padding: 12px 16px !important; }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Card touch targets: min-height 48px */
+@media (max-width: 600px) {
+  .p-btn { min-height: 48px !important; padding: 12px 20px !important; }
 }
 
-@keyframes slideUp {
-  from { 
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to { 
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Modals: full-width on small screens */
+@media (max-width: 520px) {
+  .p-modal { max-width: 100% !important; margin: 0 !important; border-radius: 20px 20px 0 0 !important; }
+  .p-modal-wrap { align-items: flex-end !important; padding: 0 !important; }
 }
 
-@keyframes slideDown {
-  from { 
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to { 
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Study bar: stack title/progress on very small screens */
+@media (max-width: 480px) {
+  .study-bar-inner { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+  .study-bar-progress { display: none !important; }
 }
 
-@keyframes slideRight {
-  from { 
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to { 
-    opacity: 1;
-    transform: translateX(0);
-  }
+/* Quiz option grids */
+@media (max-width: 600px) {
+  .quiz-options { grid-template-columns: 1fr !important; }
+  .quiz-nav { flex-wrap: wrap !important; gap: 8px !important; }
 }
 
-@keyframes scaleIn {
-  from { 
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to { 
-    opacity: 1;
-    transform: scale(1);
-  }
+/* Result screen grids */
+@media (max-width: 860px) {
+  .res-grid  { grid-template-columns: 1fr !important; }
+  .ai-grid   { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 600px) {
+  .res-score-circle { width: 180px !important; height: 180px !important; }
+  .res-score-circle svg { width: 180px !important; height: 180px !important; }
+  .res-big-score { font-size: 52px !important; }
+}
+
+/* Flash card study action buttons */
+@media (max-width: 480px) {
+  .swipe-actions { gap: 8px !important; }
+  .swipe-actions button { min-width: 0 !important; padding: 12px 14px !important; font-size: 13px !important; flex: 1 !important; }
+}
+
+/* Profile hero */
+@media (max-width: 760px) {
+  .prof-hero { grid-template-columns: 1fr !important; }
+  .ai-row    { grid-template-columns: 1fr !important; }
+}
+
+/* Solution dialog full-screen on mobile */
+@media (max-width: 600px) {
+  .solution-dialog { max-width: 100% !important; max-height: 100% !important; height: 100dvh !important; border-radius: 0 !important; margin: 0 !important; }
+  .solution-dialog-wrap { padding: 0 !important; align-items: flex-end !important; }
 }

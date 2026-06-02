@@ -50,12 +50,14 @@ export interface Question {
   id: string;
   type: QuestionType;
   text: string;
-  options?: QuestionOption[]; // Refactored from string[] to object array
+  imageUrl?: string;
+  options?: QuestionOption[];
   matchingPairs?: MatchingPair[];
-  correctAnswer: string | string[] | MatchingPair[]; // For MCQ/Multi-select, this will contain Option IDs
-  acceptableAnswers?: string[]; // For fill-in-blank alternative answers
-  solutionVideoUrl?: string; // Video shown AFTER submission (explanation)
-  referenceVideoUrl?: string; // Video shown DURING exam (context)
+  correctAnswer: string | string[] | MatchingPair[];
+  acceptableAnswers?: string[];
+  solutionVideoUrl?: string;
+  solutionText?: string;
+  referenceVideoUrl?: string;
   moduleId: string;
   categories: Category[];
   tags: Tag[];
@@ -134,4 +136,77 @@ export interface TestSession {
   currentQuestionIndex: number;
   answers: Record<string, string | string[]>;
   isCompleted: boolean;
+}
+
+export interface Purchase {
+  id: string;
+  studentId: string;
+  testId: string;
+  price: number;
+  purchasedAt: Date;
+  test?: Test;
+}
+
+export interface TestHistory {
+  id: string;
+  testId: string;
+  testTitle: string;
+  passingScore: number;
+  score: number;
+  passed: boolean;
+  timeSpent: number;
+  completedAt: Date;
+  correctAnswers: number;
+  totalQuestions: number;
+}
+
+// ── Flashcard types ──────────────────────────────────────────────────────────
+
+export type FlashCardType = 'text' | 'image' | 'video';
+
+export interface FlashCard {
+  id: string;
+  collectionId: string;
+  type: FlashCardType;
+  front: string;
+  back: string;
+  imageUrl?: string;
+  videoUrl?: string;
+  order: number;
+  tags: string[];
+  createdAt: Date;
+}
+
+export type FlashCardVisibility = 'public_free' | 'paid' | 'private';
+
+export interface FlashCardCollection {
+  id: string;
+  title: string;
+  description: string;
+  subjectId?: string;
+  subjectName?: string;
+  level: string;
+  coverEmoji: string;
+  coverColor: string;
+  tutorId: string;
+  tutorName: string;
+  price: number;
+  visibility: FlashCardVisibility;
+  cardCount: number;
+  tags: string[];
+  rating?: number;
+  soldCount?: number;
+  isBestseller?: boolean;
+  isNew?: boolean;
+  isActive: boolean;
+  createdAt: Date;
+}
+
+export interface FlashCardPurchase {
+  id: string;
+  studentId: string;
+  collectionId: string;
+  price: number;
+  purchasedAt: Date;
+  collection?: FlashCardCollection;
 }

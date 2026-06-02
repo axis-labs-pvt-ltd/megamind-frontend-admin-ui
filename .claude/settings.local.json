@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(grep -v \"^C:\\\\\\\\\")",
+      "PowerShell(Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [System.IO.Compression.ZipFile]::OpenRead\\(\"C:\\\\Users\\\\Chanaka Chathuranga\\\\Downloads\\\\megamind \\(2\\).zip\"\\); $zip.Entries | Select-Object FullName; $zip.Dispose\\(\\))",
+      "Bash(xargs grep -l \"signup\\\\|SignUp\\\\|register\")",
+      "Bash(xargs grep -l \"QuizResult\\\\|result\\\\|complete\")",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\Chanaka Chathuranga\\\\source\\\\repos\\\\megamind\\\\megamind-frontend-admin-ui\\\\src\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "PowerShell(head -50)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\Chanaka Chathuranga\\\\source\\\\repos\\\\megamind\\\\megamind-frontend-admin-ui\\\\src\\\\app\" -File -Recurse | Where-Object {$_.Extension -eq \".tsx\" -or $_.Extension -eq \".ts\"} | Select-Object -First 50)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\Chanaka Chathuranga\\\\source\\\\repos\\\\megamind\\\\megamind-frontend-admin-ui\\\\src\\\\components\\\\landing\" -File | Where-Object {$_.Extension -eq \".tsx\"}; Get-ChildItem -Path \"c:\\\\Users\\\\Chanaka Chathuranga\\\\source\\\\repos\\\\megamind\\\\megamind-frontend-admin-ui\\\\src\\\\app\\\\tests\\\\take-test\" -File -Recurse | Where-Object {$_.Extension -eq \".tsx\"})",
+      "Bash(\" \"c:/Users/Chanaka Chathuranga/source/repos/megamind/megamind-frontend-admin-ui/src/app/auth/signin/page.tsx\" | head -10)",
+      "Bash(grep -n \"auth-layout\\\\|style.*{`\" \"c:/Users/Chanaka Chathuranga/source/repos/megamind/megamind-frontend-admin-ui/src/app/auth/signin/page.tsx\" | head -10)"
+    ]
+  }
+}

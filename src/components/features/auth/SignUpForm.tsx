@@ -1,89 +1,160 @@
+// Client Component - Sign up form with Supabase auth
 'use client';
 
-import { SignUpFormFields } from '@/components/features/auth/SignUpFormFields';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { SignUpValues, signUpSchema } from '@/lib/validations/auth';
-import { authService } from '@/services/auth';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertCircle, Loader2, UserPlus } from 'lucide-react';
+import { useConfetti } from '@/hooks/useConfetti';
+import { authService } from '@/services/api/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+
+const SUBJECTS = ['Physics', 'Chemistry', 'ICT', 'Mathematics', 'English'];
+const GRADES   = ['Grade 11 (O/L)', 'Grade 12 (A/L)', 'Grade 13 (A/L)', 'Uni entrance'];
 
 export function SignUpForm() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { fireSignup } = useConfetti();
+  const [name, setName]           = useState('');
+  const [grade, setGrade]         = useState(GRADES[0]);
+  const [email, setEmail]         = useState('');
+  const [password, setPassword]   = useState('');
+  const [subjects, setSubjects]   = useState<string[]>(['Chemistry']);
+  const [agreed, setAgreed]       = useState(false);
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState<string | null>(null);
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<SignUpValues>({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      role: 'student',
-      name: '',
-      email: '',
-      password: '',
-      accessCode: '',
-    },
-  });
+  const toggleSubject = (s: string) =>
+    setSubjects(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
 
-  const selectedRole = watch('role');
-
-  const onSubmit = async (data: SignUpValues) => {
-    setIsLoading(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!agreed) { setError('Please agree to the Terms and Privacy Policy.'); return; }
+    setLoading(true);
     setError(null);
     try {
-      await authService.register(data);
-      router.push('/dashboard');
+      await authService.register({ name, email, password, role: 'student' });
+      fireSignup();
+      router.push('/marketplace');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(err.message ?? 'Registration failed. Please try again.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await authService.loginWithGoogle();
+    } catch (err: any) {
+      setError(err.message ?? 'Google sign up failed');
+      setLoading(false);
     }
   };
 
   return (
-    <Card className="p-8 shadow-xl border-t-4 border-t-[var(--accent-blue)] animate-slide-up">
-      <div className="mb-8 text-center">
-        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-          Create Account
-        </h1>
-        <p className="text-[var(--text-secondary)] mt-2">Join MegaMind today</p>
+    <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+      {error && (
+        <div style={{ padding: '12px 16px', background: 'rgba(217,74,61,.08)', border: '1.5px solid var(--p-accent)', borderRadius: 10, fontSize: 13, color: 'var(--p-accent)', marginBottom: 18 }}>
+          {error}
+        </div>
+      )}
+
+      {/* Google */}
+      <button type="button" onClick={handleGoogle} disabled={loading} style={ghostBtn}>
+        <GoogleIcon /> Sign up with Google
+      </button>
+
+      <Divider />
+
+      {/* Name + Grade */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 18 }}>
+        <div>
+          <label style={labelStyle}>Full name</label>
+          <input type="text" placeholder="Nimal Perera" value={name} onChange={e => setName(e.target.value)} required style={inputStyle} />
+        </div>
+        <div>
+          <label style={labelStyle}>Grade</label>
+          <select value={grade} onChange={e => setGrade(e.target.value)} style={inputStyle}>
+            {GRADES.map(g => <option key={g}>{g}</option>)}
+          </select>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-sm text-red-600 animate-fade-in">
-            <AlertCircle className="h-4 w-4" />
-            {error}
-          </div>
-        )}
+      {/* Email */}
+      <div style={{ marginBottom: 18 }}>
+        <label style={labelStyle}>Email address</label>
+        <input type="email" placeholder="you@email.lk" value={email} onChange={e => setEmail(e.target.value)} required style={inputStyle} />
+      </div>
 
-        <SignUpFormFields control={control} errors={errors} watch={watch} />
+      {/* Password */}
+      <div style={{ marginBottom: 18 }}>
+        <label style={labelStyle}>Password</label>
+        <input type="password" placeholder="At least 8 characters" value={password} onChange={e => setPassword(e.target.value)} required style={inputStyle} />
+      </div>
 
-        <Button 
-          type="submit" 
-          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25 transition-all duration-300 transform hover:scale-[1.02]"
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating Account...
-            </>
-          ) : (
-            <>
-              <UserPlus className="mr-2 h-4 w-4" />
-              Sign Up
-            </>
-          )}
-        </Button>
-      </form>
-    </Card>
+      {/* Subjects */}
+      <div style={{ marginBottom: 18 }}>
+        <label style={labelStyle}>Subjects you&apos;re studying</label>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
+          {SUBJECTS.map(s => {
+            const active = subjects.includes(s);
+            return (
+              <button key={s} type="button" onClick={() => toggleSubject(s)} style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '8px 14px', border: '1.5px solid var(--p-ink)', borderRadius: 999,
+                background: active ? 'var(--p-ink)' : 'var(--p-bg)',
+                color: active ? 'var(--p-bg)' : 'var(--p-ink)',
+                fontFamily: 'var(--font-mono, monospace)', fontSize: 12, fontWeight: 600,
+                cursor: 'pointer', transition: 'all .12s',
+              }}>
+                <span style={{ width: 5, height: 5, borderRadius: 999, background: active ? 'var(--p-secondary)' : 'var(--p-primary)', flexShrink: 0 }} />
+                {s}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Terms */}
+      <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 13, color: 'var(--p-ink-2)', margin: '18px 0 22px', cursor: 'pointer' }}>
+        <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} style={{ width: 18, height: 18, accentColor: 'var(--p-primary)', marginTop: 2 }} />
+        <span>I agree to the <a href="#" style={{ color: 'var(--p-primary)', fontWeight: 600 }}>Terms</a> and <a href="#" style={{ color: 'var(--p-primary)', fontWeight: 600 }}>Privacy Policy</a>.</span>
+      </label>
+
+      <button type="submit" disabled={loading} style={primaryBtn}>
+        {loading ? 'Creating account…' : 'Create account · Start free →'}
+      </button>
+
+      <p style={{ marginTop: 24, fontSize: 14, color: 'var(--p-ink-2)', textAlign: 'center' }}>
+        Already a megamind?{' '}
+        <a href="/auth/signin" style={{ color: 'var(--p-primary)', fontWeight: 600, textDecoration: 'none' }}>Sign in</a>
+      </p>
+    </form>
   );
 }
+
+function Divider() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '22px 0' }}>
+      <span style={{ flex: 1, height: 2, background: 'var(--p-ink)', opacity: 0.12 }} />
+      <span style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: 11, color: 'var(--p-muted)' }}>OR USE EMAIL</span>
+      <span style={{ flex: 1, height: 2, background: 'var(--p-ink)', opacity: 0.12 }} />
+    </div>
+  );
+}
+
+function GoogleIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24">
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+    </svg>
+  );
+}
+
+const labelStyle: React.CSSProperties = { fontFamily: 'var(--font-mono, monospace)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--p-ink-2)', display: 'block', marginBottom: 8, fontWeight: 600 };
+const inputStyle: React.CSSProperties = { width: '100%', padding: '14px 16px', border: '2px solid var(--p-ink)', borderRadius: 12, background: 'var(--p-bg)', fontFamily: 'inherit', fontSize: 15, color: 'var(--p-ink)', outline: 'none', boxSizing: 'border-box' };
+const ghostBtn: React.CSSProperties   = { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, padding: 16, border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-bg)', color: 'var(--p-ink)', fontFamily: 'var(--font-display, sans-serif)', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '3px 3px 0 var(--p-ink)' };
+const primaryBtn: React.CSSProperties = { width: '100%', padding: 16, border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-primary)', color: 'var(--p-primary-ink)', fontFamily: 'var(--font-display, sans-serif)', fontWeight: 700, fontSize: 15, cursor: 'pointer', boxShadow: '3px 3px 0 var(--p-ink)' };

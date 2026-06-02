@@ -38,7 +38,7 @@ export function useCreateTestForm() {
     try {
       console.log('Creating Test:', data);
       await new Promise(resolve => setTimeout(resolve, 1500));
-      router.push('/tests');
+      router.push('/admin/tests');
     } catch (error) {
       console.error('Failed to create test:', error);
     } finally {

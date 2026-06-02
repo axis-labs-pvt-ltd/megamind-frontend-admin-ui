@@ -1,220 +1,170 @@
 'use client';
 
-import { QuestionCard } from '@/components/features/questions/QuestionCard';
-import { ScoreCard } from '@/components/features/tests/ScoreCard';
-import { TestInterface } from '@/components/features/tests/TestInterface';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { mockQuestions, mockTests } from '@/lib/mock-data';
-import { TestSession } from '@/types';
-import { Home, Play, RotateCcw } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { completeTestSession, startTestSession } from '@/services/api/testSessions';
+import { useConfetti } from '@/hooks/useConfetti';
+import { useQuestions } from '@/hooks/queries/useQuestions';
+import { useTests } from '@/hooks/queries/useTests';
+import { Question, Test } from '@/types';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useMemo, useRef, useState } from 'react';
+import { QuizActiveScreen } from './components/QuizActiveScreen';
+import { QuizPreScreen } from './components/QuizPreScreen';
+import { QuizResultScreen } from './components/QuizResultScreen';
 
 export default function TakeTestPage() {
+  return (
+    <Suspense>
+      <TakeTestPageInner />
+    </Suspense>
+  );
+}
+
+function TakeTestPageInner() {
   const router = useRouter();
-  const [currentTest] = useState(mockTests[0]);
-  const [testSession, setTestSession] = useState<TestSession | null>(null);
-  const [testResult, setTestResult] = useState<any>(null);
-  const [showResults, setShowResults] = useState(false);
+  const searchParams = useSearchParams();
+  const { fireTestPassed } = useConfetti();
+  const testId = searchParams.get('testId');
 
-  const startTest = () => {
-    // Create a test session with questions
-    const questions = currentTest.type === 'static' 
-      ? mockQuestions.filter(q => currentTest.questionIds.includes(q.id))
-      : mockQuestions.slice(0, 5); // Simplified for demo
+  const { data: allTests = [], isLoading: testsLoading, error: testsError } = useTests();
+  const { data: allQuestions = [], isLoading: questionsLoading, error: questionsError } = useQuestions();
 
-    const session: TestSession = {
-      id: Date.now().toString(),
-      testId: currentTest.id,
-      studentId: '1',
-      questions,
-      startTime: new Date(),
-      timeLimit: currentTest.timeLimit,
-      currentQuestionIndex: 0,
-      answers: {},
-      isCompleted: false
-    };
+  const loading = testsLoading || questionsLoading;
+  const loadError = testsError ?? questionsError;
+  const test = useMemo(
+    () => testId ? allTests.find(t => t.id === testId) ?? null : allTests[0] ?? null,
+    [allTests, testId]
+  );
 
-    setTestSession(session);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sessionQuestions, setSessionQuestions] = useState<Question[]>([]);
+  const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
+  const startTimeRef = useRef<Date | null>(null);
+  const [testStarted, setTestStarted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [testResult, setTestResult] = useState<{ score: number; correctAnswers: number; totalQuestions: number; timeSpent: number } | null>(null);
+  const [sessionError, setSessionError] = useState<string | null>(null);
+  const error = loadError ? (loadError as Error).message : sessionError;
+
+
+  const resolveQuestions = (t: Test): Question[] => {
+    if (t.type === 'static') {
+      return t.questionIds.map(id => allQuestions.find(q => q.id === id)).filter((q): q is Question => q !== undefined);
+    }
+    const picked: Question[] = [];
+    t.rules.forEach(rule => {
+      const matching = allQuestions.filter(q => q.moduleId === rule.moduleId && q.difficulty === rule.difficulty);
+      const shuffled = [...matching].sort(() => Math.random() - 0.5);
+      picked.push(...shuffled.slice(0, rule.questionCount));
+    });
+    return picked;
+  };
+
+  const startTest = async () => {
+    if (!test) return;
+    try {
+      const questions = resolveQuestions(test);
+      if (questions.length === 0) throw new Error('No questions matched. Check test configuration.');
+      const sid = await startTestSession(test.id, questions);
+      setSessionId(sid);
+      setSessionQuestions(questions);
+      startTimeRef.current = new Date();
+      setTestStarted(true);
+    } catch (err: any) {
+      setSessionError(err.message ?? 'Failed to start test');
+    }
   };
 
   const handleAnswerChange = (questionId: string, answer: string | string[]) => {
-    if (!testSession) return;
-
-    setTestSession({
-      ...testSession,
-      answers: {
-        ...testSession.answers,
-        [questionId]: answer
-      }
-    });
+    setAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
 
-  const handleSubmit = () => {
-    if (!testSession) return;
-
-    // Calculate score
-    let correctAnswers = 0;
-    const totalQuestions = testSession.questions.length;
-
-    testSession.questions.forEach(question => {
-      const userAnswer = testSession.answers[question.id];
-      if (userAnswer && JSON.stringify(userAnswer) === JSON.stringify(question.correctAnswer)) {
-        correctAnswers++;
-      }
-    });
-
-    const score = Math.round((correctAnswers / totalQuestions) * 100);
-
-    setTestResult({
-      score,
-      correctAnswers,
-      totalQuestions,
-      answers: testSession.answers,
-      questions: testSession.questions
-    });
-
-    setShowResults(true);
-  };
-
-  const handleTimeUp = () => {
-    handleSubmit();
+  const handleSubmit = async () => {
+    if (!sessionId || !startTimeRef.current || !test) return;
+    setIsSubmitting(true);
+    try {
+      const timeSpent = Math.round((Date.now() - startTimeRef.current.getTime()) / 1000);
+      let correctAnswers = 0;
+      sessionQuestions.forEach(q => {
+        const userAnswer = answers[q.id];
+        if (userAnswer && JSON.stringify(userAnswer) === JSON.stringify(q.correctAnswer)) correctAnswers++;
+      });
+      const score = Math.round((correctAnswers / sessionQuestions.length) * 100);
+      await completeTestSession(sessionId, score, timeSpent, answers, sessionQuestions);
+      setTestResult({ score, correctAnswers, totalQuestions: sessionQuestions.length, timeSpent });
+      if (score >= test.passingScore) setTimeout(fireTestPassed, 100);
+    } catch (err: any) {
+      setSessionError(err.message ?? 'Failed to submit test');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const retakeTest = () => {
-    setTestSession(null);
+    setSessionId(null);
+    setSessionQuestions([]);
+    setAnswers({});
+    startTimeRef.current = null;
+    setTestStarted(false);
     setTestResult(null);
-    setShowResults(false);
+    setSessionError(null);
   };
 
-  // Pre-test screen
-  if (!testSession && !showResults) {
+  if (loading) {
     return (
-      <div className="max-w-2xl mx-auto">
-        <Card className="p-8 text-center">
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">{currentTest.title}</h2>
-              <p className="text-gray-600">{currentTest.description}</p>
-            </div>
+      <div style={{ minHeight: '100vh', background: 'var(--p-bg-alt)', display: 'grid', placeItems: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
+          <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontSize: 20, fontWeight: 600, color: 'var(--p-ink)' }}>Loading test…</div>
+        </div>
+      </div>
+    );
+  }
 
-            <div className="grid grid-cols-2 gap-4 py-6">
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600">Questions</p>
-                <p className="text-2xl font-bold text-[var(--text-primary)]">
-                  {currentTest.type === 'static' ? currentTest.questionIds.length : 3}
-                </p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600">Time Limit</p>
-                <p className="text-2xl font-bold text-[var(--text-primary)]">{currentTest.timeLimit} min</p>
-              </div>
-            </div>
-
-            <div className="bg-blue-50 rounded-lg p-4">
-              <p className="text-sm text-[var(--accent-blue)] font-medium">Passing Score: {currentTest.passingScore}%</p>
-            </div>
-
-            <div className="space-y-3">
-              <Button
-                variant="primary"
-                size="md"
-                onClick={startTest}
-                className="w-full"
-              >
-                 <Play className="h-4 w-4 mr-2" />
-                Start Test
-              </Button>
-              <Button
-                variant="outline"
-                size="md"
-                onClick={() => router.push('/dashboard')}
-                className="w-full"
-              >
-                 <Home className="h-4 w-4 mr-2" />
-                Back to Dashboard
-              </Button>
-            </div>
+  if (error) {
+    return (
+      <div style={{ minHeight: '100vh', background: 'var(--p-bg-alt)', display: 'grid', placeItems: 'center', padding: '40px 28px' }}>
+        <div style={{ maxWidth: 480, width: '100%', padding: 32, border: '2px solid var(--p-ink)', borderRadius: 18, background: 'var(--p-bg)', boxShadow: '6px 6px 0 var(--p-ink)', textAlign: 'center' }}>
+          <div style={{ fontSize: 40, marginBottom: 14 }}>⚠️</div>
+          <p style={{ fontSize: 15, color: '#D94A3D', marginBottom: 20, fontWeight: 500 }}>{error}</p>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+            <button onClick={() => { setSessionError(null); retakeTest(); }} style={ghostBtn}>Try Again</button>
+            <button onClick={() => router.push('/my-tests')} style={primaryBtn}>Back to Tests</button>
           </div>
-        </Card>
-      </div>
-    );
-  }
-
-  // Results screen
-  if (showResults && testResult) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Test Results</h2>
-          <p className="text-gray-600">Here's how you performed on {currentTest.title}</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <ScoreCard
-            title="Your Score"
-            score={testResult.correctAnswers}
-            totalQuestions={testResult.totalQuestions}
-            percentage={testResult.score}
-          />
-          <ScoreCard
-            title="Accuracy"
-            score={testResult.correctAnswers}
-            totalQuestions={testResult.totalQuestions}
-            percentage={Math.round((testResult.correctAnswers / testResult.totalQuestions) * 100)}
-          />
-          <ScoreCard
-            title="Status"
-            score={testResult.score >= currentTest.passingScore ? 1 : 0}
-            totalQuestions={1}
-            percentage={testResult.score >= currentTest.passingScore ? 100 : 0}
-          />
-        </div>
-
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-[var(--text-primary)]">Question Review</h3>
-          {testResult.questions.map((question: any, index: number) => (
-            <QuestionCard
-              key={question.id}
-              question={question}
-              showAnswer={true}
-              userAnswer={testResult.answers[question.id]}
-            />
-          ))}
-        </div>
-
-        <div className="flex justify-center space-x-4">
-          <Button
-            variant="outline"
-            onClick={retakeTest}
-          >
-             <RotateCcw className="h-4 w-4 mr-2" />
-            Retake Test
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() => router.push('/dashboard')}
-          >
-             <Home className="h-4 w-4 mr-2" />
-            Back to Dashboard
-          </Button>
         </div>
       </div>
     );
   }
 
-  // Test interface
-  if (testSession) {
+  if (!test) return null;
+
+  if (testResult) {
+    return <QuizResultScreen test={test} result={testResult} questions={sessionQuestions} answers={answers} onRetake={retakeTest} onBack={() => router.push('/my-tests')} />;
+  }
+
+  if (testStarted && sessionId) {
     return (
-      <TestInterface
-        session={testSession}
+      <QuizActiveScreen
+        test={test}
+        questions={sessionQuestions}
+        answers={answers}
         onAnswerChange={handleAnswerChange}
         onSubmit={handleSubmit}
-        onTimeUp={handleTimeUp}
+        isSubmitting={isSubmitting}
+        onExit={() => router.push('/my-tests')}
       />
     );
   }
 
-  return null;
+  return <QuizPreScreen test={test} onStart={startTest} onBack={() => router.push('/my-tests')} />;
 }
+
+const primaryBtn: React.CSSProperties = {
+  padding: '11px 20px', border: '2px solid var(--p-ink)', borderRadius: 999,
+  background: 'var(--p-primary)', color: 'var(--p-primary-ink)', fontFamily: 'var(--font-display,sans-serif)',
+  fontWeight: 600, fontSize: 13, cursor: 'pointer', boxShadow: '3px 3px 0 var(--p-ink)',
+};
+const ghostBtn: React.CSSProperties = {
+  padding: '11px 20px', border: '2px solid var(--p-ink)', borderRadius: 999,
+  background: 'var(--p-bg)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)',
+  fontWeight: 600, fontSize: 13, cursor: 'pointer', boxShadow: '3px 3px 0 var(--p-ink)',
+};

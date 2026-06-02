@@ -1,231 +1,192 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tooltip } from '@/components/ui/tooltip';
+// Sub-components for TestCard
 import { Test } from '@/types';
-import { Calendar, Clock, Edit, FileText, Play, Settings, Star, Users } from 'lucide-react';
+import { Clock, Edit, FileText, Play, Settings, Users } from 'lucide-react';
 
-// Helper functions
+const clampStyle: React.CSSProperties = { overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' };
+
 export const getDifficultyLevel = (test: Test) => {
-  const questionCount = test.type === 'static' 
-    ? test.questionIds.length 
-    : test.rules.reduce((sum, rule) => sum + rule.questionCount, 0);
-
-  if (questionCount <= 5) return 'Beginner';
-  if (questionCount <= 15) return 'Intermediate';
+  const q = test.type === 'static' ? test.questionIds.length : test.rules.reduce((s, r) => s + r.questionCount, 0);
+  if (q <= 5) return 'Beginner';
+  if (q <= 15) return 'Intermediate';
   return 'Advanced';
 };
 
-export const getDifficultyColor = (test: Test) => {
-  const level = getDifficultyLevel(test);
-  if (level === 'Beginner') return 'success';
-  if (level === 'Intermediate') return 'warning';
-  return 'danger';
+export const getQuestionCount = (test: Test) =>
+  test.type === 'static' ? test.questionIds.length : test.rules.reduce((s, r) => s + r.questionCount, 0);
+
+const diffBadge: Record<string, { bg: string; color: string }> = {
+  Beginner:     { bg: 'var(--accent-green)', color: '#fff' },
+  Intermediate: { bg: 'var(--accent-yellow)', color: '#1a1a1a' },
+  Advanced:     { bg: 'var(--accent-red)', color: '#fff' },
 };
 
-export const getQuestionCount = (test: Test) => {
-  return test.type === 'static' 
-    ? test.questionIds.length 
-    : test.rules.reduce((sum, rule) => sum + rule.questionCount, 0);
+const typeColor: Record<string, string> = {
+  static:  'var(--accent-blue)',
+  dynamic: 'var(--accent-purple)',
 };
 
-interface ActionProps {
-    onConfigure?: () => void;
-    onEdit?: () => void;
+interface ActionProps { onConfigure?: () => void; onEdit?: () => void; }
+
+/* ── Cover image variant ── */
+export const TestCardCover = ({ test, onConfigure, onEdit }: { test: Test } & ActionProps) => (
+  <div style={{ position: 'relative', height: 160, overflow: 'hidden', borderRadius: '12px 12px 0 0' }}>
+    <img src={test.coverImage} alt={test.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,.65) 0%, transparent 55%)' }} />
+    <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 6 }}>
+      <TypeBadge type={test.type} />
+      <DiffBadge test={test} />
+    </div>
+    <HoverActions onConfigure={onConfigure} onEdit={onEdit} />
+    <div style={{ position: 'absolute', bottom: 14, left: 16, right: 16 }}>
+      <div style={{ fontWeight: 700, fontSize: 18, color: '#fff', lineHeight: 1.2 }}>{test.title}</div>
+      {test.description && <div style={{ fontSize: 12, color: 'rgba(255,255,255,.8)', marginTop: 4, ...clampStyle }}>{test.description}</div>}
+    </div>
+  </div>
+);
+
+/* ── No-cover header ── */
+export const TestCardHeaderNoImage = ({ test, onConfigure, onEdit }: { test: Test } & ActionProps) => (
+  <div>
+    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const }}>
+        <TypeBadge type={test.type} />
+        <DiffBadge test={test} />
+      </div>
+      <HoverActions onConfigure={onConfigure} onEdit={onEdit} />
+    </div>
+    <div style={{ fontWeight: 700, fontSize: 17, color: 'var(--text-primary)', lineHeight: 1.25, marginBottom: 6 }}>{test.title}</div>
+    {test.description && (
+      <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5, ...clampStyle }}>{test.description}</div>
+    )}
+  </div>
+);
+
+/* ── Stats row ── */
+export const TestCardStats = ({ test, attemptCount = 0 }: { test: Test; attemptCount?: number }) => {
+  const q = getQuestionCount(test);
+  const items = [
+    { icon: <FileText size={14} />, value: q,              label: 'Questions' },
+    { icon: <Clock size={14} />,    value: test.timeLimit,  label: 'Minutes'  },
+    { icon: <Users size={14} />,    value: attemptCount,    label: 'Attempts' },
+  ];
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: `repeat(${items.length}, 1fr)`, gap: 8 }}>
+      {items.map(it => (
+        <div key={it.label} style={{ background: 'var(--bg-secondary)', borderRadius: 10, padding: '10px 6px', textAlign: 'center' as const }}>
+          <div style={{ color: 'var(--text-secondary)', display: 'flex', justifyContent: 'center', marginBottom: 4 }}>{it.icon}</div>
+          <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)' }}>{it.value}</div>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' as const, color: 'var(--text-secondary)', marginTop: 1 }}>{it.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/* ── Tags ── */
+export const TestCardTags = ({ tags }: { tags?: string[] }) => {
+  if (!tags?.length) return null;
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 5 }}>
+      {tags.slice(0, 4).map((tag, i) => (
+        <span key={i} style={{ padding: '3px 10px', borderRadius: 999, border: '1px solid var(--border-primary)', background: 'var(--bg-secondary)', fontSize: 11, color: 'var(--text-secondary)', fontWeight: 500 }}>
+          #{tag}
+        </span>
+      ))}
+      {tags.length > 4 && (
+        <span style={{ padding: '3px 10px', borderRadius: 999, border: '1px solid var(--border-primary)', background: 'var(--bg-secondary)', fontSize: 11, color: 'var(--text-secondary)' }}>
+          +{tags.length - 4}
+        </span>
+      )}
+    </div>
+  );
+};
+
+/* ── Passing score ── */
+export const TestCardPassingScore = ({ passingScore }: { passingScore: number }) => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+    <div style={{ flex: 1, height: 5, borderRadius: 999, background: 'var(--bg-secondary)', overflow: 'hidden' }}>
+      <div style={{ height: '100%', width: `${passingScore}%`, background: 'var(--accent-blue)', borderRadius: 999 }} />
+    </div>
+    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-blue)', minWidth: 38, textAlign: 'right' as const }}>{passingScore}% pass</span>
+  </div>
+);
+
+/* ── Actions ── */
+export const TestCardActions = ({ test, onStart }: { test: Test; onStart?: () => void }) => (
+  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 4 }}>
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 5,
+      padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 600,
+      background: test.isActive ? 'var(--accent-green)/10' : 'rgba(239,68,68,.1)',
+      color: test.isActive ? 'var(--accent-green)' : 'var(--accent-red)',
+      border: `1px solid ${test.isActive ? 'var(--accent-green)' : 'var(--accent-red)'}`,
+    }}>
+      <span style={{ width: 6, height: 6, borderRadius: 999, background: test.isActive ? 'var(--accent-green)' : 'var(--accent-red)', flexShrink: 0 }} />
+      {test.isActive ? 'Active' : 'Inactive'}
+    </span>
+    <button
+      onClick={e => { e.stopPropagation(); onStart?.(); }}
+      disabled={!test.isActive}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 6,
+        padding: '8px 18px',
+        borderRadius: 10,
+        border: '1.5px solid var(--border-primary)',
+        background: test.isActive ? 'var(--accent-blue)' : 'var(--bg-secondary)',
+        color: test.isActive ? '#fff' : 'var(--text-secondary)',
+        fontSize: 13, fontWeight: 600,
+        cursor: test.isActive ? 'pointer' : 'not-allowed',
+        opacity: test.isActive ? 1 : 0.6,
+        transition: 'opacity .15s',
+      }}
+    >
+      <Play size={13} fill="currentColor" />
+      Start
+    </button>
+  </div>
+);
+
+/* ── Internal helpers ── */
+function TypeBadge({ type }: { type: string }) {
+  return (
+    <span style={{ padding: '3px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700, background: typeColor[type] || 'var(--accent-blue)', color: '#fff', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>
+      {type}
+    </span>
+  );
 }
 
-export const TestCardCover = ({ test, onConfigure, onEdit }: { test: Test } & ActionProps) => {
+function DiffBadge({ test }: { test: Test }) {
+  const level = getDifficultyLevel(test);
+  const { bg, color } = diffBadge[level] ?? diffBadge.Beginner;
   return (
-    <div className="relative h-48 overflow-hidden">
-      <img
-        src={test.coverImage}
-        alt={test.title}
-        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-      <div className="absolute top-4 left-4 flex space-x-2">
-        <Badge variant={test.type === 'static' ? 'primary' : 'secondary'} size="sm" className="bg-[var(--bg-card)]/90 text-[var(--text-primary)]">
-          {test.type}
-        </Badge>
-        <Badge variant={getDifficultyColor(test)} size="sm" className="bg-[var(--bg-card)]/90">
-          {getDifficultyLevel(test)}
-        </Badge>
-      </div>
-      <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        {onConfigure && (
-          <Button
-            variant="ghost"
-            size="sm"
-            style={{ padding: 8 }}
-            onClick={(e) => { e.stopPropagation(); onConfigure(); }}
-            className="bg-[var(--bg-card)]/90 hover:bg-[var(--bg-card)] text-gray-700"
-          >
-            <Settings className="h-4 w-4" />
-          </Button>
-        )}
-        {onEdit && (
-            <Button
-            variant="ghost"
-            size="sm"
-            style={{ padding: 8 }}
-            onClick={(e) => { e.stopPropagation(); onEdit(); }}
-            className="bg-[var(--bg-card)]/90 hover:bg-[var(--bg-card)] text-gray-700"
-            >
-            <Edit className="h-4 w-4" />
-            </Button>
-        )}
-      </div>
-      <div className="absolute bottom-4 left-4 right-4">
-        <h3 className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-blue)] transition-colors mb-1">
-          {test.title}
-        </h3>
-        <p className="text-white/90 text-sm leading-relaxed line-clamp-2">{test.description}</p>
-      </div>
+    <span style={{ padding: '3px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700, background: bg, color, textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>
+      {level}
+    </span>
+  );
+}
+
+function HoverActions({ onConfigure, onEdit }: ActionProps) {
+  if (!onConfigure && !onEdit) return null;
+  return (
+    <div className="group-hover-actions" style={{ display: 'flex', gap: 4 }}>
+      {onConfigure && (
+        <button onClick={e => { e.stopPropagation(); onConfigure(); }} style={iconBtn}>
+          <Settings size={13} />
+        </button>
+      )}
+      {onEdit && (
+        <button onClick={e => { e.stopPropagation(); onEdit(); }} style={iconBtn}>
+          <Edit size={13} />
+        </button>
+      )}
     </div>
   );
-};
+}
 
-export const TestCardHeaderNoImage = ({ test, onConfigure, onEdit }: { test: Test } & ActionProps) => {
-  return (
-    <div className="flex items-start justify-between">
-      <div className="flex-1">
-        <div className="flex items-center space-x-3 mb-3">
-          <h3 className="text-xl font-bold text-[var(--text-primary)] group-hover:text-blue-700 transition-colors">
-            {test.title}
-          </h3>
-          <div className="flex items-center space-x-2">
-            <Badge variant={test.type === 'static' ? 'primary' : 'secondary'} size="sm">
-              {test.type}
-            </Badge>
-            <Badge variant={getDifficultyColor(test)} size="sm">
-              {getDifficultyLevel(test)}
-            </Badge>
-          </div>
-        </div>
-        <p className="text-gray-600 leading-relaxed">{test.description}</p>
-      </div>
-      <div className="flex items-center space-x-1 ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
-        {onConfigure && (
-          <Button
-            variant="ghost"
-            size="sm"
-            style={{ padding: 8 }}
-            onClick={(e) => { e.stopPropagation(); onConfigure(); }}
-            className="hover:bg-blue-50"
-          >
-            <Settings className="h-4 w-4" />
-          </Button>
-        )}
-        {onEdit && (
-          <Button
-            variant="ghost"
-            size="sm"
-            style={{ padding: 8 }}
-            onClick={(e) => { e.stopPropagation(); onEdit(); }}
-            className="hover:bg-blue-50"
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export const TestCardStats = ({ test, attemptCount = 0 }: { test: Test, attemptCount?: number }) => {
-  const questionCount = getQuestionCount(test);
-  return (
-    <div className="grid grid-cols-4 gap-2">
-        <Tooltip content="Questions" className="w-full">
-            <div className="text-center p-1 md:p-3 bg-[var(--bg-secondary)] rounded-xl hover:bg-[var(--bg-tertiary)] transition-colors">
-            <FileText className="h-3 w-3 md:h-4 md:w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
-            <p className="text-xs md:text-sm font-semibold text-[var(--text-primary)]">{questionCount}</p>
-            <span className="text-[9px] md:text-[10px] text-[var(--text-secondary)] block">Ques</span>
-            </div>
-        </Tooltip>
-        
-        <Tooltip content="Minutes" className="w-full">
-            <div className="text-center p-1 md:p-3 bg-[var(--bg-secondary)] rounded-xl hover:bg-[var(--bg-tertiary)] transition-colors">
-            <Clock className="h-3 w-3 md:h-4 md:w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
-            <p className="text-xs md:text-sm font-semibold text-[var(--text-primary)]">{test.timeLimit}</p>
-            <span className="text-[9px] md:text-[10px] text-[var(--text-secondary)] block">Mins</span>
-            </div>
-        </Tooltip>
-
-        <Tooltip content="Estimated Time" className="w-full">
-            <div className="text-center p-1 md:p-3 bg-[var(--bg-secondary)] rounded-xl hover:bg-[var(--bg-tertiary)] transition-colors">
-            <Calendar className="h-3 w-3 md:h-4 md:w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
-            <p className="text-xs md:text-sm font-semibold text-[var(--text-primary)]">{test.estimatedDuration || test.timeLimit}</p>
-            <span className="text-[9px] md:text-[10px] text-[var(--text-secondary)] block">Est</span>
-            </div>
-        </Tooltip>
-
-        <Tooltip content="Attempts" className="w-full">
-            <div className="text-center p-1 md:p-3 bg-[var(--bg-secondary)] rounded-xl hover:bg-[var(--bg-tertiary)] transition-colors">
-            <Users className="h-3 w-3 md:h-4 md:w-4 text-[var(--icon-secondary)] mx-auto mb-1" />
-            <p className="text-xs md:text-sm font-semibold text-[var(--text-primary)]">{attemptCount}</p>
-            <span className="text-[9px] md:text-[10px] text-[var(--text-secondary)] block">Users</span>
-            </div>
-        </Tooltip>
-    </div>
-  );
-};
-
-export const TestCardTags = ({ tags }: { tags?: string[] }) => {
-  if (!tags || tags.length === 0) return null;
-  return (
-    <div className="flex flex-wrap gap-1">
-        {tags.slice(0, 3).map((tag, index) => (
-        <Badge key={index} variant="secondary" size="sm" className="text-xs">
-            #{tag}
-        </Badge>
-        ))}
-        {tags.length > 3 && (
-        <Badge variant="secondary" size="sm" className="text-xs">
-            +{tags.length - 3} more
-        </Badge>
-        )}
-    </div>
-  );
-};
-
-export const TestCardPassingScore = ({ passingScore }: { passingScore: number }) => {
-  return (
-    <div className="bg-[var(--accent-blue)]/5 rounded-xl p-4 border border-[var(--accent-blue)]/20">
-    <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-        <Star className="h-4 w-4 text-[var(--accent-blue)]" />
-        <span className="text-sm font-semibold text-[var(--text-primary)]">Passing Score</span>
-        </div>
-        <Badge variant="primary" size="md" className="bg-[var(--accent-blue)] text-white">{passingScore}%</Badge>
-    </div>
-    </div>
-  );
-};
-
-export const TestCardActions = ({ test, onStart }: { test: Test, onStart?: () => void }) => {
-    
-  return (
-    <div className="flex items-center justify-between pt-2">
-    <Badge 
-        variant={test.isActive ? 'success' : 'danger'} 
-        size="md"
-        className={test.isActive ? 'bg-[var(--accent-green)]/10 text-[var(--accent-green)]' : 'bg-[var(--accent-red)]/10 text-[var(--accent-red)]'}
-    >
-        {test.isActive ? '✓ Active' : '✗ Inactive'}
-    </Badge>
-    
-    <Button
-        variant="primary"
-        size="md"
-        onClick={(e) => { e.stopPropagation(); onStart?.(); }}
-        disabled={!test.isActive}
-        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-200"
-    >
-        <span className="flex items-center">
-            <Play className="h-4 w-4 mr-2" />
-            Start Test
-        </span>
-    </Button>
-    </div>
-  );
+const iconBtn: React.CSSProperties = {
+  width: 28, height: 28, borderRadius: 8,
+  border: '1.5px solid var(--border-primary)',
+  background: 'var(--bg-card)',
+  color: 'var(--text-secondary)',
+  cursor: 'pointer', display: 'grid', placeItems: 'center',
 };

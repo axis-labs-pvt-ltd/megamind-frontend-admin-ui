@@ -1,6 +1,5 @@
 'use client';
 
-import { NeumorphicWrapper } from '@/components/ui/neumorphic-wrapper';
 import { cn } from '@/lib/utils';
 import { GraduationCap, Presentation } from 'lucide-react';
 
@@ -14,13 +13,13 @@ interface RoleSelectorProps {
 export function RoleSelector({ selectedRole, onSelect }: RoleSelectorProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <NeumorphicWrapper
-        as="button"
-        active={selectedRole === 'student'}
+      <button
         onClick={() => onSelect('student')}
         className={cn(
-          "flex flex-col items-center justify-center p-6 space-y-3 h-40 text-center transition-all",
-          selectedRole === 'student' ? 'ring-2 ring-[var(--accent-blue)] ring-offset-2 ring-offset-[var(--bg-primary)]' : 'hover:scale-105'
+          "flex flex-col items-center justify-center p-6 space-y-3 h-40 text-center transition-all border rounded-lg bg-[var(--bg-card)]",
+          selectedRole === 'student'
+            ? 'ring-2 ring-[var(--accent-blue)] ring-offset-2 ring-offset-[var(--bg-primary)] border-[var(--accent-blue)]'
+            : 'border-[var(--border-primary)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-hover)]'
         )}
       >
         <div className={cn(
@@ -35,15 +34,15 @@ export function RoleSelector({ selectedRole, onSelect }: RoleSelectorProps) {
             Access courses & take tests
           </p>
         </div>
-      </NeumorphicWrapper>
+      </button>
 
-      <NeumorphicWrapper
-        as="button"
-        active={selectedRole === 'instructor'}
+      <button
         onClick={() => onSelect('instructor')}
         className={cn(
-          "flex flex-col items-center justify-center p-6 space-y-3 h-40 text-center transition-all",
-          selectedRole === 'instructor' ? 'ring-2 ring-[var(--accent-purple)] ring-offset-2 ring-offset-[var(--bg-primary)]' : 'hover:scale-105'
+          "flex flex-col items-center justify-center p-6 space-y-3 h-40 text-center transition-all border rounded-lg bg-[var(--bg-card)]",
+          selectedRole === 'instructor'
+            ? 'ring-2 ring-[var(--accent-purple)] ring-offset-2 ring-offset-[var(--bg-primary)] border-[var(--accent-purple)]'
+            : 'border-[var(--border-primary)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-hover)]'
         )}
       >
         <div className={cn(
@@ -58,7 +57,7 @@ export function RoleSelector({ selectedRole, onSelect }: RoleSelectorProps) {
             Manage tests & students
           </p>
         </div>
-      </NeumorphicWrapper>
+      </button>
     </div>
   );
 }

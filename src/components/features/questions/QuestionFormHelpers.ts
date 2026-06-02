@@ -44,6 +44,7 @@ export const getInitialFormData = (editingQuestion: Question | null): Partial<Qu
     categoryIds: editingQuestion.categories.map(c => c.id),
     tagIds: editingQuestion.tags.map(t => t.id),
     solutionVideoUrl: editingQuestion.solutionVideoUrl || '',
+    solutionText: editingQuestion.solutionText || '',
   };
 
   return {

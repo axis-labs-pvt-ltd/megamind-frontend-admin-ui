@@ -1,11 +1,14 @@
-import { Header } from '@/components/layout/Header';
-import { Sidebar } from '@/components/layout/Sidebar';
+import { AdminShell } from '@/components/layout/AdminShell';
 import { AppProviders } from '@/components/providers/AppProviders';
+import { AuthProvider } from '@/contexts/authcontext';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import './globals.css';
+import './landing-palette.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
+const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
 export const metadata: Metadata = {
   title: 'MegaMind Admin',
@@ -18,21 +21,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <AppProviders>
-          <div className="min-h-screen bg-[var(--bg-primary)] flex">
-           <Sidebar />
-           <div className="flex-1 flex flex-col min-w-0">
-             <Header />
-             <main className="flex-1 p-6 lg:p-8 overflow-y-auto overflow-x-hidden">
-               <div className="max-w-[1600px] mx-auto w-full">
-                  {children}
-               </div>
-             </main>
-           </div>
-          </div>
-        </AppProviders>
+    <html lang="en" data-palette="forest">
+      <body className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans`}>
+        <AuthProvider>
+          <AppProviders>
+            <AdminShell>
+              {children}
+            </AdminShell>
+          </AppProviders>
+        </AuthProvider>
       </body>
     </html>
   );
