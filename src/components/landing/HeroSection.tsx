@@ -20,7 +20,7 @@ const wavyUnderline = (color = 'var(--p-primary)') =>
 
 export function HeroSection() {
   return (
-    <section style={{ padding: '80px 0', background: 'var(--p-bg)' }}>
+    <section className="hero-section" style={{ padding: '80px 0', background: 'var(--p-bg)' }}>
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 28px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 56, alignItems: 'center' }} className="hero-grid">
 
@@ -75,15 +75,15 @@ export function HeroSection() {
               }}>Browse tests · from Rs. 1,000</Link>
             </div>
 
-            <div style={{ display: 'flex', gap: 36, flexWrap: 'wrap' }}>
+            <div className="hero-stats" style={{ display: 'flex', gap: 36, flexWrap: 'wrap' }}>
               <StatItem big="12,400+" label="Students learning" />
               <StatItem big="38" label="Modules live" />
               <StatItem big="4.8 ★" label="Avg. rating" />
             </div>
           </div>
 
-          {/* Right — collage */}
-          <div style={{ position: 'relative', minHeight: 560 }}>
+          {/* Right — collage (hidden on mobile) */}
+          <div className="hero-right" style={{ position: 'relative', minHeight: 560 }}>
             {/* Main hero image */}
             <div style={{
               position: 'absolute', top: 0, right: 0, width: '78%', height: 420,
@@ -156,7 +156,14 @@ export function HeroSection() {
       </div>
 
       <style>{`
-        @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 960px) {
+          .hero-grid { grid-template-columns: 1fr !important; }
+          .hero-right { display: none !important; }
+        }
+        @media (max-width: 600px) {
+          .hero-section { padding: 48px 0 !important; }
+          .hero-stats { gap: 20px !important; }
+        }
       `}</style>
     </section>
   );

@@ -52,11 +52,28 @@ export function QuizResultScreen({ test, result, questions, answers, onRetake, o
   const strongTopics = topics.filter(t => t.pct === 100).map(t => t.name);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>
+    <div style={{ minHeight: '100dvh', background: 'var(--p-bg)' }}>
+      <style>{`
+        @media (max-width: 860px) { .res-grid, .ai-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 600px) {
+          .res-hero { padding: 48px 0 !important; }
+          .res-hero-inner { padding: 0 14px !important; gap: 28px !important; }
+          .res-score-circle { width: 200px !important; height: 200px !important; }
+          .res-score-circle svg { width: 200px !important; height: 200px !important; }
+          .res-big-score { font-size: 60px !important; }
+          .res-stats { gap: 18px !important; }
+          .res-body { padding: 40px 0 !important; }
+          .res-body-inner { padding: 0 14px !important; gap: 16px !important; }
+          .res-review { padding: 0 0 60px !important; }
+          .res-review-inner { padding: 0 14px !important; }
+          .res-q-row { grid-template-columns: 40px 1fr !important; }
+          .res-q-btn { display: none !important; }
+        }
+      `}</style>
 
       {/* ── Dark hero ── */}
-      <section style={{ background: 'var(--p-ink)', color: 'var(--p-bg)', padding: '80px 0', borderBottom: '0' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 28px' }}>
+      <section className="res-hero" style={{ background: 'var(--p-ink)', color: 'var(--p-bg)', padding: '80px 0', borderBottom: '0' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 28px' }} className="res-hero-inner">
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 50, alignItems: 'center' }} className="res-grid">
 
             {/* Score circle */}
@@ -108,8 +125,8 @@ export function QuizResultScreen({ test, result, questions, answers, onRetake, o
       </section>
 
       {/* ── AI feedback + topic breakdown ── */}
-      <section style={{ padding: '80px 0' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 28px' }}>
+      <section className="res-body" style={{ padding: '80px 0' }}>
+        <div className="res-body-inner" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 28px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 30 }} className="ai-grid">
 
             {/* AI feedback card */}
@@ -183,8 +200,8 @@ export function QuizResultScreen({ test, result, questions, answers, onRetake, o
       </section>
 
       {/* ── Question review ── */}
-      <section style={{ padding: '0 0 100px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 28px' }}>
+      <section className="res-review" style={{ padding: '0 0 100px' }}>
+        <div className="res-review-inner" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 28px' }}>
           <h2 style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 'clamp(24px,3vw,40px)', letterSpacing: '-0.02em', color: 'var(--p-ink)', marginBottom: 24 }}>
             Review your{' '}
             <span style={{ display: 'inline-block', position: 'relative' }}>

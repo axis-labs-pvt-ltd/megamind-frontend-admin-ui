@@ -52,7 +52,18 @@ function StudyContent({ id }: { id: string }) {
   const coverColor = col?.coverColor ?? '#FFF2DD';
 
   return (
-    <div style={{ background: 'var(--p-bg-alt, #FFF2DD)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ background: 'var(--p-bg-alt, #FFF2DD)', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
+      <style>{`
+        @media (max-width: 600px) {
+          .fc-stage { height: min(72vw, 440px) !important; }
+          .study-stats { gap: 8px !important; }
+          .study-stats > div { padding: 10px 8px !important; }
+        }
+        @media (max-width: 480px) {
+          .study-bar-inner { flex-wrap: wrap; gap: 10px; }
+          .study-bar-title { font-size: 13px !important; }
+        }
+      `}</style>
       {/* Study bar */}
       <div style={{ background: 'var(--p-bg)', borderBottom: '2px solid var(--p-ink)', padding: '14px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 50 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -73,7 +84,7 @@ function StudyContent({ id }: { id: string }) {
       <main style={{ flex: 1, padding: '40px 0 24px' }}>
         <div style={{ maxWidth: 520, margin: '0 auto', padding: '0 24px' }}>
           {/* Stats strip */}
-          <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+          <div className="study-stats" style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
             {[{ val: knew, lbl: 'I knew it', color: '#2D6A4F' }, { val: review, lbl: 'Review again', color: '#D94A3D' }, { val: Math.max(0, cards.length - idx), lbl: 'Remaining', color: 'var(--p-ink)' }].map(s => (
               <div key={s.lbl} style={{ flex: 1, padding: '12px 14px', textAlign: 'center', border: '2px solid var(--p-ink)', borderRadius: 14, background: 'var(--p-bg)', boxShadow: '3px 3px 0 var(--p-ink)' }}>
                 <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 22, color: s.color }}>{s.val}</div>
@@ -83,7 +94,7 @@ function StudyContent({ id }: { id: string }) {
           </div>
 
           {/* Card stage */}
-          <div style={{ position: 'relative', height: 520, marginBottom: 32 }}>
+          <div className="fc-stage" style={{ position: 'relative', height: 520, marginBottom: 32 }}>
             {isLoading ? (
               <div style={{ display: 'grid', placeItems: 'center', height: '100%', fontFamily: 'var(--font-mono,monospace)', fontSize: 13, color: 'var(--p-muted)' }}>Loading…</div>
             ) : isComplete ? (
@@ -124,7 +135,7 @@ function StudyContent({ id }: { id: string }) {
           {/* Action buttons */}
           {!isComplete && !isLoading && (
             <>
-              <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+              <div className="swipe-actions" style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
                 <button onClick={() => handleSwipe('left')} style={{ padding: '14px 24px', minWidth: 130, border: '2px solid #D94A3D', borderRadius: 999, background: 'var(--p-bg)', color: '#D94A3D', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '3px 3px 0 #D94A3D' }}>
                   ← Review
                 </button>

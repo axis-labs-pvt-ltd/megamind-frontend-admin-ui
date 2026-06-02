@@ -139,3 +139,84 @@ html { scroll-behavior: smooth; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideRight{ from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes scaleIn   { from { opacity: 0; transform: scale(0.97); }      to { opacity: 1; transform: scale(1);    } }
+
+/* ─── Public page mobile utilities ────────────────────────── */
+/* Shared responsive helpers used by all p-* (public/landing) pages */
+
+/* Wrap padding scales down on mobile */
+@media (max-width: 600px) {
+  .p-wrap { padding-left: 16px !important; padding-right: 16px !important; }
+  .p-section { padding-top: 60px !important; padding-bottom: 60px !important; }
+  .p-section-sm { padding-top: 40px !important; padding-bottom: 40px !important; }
+}
+
+/* 3-col → 2-col → 1-col grid */
+@media (max-width: 960px) { .p-grid-3 { grid-template-columns: repeat(2,1fr) !important; } }
+@media (max-width: 580px)  { .p-grid-3 { grid-template-columns: 1fr !important; } }
+
+/* 4-col → 2-col → 1-col */
+@media (max-width: 1060px) { .p-grid-4 { grid-template-columns: repeat(2,1fr) !important; } }
+@media (max-width: 480px)  { .p-grid-4 { grid-template-columns: 1fr !important; } }
+
+/* 2-col → 1-col hero/split */
+@media (max-width: 860px) { .p-hero { grid-template-columns: 1fr !important; } }
+
+/* KPI / stats strip: 4 → 2 on mobile */
+@media (max-width: 700px) { .p-kpi { grid-template-columns: repeat(2,1fr) !important; } }
+
+/* Nav: full-width on mobile */
+@media (max-width: 600px) {
+  .p-nav-inner { padding: 12px 16px !important; }
+}
+
+/* Card touch targets: min-height 48px */
+@media (max-width: 600px) {
+  .p-btn { min-height: 48px !important; padding: 12px 20px !important; }
+}
+
+/* Modals: full-width on small screens */
+@media (max-width: 520px) {
+  .p-modal { max-width: 100% !important; margin: 0 !important; border-radius: 20px 20px 0 0 !important; }
+  .p-modal-wrap { align-items: flex-end !important; padding: 0 !important; }
+}
+
+/* Study bar: stack title/progress on very small screens */
+@media (max-width: 480px) {
+  .study-bar-inner { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+  .study-bar-progress { display: none !important; }
+}
+
+/* Quiz option grids */
+@media (max-width: 600px) {
+  .quiz-options { grid-template-columns: 1fr !important; }
+  .quiz-nav { flex-wrap: wrap !important; gap: 8px !important; }
+}
+
+/* Result screen grids */
+@media (max-width: 860px) {
+  .res-grid  { grid-template-columns: 1fr !important; }
+  .ai-grid   { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 600px) {
+  .res-score-circle { width: 180px !important; height: 180px !important; }
+  .res-score-circle svg { width: 180px !important; height: 180px !important; }
+  .res-big-score { font-size: 52px !important; }
+}
+
+/* Flash card study action buttons */
+@media (max-width: 480px) {
+  .swipe-actions { gap: 8px !important; }
+  .swipe-actions button { min-width: 0 !important; padding: 12px 14px !important; font-size: 13px !important; flex: 1 !important; }
+}
+
+/* Profile hero */
+@media (max-width: 760px) {
+  .prof-hero { grid-template-columns: 1fr !important; }
+  .ai-row    { grid-template-columns: 1fr !important; }
+}
+
+/* Solution dialog full-screen on mobile */
+@media (max-width: 600px) {
+  .solution-dialog { max-width: 100% !important; max-height: 100% !important; height: 100dvh !important; border-radius: 0 !important; margin: 0 !important; }
+  .solution-dialog-wrap { padding: 0 !important; align-items: flex-end !important; }
+}

@@ -20,7 +20,7 @@ export function FlashcardsSection() {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
-    <section id="flashcards" style={{ padding: '110px 0', background: 'var(--p-bg-alt)', borderTop: '2px solid var(--p-ink)', borderBottom: '2px solid var(--p-ink)' }}>
+    <section id="flashcards" className="fc-landing-section" style={{ padding: '110px 0', background: 'var(--p-bg-alt)', borderTop: '2px solid var(--p-ink)', borderBottom: '2px solid var(--p-ink)' }}>
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 28px' }}>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 60, alignItems: 'center' }} className="fc-landing-head">
@@ -53,7 +53,7 @@ export function FlashcardsSection() {
             </div>
 
             {/* Stats */}
-            <div style={{ display: 'flex', gap: 32, marginTop: 40, flexWrap: 'wrap' }}>
+            <div className="fc-stats" style={{ display: 'flex', gap: 32, marginTop: 40, flexWrap: 'wrap' }}>
               {STATS.map(s => (
                 <div key={s.lbl}>
                   <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 34, color: 'var(--p-ink)', letterSpacing: '-0.02em', lineHeight: 1 }}>{s.val}</div>
@@ -63,8 +63,8 @@ export function FlashcardsSection() {
             </div>
           </div>
 
-          {/* Right — card stack */}
-          <div style={{ position: 'relative', height: 460, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          {/* Right — card stack (hidden on tablet/mobile) */}
+          <div className="fc-card-stack" style={{ position: 'relative', height: 460, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {SAMPLE_CARDS.map((card, i) => {
               const offset = i - 1; // -1, 0, 1
               const isCenter = i === 1;
@@ -123,7 +123,10 @@ export function FlashcardsSection() {
         </div>
       </div>
 
-      <style>{`@media (max-width: 960px) { .fc-landing-head { grid-template-columns: 1fr !important; } }`}</style>
+      <style>{`
+        @media (max-width: 960px) { .fc-landing-head { grid-template-columns: 1fr !important; } .fc-card-stack { display: none !important; } }
+        @media (max-width: 600px) { .fc-landing-section { padding: 60px 0 !important; } .fc-stats { gap: 20px !important; } }
+      `}</style>
     </section>
   );
 }

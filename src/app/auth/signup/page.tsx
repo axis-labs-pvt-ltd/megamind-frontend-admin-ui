@@ -71,6 +71,9 @@ export default function SignUpPage() {
           .auth-layout { grid-template-columns: 1fr !important; }
           .auth-layout > div:last-child { display: none !important; }
         }
+        @media (max-width: 600px) {
+          .auth-layout > div:first-child { padding: 28px 20px !important; }
+        }
       `}</style>
     </div>
   );

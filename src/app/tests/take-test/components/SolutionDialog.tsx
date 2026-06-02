@@ -78,9 +78,9 @@ export function SolutionDialog({ question, userAnswer, isCorrect, onClose }: Pro
   const hasSolution = !!(question.solutionVideoUrl || question.solutionText || question.referenceVideoUrl);
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(26,21,20,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+    <div className="solution-dialog-wrap" style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(26,21,20,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
-      <div style={{ background: 'var(--p-bg)', border: '2px solid var(--p-ink)', borderRadius: 20, boxShadow: '8px 8px 0 var(--p-ink)', width: '100%', maxWidth: 780, maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div className="solution-dialog" style={{ background: 'var(--p-bg)', border: '2px solid var(--p-ink)', borderRadius: 20, boxShadow: '8px 8px 0 var(--p-ink)', width: '100%', maxWidth: 780, maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
         {/* Header */}
         <div style={{ padding: '18px 24px', borderBottom: '2px solid var(--p-ink)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>

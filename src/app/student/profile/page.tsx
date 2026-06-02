@@ -71,8 +71,8 @@ function ProfileContent() {
       </nav>
 
       {/* Hero */}
-      <section style={{ background: 'var(--p-bg)', borderBottom: '2px solid var(--p-ink)', padding: '44px 0' }}>
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 28px' }}>
+      <section className="prof-hero-section" style={{ background: 'var(--p-bg)', borderBottom: '2px solid var(--p-ink)', padding: '44px 0' }}>
+        <div className="prof-hero-inner" style={{ maxWidth: 1160, margin: '0 auto', padding: '0 28px' }}>
           <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, color: 'var(--p-muted)', marginBottom: 24, display: 'flex', gap: 6 }}>
             <Link href="/" style={{ color: 'var(--p-primary)', textDecoration: 'none' }}>Home</Link> / <span>My profile</span>
           </div>
@@ -107,8 +107,8 @@ function ProfileContent() {
       </section>
 
       {/* Main content */}
-      <section style={{ padding: '50px 0 100px' }}>
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 28px' }}>
+      <section className="prof-main-section" style={{ padding: '50px 0 100px' }}>
+        <div className="prof-main-inner" style={{ maxWidth: 1160, margin: '0 auto', padding: '0 28px' }}>
           {/* Tabs */}
           <div style={{ display: 'flex', gap: 4, borderBottom: '2px solid var(--p-ink)', marginBottom: 36, flexWrap: 'wrap' }}>
             {TABS.map(t => (
@@ -150,7 +150,16 @@ function ProfileContent() {
         </div>
       </section>
 
-      <style>{`@media(max-width:960px){.prof-hero{grid-template-columns:1fr!important;}.ai-row{grid-template-columns:1fr!important;}}`}</style>
+      <style>{`
+        @media(max-width:960px){ .prof-hero{grid-template-columns:1fr!important;} .ai-row{grid-template-columns:1fr!important;} }
+        @media(max-width:600px){
+          .prof-hero-section { padding: 28px 0 !important; }
+          .prof-hero-inner { padding: 0 14px !important; }
+          .prof-main-inner { padding: 0 14px !important; }
+          .prof-main-section { padding: 28px 0 60px !important; }
+          .prof-h1 { font-size: clamp(24px,7vw,44px) !important; }
+        }
+      `}</style>
     </div>
   );
 }

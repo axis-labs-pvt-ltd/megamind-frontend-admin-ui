@@ -93,8 +93,8 @@ function MarketplaceContent() {
       </nav>
 
       {/* Hero */}
-      <section style={{ padding: '56px 0 0', borderBottom: '2px solid var(--p-ink)' }}>
-        <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 28px 40px' }}>
+      <section className="mp-hero" style={{ padding: '56px 0 0', borderBottom: '2px solid var(--p-ink)' }}>
+        <div className="mp-hero-inner" style={{ maxWidth: 1240, margin: '0 auto', padding: '0 28px 40px' }}>
           <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, color: 'var(--p-muted)', marginBottom: 28, display: 'flex', gap: 8 }}>
             <Link href="/" style={{ color: 'var(--p-primary)', textDecoration: 'none' }}>Home</Link>
             <span>/</span><span>Test store</span>
@@ -173,8 +173,8 @@ function MarketplaceContent() {
 
       {/* Purchase modal */}
       {buying && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-          <div style={{ background: 'var(--p-bg)', border: '2px solid var(--p-ink)', borderRadius: 20, boxShadow: '8px 8px 0 var(--p-ink)', maxWidth: 460, width: '100%', overflow: 'hidden' }}>
+        <div className="mp-modal-wrap" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+          <div className="mp-modal" style={{ background: 'var(--p-bg)', border: '2px solid var(--p-ink)', borderRadius: 20, boxShadow: '8px 8px 0 var(--p-ink)', maxWidth: 460, width: '100%', overflow: 'hidden' }}>
             <div style={{ background: 'var(--p-bg-alt)', borderBottom: '2px solid var(--p-ink)', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--p-ink-2)' }}>Confirm purchase</span>
               <button onClick={() => { setBuying(null); setBuyError(null); setBuySuccess(false); }} style={{ width: 30, height: 30, border: '1.5px solid var(--p-ink)', borderRadius: 8, background: 'var(--p-bg)', cursor: 'pointer', display: 'grid', placeItems: 'center', fontSize: 16, color: 'var(--p-ink)' }}>✕</button>
@@ -217,7 +217,14 @@ function MarketplaceContent() {
 
       <style>{`
         @media (max-width: 960px) { .mp-grid { grid-template-columns: repeat(2,1fr) !important; } }
-        @media (max-width: 600px) { .mp-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 600px) {
+          .mp-grid { grid-template-columns: 1fr !important; }
+          .mp-hero { padding: 36px 0 0 !important; }
+          .mp-hero-inner { padding: 0 14px 28px !important; }
+          .mp-section-inner { padding: 0 14px !important; }
+          .mp-modal-wrap { align-items: flex-end !important; padding: 0 !important; }
+          .mp-modal { border-radius: 20px 20px 0 0 !important; max-width: 100% !important; }
+        }
       `}</style>
     </div>
   );

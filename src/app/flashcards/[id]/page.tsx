@@ -171,7 +171,12 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
 
       <style>{`
         @media (max-width: 960px) { .fcd-grid { grid-template-columns: 1fr !important; } .sample-grid { grid-template-columns: repeat(3,1fr) !important; } }
-        @media (max-width: 600px) { .sample-grid { grid-template-columns: repeat(2,1fr) !important; } }
+        @media (max-width: 600px) {
+          .sample-grid { grid-template-columns: repeat(2,1fr) !important; }
+          .fcd-hero { padding: 32px 0 !important; }
+          .fcd-hero-inner { padding: 0 14px !important; }
+          .fcd-purchase-card { position: static !important; }
+        }
       `}</style>
     </div>
   );

@@ -63,10 +63,23 @@ export function QuizActiveScreen({ test, questions, answers, onAnswerChange, onS
   const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--p-bg-alt)', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100dvh', background: 'var(--p-bg-alt)', display: 'flex', flexDirection: 'column' }}>
+      <style>{`
+        @media (max-width: 600px) {
+          .quiz-topbar { padding: 10px 14px !important; flex-wrap: wrap; gap: 8px; }
+          .quiz-topbar-title { font-size: 13px !important; }
+          .quiz-topbar-sub { display: none !important; }
+          .quiz-topbar-right { font-size: 11px !important; gap: 10px !important; }
+          .quiz-progress { padding: 8px 14px !important; }
+          .quiz-main { padding: 28px 0 80px !important; }
+          .quiz-inner { padding: 0 14px !important; }
+          .quiz-nav { padding-top: 16px !important; }
+          .quiz-nav button { padding: 11px 16px !important; font-size: 13px !important; }
+        }
+      `}</style>
 
       {/* ── Sticky top bar ── */}
-      <div style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--p-bg)', borderBottom: '2px solid var(--p-ink)', padding: '14px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="quiz-topbar" style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--p-bg)', borderBottom: '2px solid var(--p-ink)', padding: '14px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <button onClick={onExit} style={ghostSm}>← Exit</button>
           <div>
@@ -88,7 +101,7 @@ export function QuizActiveScreen({ test, questions, answers, onAnswerChange, onS
       </div>
 
       {/* ── Progress bar ── */}
-      <div style={{ background: 'var(--p-bg)', padding: '12px 28px', borderBottom: '2px solid var(--p-ink)' }}>
+      <div className="quiz-progress" style={{ background: 'var(--p-bg)', padding: '12px 28px', borderBottom: '2px solid var(--p-ink)' }}>
         <div style={{ display: 'flex', gap: 5, justifyContent: 'center', maxWidth: 760, margin: '0 auto' }}>
           {questions.map((q, i) => {
             const isAnswered = !!answers[q.id];
@@ -106,8 +119,8 @@ export function QuizActiveScreen({ test, questions, answers, onAnswerChange, onS
       </div>
 
       {/* ── Question area ── */}
-      <main style={{ flex: 1, padding: '48px 0 100px' }}>
-        <div style={{ maxWidth: 760, margin: '0 auto', padding: '0 28px' }}>
+      <main className="quiz-main" style={{ flex: 1, padding: '48px 0 100px' }}>
+        <div className="quiz-inner" style={{ maxWidth: 760, margin: '0 auto', padding: '0 28px' }}>
 
           {/* Chips */}
           <div style={{ display: 'flex', gap: 8, marginBottom: 22, flexWrap: 'wrap' }}>
@@ -164,7 +177,7 @@ export function QuizActiveScreen({ test, questions, answers, onAnswerChange, onS
           </div>
 
           {/* Navigation */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 22, borderTop: '2px dashed var(--p-ink)' }}>
+          <div className="quiz-nav" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 22, borderTop: '2px dashed var(--p-ink)' }}>
             <button onClick={() => setCurrentIndex(i => Math.max(0, i - 1))} disabled={currentIndex === 0}
               style={{ ...ghostBtn, opacity: currentIndex === 0 ? 0.4 : 1, cursor: currentIndex === 0 ? 'not-allowed' : 'pointer' }}>
               ← Previous
