@@ -2,13 +2,21 @@ import { AdminShell } from '@/components/layout/AdminShell';
 import { AppProviders } from '@/components/providers/AppProviders';
 import { AuthProvider } from '@/contexts/authcontext';
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
+import { Mulish, Nunito } from 'next/font/google';
 import './globals.css';
 import './landing-palette.css';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
-const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
+const nunito = Nunito({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-display',
+});
+
+const mulish = Mulish({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-body',
+});
 
 export const metadata: Metadata = {
   title: 'MegaMind Admin',
@@ -21,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-palette="forest">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans`}>
+    <html lang="en">
+      <body className={`${nunito.variable} ${mulish.variable}`} style={{ fontFamily: 'var(--font-body, Mulish, system-ui, sans-serif)' }}>
         <AuthProvider>
           <AppProviders>
             <AdminShell>

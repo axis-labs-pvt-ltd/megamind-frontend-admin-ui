@@ -1,4 +1,4 @@
-// Client Component - Sign in page (2-column forest design)
+// Client Component - Sign in page (Vedantu-style split layout)
 'use client';
 
 import { SignInForm } from '@/components/features/auth/SignInForm';
@@ -6,62 +6,65 @@ import Link from 'next/link';
 
 export default function SignInPage() {
   return (
-    <div style={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: '1fr 1fr' }} className="auth-layout">
+    <div style={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: '1.05fr 1fr' }} className="auth-layout">
 
-      {/* ── Left: form side ── */}
-      <div style={{ background: 'var(--p-bg)', padding: '40px 8%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'var(--font-display, sans-serif)', fontWeight: 700, fontSize: 24, letterSpacing: '-0.03em', textDecoration: 'none', color: 'var(--p-ink)', marginBottom: 56 }}>
-          <span style={{ width: 34, height: 34, background: 'var(--p-primary)', border: '2px solid var(--p-ink)', borderRadius: 10, display: 'grid', placeItems: 'center', color: 'var(--p-primary-ink)', transform: 'rotate(-8deg)', fontSize: 18 }}>M</span>
-          megamind<span style={{ color: 'var(--p-primary)' }}>.</span>
+      {/* Form side */}
+      <div style={{ background: '#fff', padding: '46px clamp(28px,5vw,76px)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 9, fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 900, fontSize: 23, letterSpacing: '-0.03em', textDecoration: 'none', color: 'var(--p-ink)', marginBottom: 'clamp(34px,6vh,64px)' }}>
+          <span style={{ width: 34, height: 34, background: 'var(--p-primary)', borderRadius: 10, display: 'grid', placeItems: 'center', color: '#fff', fontSize: 19, fontWeight: 900, boxShadow: 'var(--p-shadow-orange)' }}>M</span>
+          megamind
         </Link>
 
-        <div style={{ maxWidth: 420, width: '100%' }}>
-          <span style={eyebrow}>Welcome back</span>
-          <h1 style={{ fontFamily: 'var(--font-display, sans-serif)', fontWeight: 700, fontSize: 'clamp(32px,3.5vw,48px)', letterSpacing: '-0.02em', lineHeight: 1.1, margin: '18px 0 14px', color: 'var(--p-ink)' }}>
-            Sign in to <br />your{' '}
-            <span style={{ position: 'relative', display: 'inline-block' }}>
-              megamind.
-              <span style={{ position: 'absolute', left: 0, right: 0, bottom: -6, height: 8, background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'><path d='M0 5 Q 15 0 30 5 T 60 5 T 90 5 T 120 5' fill='none' stroke='%232D6A4F' stroke-width='3' stroke-linecap='round'/></svg>\") center/100% 100% no-repeat" }} />
-            </span>
+        <div style={{ margin: 'auto 0', maxWidth: 400, width: '100%' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 18, fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 13, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--p-primary)' }}>
+            <span style={{ width: 18, height: 3, borderRadius: 3, background: 'var(--p-primary)' }} />
+            Welcome back
+          </div>
+          <h1 style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 'clamp(32px,4vw,46px)', letterSpacing: '-0.015em', lineHeight: 1.08, margin: '0 0 12px', color: 'var(--p-ink)' }}>
+            Sign in to your <span style={{ color: 'var(--p-primary)', position: 'relative', whiteSpace: 'nowrap' }}>megamind.<span style={{ position: 'absolute', left: 0, right: 0, bottom: 2, height: 7, background: 'var(--p-primary)', opacity: 0.2, borderRadius: 5, zIndex: -1 }} /></span>
           </h1>
-          <p style={{ color: 'var(--p-ink-2)', fontSize: 16, marginBottom: 36 }}>
-            Pick up where you left off. Your AI tutor remembered everything.
+          <p style={{ color: 'var(--p-ink-2)', fontSize: 16, marginBottom: 32, lineHeight: 1.6 }}>
+            Pick up where you left off — your AI tutor remembered everything.
           </p>
           <SignInForm />
         </div>
       </div>
 
-      {/* ── Right: art side (forest green) ── */}
-      <div style={{ background: 'var(--p-primary)', color: 'var(--p-primary-ink)', borderLeft: '2px solid var(--p-ink)', padding: 60, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden' }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', border: '1.5px solid var(--p-primary-ink)', borderRadius: 999, fontFamily: 'var(--font-mono, monospace)', fontSize: 12, fontWeight: 600, alignSelf: 'flex-start', opacity: 0.9 }}>
-          <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--p-secondary)', flexShrink: 0 }} />
-          12,400+ students
+      {/* Art / brand side */}
+      <div style={{ background: 'linear-gradient(155deg, var(--p-hero-a), var(--p-hero-b) 52%, var(--p-hero-c))', color: '#fff', padding: '54px clamp(34px,4vw,60px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden', position: 'relative' }}>
+        {/* Decorative blobs */}
+        <div style={{ position: 'absolute', width: 300, height: 300, borderRadius: 999, background: 'rgba(255,255,255,0.1)', top: -90, right: -70, pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', width: 200, height: 200, borderRadius: 999, background: 'rgba(255,255,255,0.1)', bottom: 40, left: -80, pointerEvents: 'none' }} />
+
+        {/* Top chip */}
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '6px 14px', borderRadius: 999, background: 'rgba(255,255,255,0.18)', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 12.5, alignSelf: 'flex-start', position: 'relative' }}>
+          <span style={{ width: 7, height: 7, borderRadius: 999, background: '#fff' }} />
+          12,400+ students learning daily
         </span>
 
-        <div>
-          <div style={{ fontFamily: 'var(--font-display, sans-serif)', fontWeight: 700, fontSize: 'clamp(28px,3vw,44px)', lineHeight: 1.15, letterSpacing: '-0.02em', maxWidth: 460 }}>
-            "I went from a B to an A in chemistry. The theory pop-ups did it."
+        {/* Quote */}
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 'clamp(26px,2.8vw,38px)', lineHeight: 1.18, letterSpacing: '-0.015em', maxWidth: 460 }}>
+            &ldquo;I went from a B to an A in chemistry. The theory pop-ups did it.&rdquo;
           </div>
           <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ width: 44, height: 44, borderRadius: 999, background: 'rgba(255,255,255,.15)', border: '2px solid rgba(255,255,255,.4)' }} />
+            <div style={{ width: 48, height: 48, borderRadius: 999, background: 'rgba(255,255,255,0.22)', display: 'grid', placeItems: 'center', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 900, fontSize: 18, border: '2px solid rgba(255,255,255,0.5)', flexShrink: 0 }}>T</div>
             <div>
-              <div style={{ fontFamily: 'var(--font-display, sans-serif)', fontWeight: 600, fontSize: 15 }}>Thisari P.</div>
-              <div style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: 12, opacity: 0.8 }}>A/L · Bio stream · Kandy</div>
+              <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 15 }}>Thisari P.</div>
+              <div style={{ fontSize: 13, opacity: 0.82 }}>A/L · Bio stream · Kandy</div>
             </div>
           </div>
         </div>
 
         {/* Floating mini theory card */}
-        <div style={{ alignSelf: 'flex-end', transform: 'rotate(6deg)', marginRight: -10 }}>
-          <div style={{ background: 'var(--p-secondary)', border: '2px solid var(--p-ink)', borderRadius: 14, padding: 18, width: 240, color: 'var(--p-ink)', boxShadow: '4px 4px 0 var(--p-ink)' }}>
-            <div style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>📖 mini theory</div>
-            <div style={{ fontSize: 13, lineHeight: 1.5 }}>
-              The <b>Network layer</b> handles routing — IP lives here.
-            </div>
+        <div style={{ alignSelf: 'flex-end', transform: 'rotate(4deg)', position: 'relative', zIndex: 1 }}>
+          <div style={{ background: 'rgba(255,255,255,0.97)', color: 'var(--p-ink)', borderRadius: 16, padding: 18, width: 248, boxShadow: 'var(--p-shadow-lg)' }}>
+            <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 11, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--p-primary)', marginBottom: 8 }}>📖 Mini theory</div>
+            <div style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--p-ink-2)' }}>The <b style={{ color: 'var(--p-ink)' }}>Network layer</b> handles routing — IP addresses live here.</div>
           </div>
         </div>
 
-        <div style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: 11, opacity: 0.7 }}>
+        <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 12, letterSpacing: '0.06em', opacity: 0.8, position: 'relative', zIndex: 1 }}>
           MEGAMIND · LEARN WHILE YOU QUIZ
         </div>
       </div>
@@ -72,16 +75,9 @@ export default function SignInPage() {
           .auth-layout > div:last-child { display: none !important; }
         }
         @media (max-width: 600px) {
-          .auth-layout > div:first-child { padding: 28px 20px !important; }
+          .auth-layout > div:first-child { padding: 32px 24px !important; }
         }
       `}</style>
     </div>
   );
 }
-
-const eyebrow: React.CSSProperties = {
-  fontFamily: 'var(--font-mono, monospace)',
-  fontSize: 12, fontWeight: 500, letterSpacing: '0.12em',
-  textTransform: 'uppercase', color: 'var(--p-ink-2)',
-  display: 'inline-flex', alignItems: 'center', gap: 10,
-};

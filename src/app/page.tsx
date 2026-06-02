@@ -6,7 +6,6 @@ import { HowSection } from '@/components/landing/HowSection';
 import { IndividualTestsSection } from '@/components/landing/IndividualTestsSection';
 import { LandingFooter } from '@/components/landing/LandingFooter';
 import { LandingNav } from '@/components/landing/LandingNav';
-import { PaletteSwitcher } from '@/components/landing/PaletteSwitcher';
 import { PricingSection } from '@/components/landing/PricingSection';
 import { QuizPreviewSection } from '@/components/landing/QuizPreviewSection';
 import { SubjectsSection } from '@/components/landing/SubjectsSection';
@@ -26,7 +25,6 @@ export default function LandingPage() {
       <PricingSection />
       <FAQSection />
       <LandingFooter />
-      <PaletteSwitcher />
     </div>
   );
 }

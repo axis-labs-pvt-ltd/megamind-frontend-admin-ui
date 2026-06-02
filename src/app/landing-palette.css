@@ -1,55 +1,56 @@
-/* Landing page / public palette design system
-   Loaded separately from globals.css so Tailwind's PostCSS layer processing
-   cannot interfere with these custom properties. */
+/* Megamind — Vedantu-style design system
+   Clean white · warm orange · soft rounded cards
+   Single global palette — all public pages + admin use these tokens */
 
-:root,
-[data-palette="coral"] {
-  --p-bg:          #FFFBF2;
-  --p-bg-alt:      #FFF2DD;
-  --p-ink:         #1A1514;
-  --p-ink-2:       #3B312E;
-  --p-muted:       #8A7A6A;
-  --p-primary:     #E8541C;
-  --p-primary-ink: #FFFBF2;
-  --p-secondary:   #F4B942;
-  --p-accent:      #6D28D9;
-  --p-card-a:      #FFE4B8;
-  --p-card-b:      #FFD4C7;
-  --p-card-c:      #D6E8FF;
-  --p-card-d:      #D4F0D4;
-  --p-card-e:      #EAD9FF;
-}
+:root {
+  /* surfaces */
+  --p-bg:          #FFFFFF;
+  --p-bg-alt:      #F6F8FC;
+  --p-bg-warm:     #FFF6EF;
+  --p-line:        #ECEEF4;
+  --p-line-2:      #E2E6EF;
 
-[data-palette="indigo"] {
-  --p-bg:          #F5F3FF;
-  --p-bg-alt:      #EDE9FE;
-  --p-ink:         #1E1B4B;
-  --p-ink-2:       #312E81;
-  --p-muted:       #6B6B8B;
-  --p-primary:     #6D28D9;
-  --p-primary-ink: #F5F3FF;
-  --p-secondary:   #F59E0B;
-  --p-accent:      #EC4899;
-  --p-card-a:      #DDD6FE;
-  --p-card-b:      #FBCFE8;
-  --p-card-c:      #BFDBFE;
-  --p-card-d:      #FDE68A;
-  --p-card-e:      #C7D2FE;
-}
+  /* ink */
+  --p-ink:         #1E2230;
+  --p-ink-2:       #4B5060;
+  --p-muted:       #8A90A0;
 
-[data-palette="forest"] {
-  --p-bg:          #F5F7F4;
-  --p-bg-alt:      #E8EFE5;
-  --p-ink:         #1B2E1F;
-  --p-ink-2:       #2D4A33;
-  --p-muted:       #6B7A6B;
-  --p-primary:     #2D6A4F;
-  --p-primary-ink: #F5F7F4;
-  --p-secondary:   #E4A04A;
-  --p-accent:      #D94A3D;
-  --p-card-a:      #C7E4C7;
-  --p-card-b:      #F3DCAE;
-  --p-card-c:      #CFE4E0;
-  --p-card-d:      #F5CFC8;
-  --p-card-e:      #E0D8C0;
+  /* brand — green (default, matches tweaks.js default #2FA084) */
+  --p-primary:      #2FA084;
+  --p-primary-ink:  #FFFFFF;
+  --p-primary-dark: #288A72;
+  --p-primary-soft: #E6F4F0;
+  --p-hero-a:       #50AF98;
+  --p-hero-b:       #2FA084;
+  --p-hero-c:       #27866F;
+
+  /* secondary / highlights */
+  --p-secondary:    #F4B942;
+
+  /* pastel subject tiles */
+  --p-peach:        #FFE7DB;
+  --p-mint:         #DCF3E8;
+  --p-lav:          #ECE6FF;
+  --p-blue:         #E1EDFF;
+  --p-yellow:       #FFF1D2;
+  --p-pink:         #FFE2EC;
+
+  --p-ink-peach:    #C8521E;
+  --p-ink-mint:     #1F7A56;
+  --p-ink-lav:      #6A3FD0;
+  --p-ink-blue:     #2360C9;
+  --p-ink-yellow:   #B07A12;
+  --p-ink-pink:     #C23A6B;
+
+  /* shadows */
+  --p-shadow-sm:     0 2px 10px rgba(24,28,46,0.05);
+  --p-shadow:        0 8px 28px rgba(24,28,46,0.08);
+  --p-shadow-lg:     0 20px 50px rgba(24,28,46,0.13);
+  --p-shadow-orange: 0 14px 32px rgba(47,160,132,0.28);
+
+  /* radii */
+  --p-radius-sm:  10px;
+  --p-radius:     16px;
+  --p-radius-lg:  24px;
+  --p-radius-xl:  32px;
 }
