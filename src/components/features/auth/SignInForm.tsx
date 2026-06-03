@@ -1,16 +1,29 @@
 // Client Component - Sign in form with Supabase auth
 'use client';
 
+import { useAuth } from '@/contexts/authcontext';
 import { authService } from '@/services/api/auth';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function SignInForm() {
   const router = useRouter();
-  const [email, setEmail]       = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState<string | null>(null);
+  const { user, profile } = useAuth();
+  const [email, setEmail]           = useState('');
+  const [password, setPassword]     = useState('');
+  const [loading, setLoading]       = useState(false);
+  const [error, setError]           = useState<string | null>(null);
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
+
+  // Once we know the profile role, redirect to the right place.
+  useEffect(() => {
+    if (!justLoggedIn || !user || !profile) return;
+    if (profile.role === 'student') {
+      router.push('/student/profile');
+    } else {
+      router.push('/admin/dashboard');
+    }
+  }, [justLoggedIn, user, profile, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,10 +31,9 @@ export function SignInForm() {
     setError(null);
     try {
       await authService.login({ email, password });
-      router.push('/admin/dashboard');
+      setJustLoggedIn(true);
     } catch (err: any) {
       setError(err.message ?? 'Invalid email or password');
-    } finally {
       setLoading(false);
     }
   };
@@ -40,31 +52,34 @@ export function SignInForm() {
   return (
     <form onSubmit={handleSubmit} style={{ width: '100%' }}>
       {error && (
-        <div style={{ padding: '12px 16px', background: 'rgba(217,74,61,.08)', border: '1.5px solid var(--p-accent)', borderRadius: 10, fontSize: 13, color: 'var(--p-accent)', marginBottom: 20 }}>
+        <div style={{ padding: '12px 16px', background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: 10, fontSize: 13, color: '#b91c1c', marginBottom: 20 }}>
           {error}
         </div>
       )}
 
-      {/* Google */}
       <button type="button" onClick={handleGoogle} disabled={loading} style={ghostBtn}>
         <GoogleIcon /> Continue with Google
       </button>
 
-      <Divider />
-
-      {/* Email */}
-      <div style={field}>
-        <label style={labelStyle}>Email address</label>
-        <input type="email" placeholder="you@email.lk" value={email} onChange={e => setEmail(e.target.value)} required style={inputStyle} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '22px 0' }}>
+        <span style={{ flex: 1, height: 1, background: 'var(--p-line-2)' }} />
+        <span style={{ fontFamily: 'var(--font-display, Nunito, sans-serif)', fontWeight: 800, fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--p-muted)' }}>OR EMAIL</span>
+        <span style={{ flex: 1, height: 1, background: 'var(--p-line-2)' }} />
       </div>
 
-      {/* Password */}
-      <div style={field}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+      <div style={{ marginBottom: 18 }}>
+        <label style={labelStyle}>Email address</label>
+        <input type="email" placeholder="you@email.lk" value={email}
+          onChange={e => setEmail(e.target.value)} required style={inputStyle} />
+      </div>
+
+      <div style={{ marginBottom: 18 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7 }}>
           <label style={labelStyle}>Password</label>
-          <a href="#" style={{ fontSize: 12, color: 'var(--p-primary)', textDecoration: 'none', fontFamily: 'var(--font-mono, monospace)' }}>Forgot?</a>
+          <a href="#" style={{ fontSize: 12, color: 'var(--p-primary)', textDecoration: 'none', fontFamily: 'var(--font-display, Nunito, sans-serif)', fontWeight: 700 }}>Forgot?</a>
         </div>
-        <input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required style={inputStyle} />
+        <input type="password" placeholder="••••••••" value={password}
+          onChange={e => setPassword(e.target.value)} required style={inputStyle} />
       </div>
 
       <label style={{ display: 'flex', gap: 10, alignItems: 'center', fontSize: 14, color: 'var(--p-ink-2)', margin: '16px 0 26px', cursor: 'pointer' }}>
@@ -72,25 +87,17 @@ export function SignInForm() {
         Keep me signed in on this device
       </label>
 
-      <button type="submit" disabled={loading} style={primaryBtn}>
-        {loading ? 'Signing in…' : 'Sign in →'}
+      <button type="submit" disabled={loading || justLoggedIn} style={{ ...primaryBtn, opacity: loading || justLoggedIn ? 0.75 : 1 }}>
+        {loading || justLoggedIn ? 'Signing in…' : 'Sign in →'}
       </button>
 
       <p style={{ marginTop: 28, fontSize: 14, color: 'var(--p-ink-2)', textAlign: 'center' }}>
         New to Megamind?{' '}
-        <a href="/auth/signup" style={{ color: 'var(--p-primary)', fontWeight: 600, textDecoration: 'none' }}>Create an account</a>
+        <a href="/auth/signup" style={{ color: 'var(--p-primary)', fontWeight: 700, textDecoration: 'none', fontFamily: 'var(--font-display, Nunito, sans-serif)' }}>
+          Create an account
+        </a>
       </p>
     </form>
-  );
-}
-
-function Divider() {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '22px 0' }}>
-      <span style={{ flex: 1, height: 2, background: 'var(--p-ink)', opacity: 0.12 }} />
-      <span style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: 11, color: 'var(--p-muted)' }}>OR EMAIL</span>
-      <span style={{ flex: 1, height: 2, background: 'var(--p-ink)', opacity: 0.12 }} />
-    </div>
   );
 }
 
@@ -105,8 +112,7 @@ function GoogleIcon() {
   );
 }
 
-const field: React.CSSProperties       = { marginBottom: 18 };
-const labelStyle: React.CSSProperties  = { fontFamily: 'var(--font-mono, monospace)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--p-ink-2)', display: 'block', fontWeight: 600 };
-const inputStyle: React.CSSProperties  = { width: '100%', padding: '14px 16px', border: '2px solid var(--p-ink)', borderRadius: 12, background: 'var(--p-bg)', fontFamily: 'inherit', fontSize: 15, color: 'var(--p-ink)', outline: 'none', boxSizing: 'border-box' };
-const ghostBtn: React.CSSProperties    = { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, padding: 16, border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-bg)', color: 'var(--p-ink)', fontFamily: 'var(--font-display, sans-serif)', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '3px 3px 0 var(--p-ink)' };
-const primaryBtn: React.CSSProperties  = { width: '100%', padding: 16, border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-primary)', color: 'var(--p-primary-ink)', fontFamily: 'var(--font-display, sans-serif)', fontWeight: 700, fontSize: 15, cursor: 'pointer', boxShadow: '3px 3px 0 var(--p-ink)' };
+const labelStyle: React.CSSProperties  = { fontFamily: 'var(--font-display, Nunito, sans-serif)', fontWeight: 800, fontSize: 13, color: 'var(--p-ink)', display: 'block', marginBottom: 7 };
+const inputStyle: React.CSSProperties  = { width: '100%', padding: '13px 16px', border: '1.5px solid var(--p-line-2)', borderRadius: 12, background: '#fff', fontFamily: 'inherit', fontSize: 15, color: 'var(--p-ink)', outline: 'none', boxSizing: 'border-box', boxShadow: 'var(--p-shadow-sm)' };
+const ghostBtn: React.CSSProperties    = { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, padding: 15, border: '1.5px solid var(--p-line-2)', borderRadius: 12, background: '#fff', color: 'var(--p-ink)', fontFamily: 'var(--font-display, Nunito, sans-serif)', fontWeight: 700, fontSize: 15, cursor: 'pointer', boxShadow: 'var(--p-shadow-sm)' };
+const primaryBtn: React.CSSProperties  = { width: '100%', padding: 16, border: 'none', borderRadius: 12, background: 'var(--p-primary)', color: '#fff', fontFamily: 'var(--font-display, Nunito, sans-serif)', fontWeight: 800, fontSize: 16, cursor: 'pointer', boxShadow: 'var(--p-shadow-orange)' };

@@ -42,9 +42,8 @@ function ProfileContent() {
   const initials = (profile?.full_name || user.email || '?').slice(0, 2).toUpperCase();
   const joinedDate = new Date(user.created_at).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
 
-  // Full-screen result review overlay
   if (viewing) {
-    if (detailsLoading) return <div style={{ minHeight: '100vh', background: 'var(--p-bg)', display: 'grid', placeItems: 'center' }}><div style={{ fontSize: 48 }}>⏳</div></div>;
+    if (detailsLoading) return <div style={{ minHeight: '100vh', background: 'var(--p-bg-alt)', display: 'grid', placeItems: 'center' }}><div style={{ fontSize: 48 }}>⏳</div></div>;
     if (sessionDetails) return (
       <QuizResultScreen
         test={{ id: '', title: viewing.testTitle, type: 'static', questionIds: [], timeLimit: 0, passingScore: viewing.passingScore, isActive: true, createdAt: new Date(), description: '' }}
@@ -55,88 +54,88 @@ function ProfileContent() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--p-bg-alt)' }}>
       {/* Nav */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--p-bg)', borderBottom: '2px solid var(--p-ink)' }}>
+      <nav style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(255,255,255,0.92)', backdropFilter: 'saturate(160%) blur(10px)', borderBottom: '1px solid var(--p-line)' }}>
         <div style={{ maxWidth: 1160, margin: '0 auto', padding: '13px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-            <span style={{ width: 32, height: 32, background: 'var(--p-primary)', border: '2px solid var(--p-ink)', borderRadius: 10, display: 'grid', placeItems: 'center', color: 'var(--p-primary-ink)', fontSize: 18, fontWeight: 700, transform: 'rotate(-8deg)', fontFamily: 'var(--font-display,sans-serif)' }}>M</span>
-            <span style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 22, letterSpacing: '-0.03em', color: 'var(--p-ink)' }}>megamind<span style={{ color: 'var(--p-primary)' }}>.</span></span>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 9, textDecoration: 'none', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 900, fontSize: 22, letterSpacing: '-0.03em', color: 'var(--p-ink)' }}>
+            <span style={{ width: 32, height: 32, background: 'var(--p-primary)', borderRadius: 10, display: 'grid', placeItems: 'center', color: '#fff', fontSize: 17, fontWeight: 900, boxShadow: 'var(--p-shadow-orange)' }}>M</span>
+            megamind
           </Link>
           <div style={{ display: 'flex', gap: 10 }}>
-            <Link href="/marketplace" style={ghostBtn}>Tests</Link>
-            <Link href="/flashcards"  style={ghostBtn}>Flashcards</Link>
+            <Link href="/marketplace" style={ghostNavBtn}>Tests</Link>
+            <Link href="/flashcards"  style={ghostNavBtn}>Flashcards</Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="prof-hero-section" style={{ background: 'var(--p-bg)', borderBottom: '2px solid var(--p-ink)', padding: '44px 0' }}>
-        <div className="prof-hero-inner" style={{ maxWidth: 1160, margin: '0 auto', padding: '0 28px' }}>
-          <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, color: 'var(--p-muted)', marginBottom: 24, display: 'flex', gap: 6 }}>
-            <Link href="/" style={{ color: 'var(--p-primary)', textDecoration: 'none' }}>Home</Link> / <span>My profile</span>
+      {/* Hero — page-hero style */}
+      <section style={{ background: 'var(--p-bg-alt)', borderBottom: '1px solid var(--p-line)', padding: '44px 0' }}>
+        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 28px' }}>
+          <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 700, fontSize: 13, color: 'var(--p-muted)', marginBottom: 24, display: 'flex', gap: 6 }}>
+            <Link href="/" style={{ color: 'var(--p-primary)', textDecoration: 'none' }}>Home</Link>
+            <span>/</span><span>My profile</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: 28, alignItems: 'center' }} className="prof-hero">
             {/* Avatar */}
-            <div style={{ width: 110, height: 110, borderRadius: 999, background: 'var(--p-card-a)', border: '2px solid var(--p-ink)', boxShadow: '6px 6px 0 var(--p-ink)', display: 'grid', placeItems: 'center', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 44, transform: 'rotate(-4deg)', color: 'var(--p-ink)', flexShrink: 0, overflow: 'hidden' }}>
+            <div style={{ width: 104, height: 104, borderRadius: 999, background: 'var(--p-peach)', color: 'var(--p-ink-peach)', boxShadow: 'var(--p-shadow)', display: 'grid', placeItems: 'center', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 900, fontSize: 40, flexShrink: 0, overflow: 'hidden' }}>
               {profile?.avatar_url ? <img src={profile.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 999 }} /> : initials}
             </div>
             {/* Identity */}
             <div>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
-                <span style={{ padding: '4px 12px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-secondary)', fontFamily: 'var(--font-mono,monospace)', fontSize: 11, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--p-primary)' }} />{profile?.role ?? 'student'}
+              <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+                <span style={{ padding: '4px 12px', borderRadius: 999, background: 'var(--p-primary-soft)', color: 'var(--p-primary-dark)', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                  <span style={{ width: 5, height: 5, borderRadius: 999, background: 'var(--p-primary)' }} />{profile?.role ?? 'student'}
                 </span>
-                <span style={{ padding: '4px 12px', border: '2px solid var(--p-ink)', borderRadius: 999, fontFamily: 'var(--font-mono,monospace)', fontSize: 11 }}>🔥 {history.length} tests done</span>
+                <span style={{ padding: '4px 12px', borderRadius: 999, background: 'var(--p-bg)', border: '1px solid var(--p-line-2)', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 700, fontSize: 11 }}>🔥 {history.length} tests done</span>
               </div>
-              <h1 style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 'clamp(30px,4vw,56px)', letterSpacing: '-0.02em', color: 'var(--p-ink)', lineHeight: 1.05, marginBottom: 10 }}>
+              <h1 style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 'clamp(30px,4vw,52px)', letterSpacing: '-0.015em', color: 'var(--p-ink)', lineHeight: 1.08, marginBottom: 10 }}>
                 {profile?.full_name || 'Student'}
               </h1>
-              <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', color: 'var(--p-ink-2)', fontSize: 14 }}>
-                <span style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12 }}>{user.email}</span>
-                <span style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12 }}>Joined {joinedDate}</span>
+              <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap', fontSize: 14, fontWeight: 600, color: 'var(--p-muted)' }}>
+                <span>{user.email}</span>
+                <span>Joined {joinedDate}</span>
               </div>
             </div>
             {/* Actions */}
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
               <button onClick={() => setTab('settings')} style={ghostBtn}>⚙ Settings</button>
-              <button onClick={async () => { await logout(); router.push('/'); }} style={{ ...ghostBtn, background: 'var(--p-ink)', color: 'var(--p-bg)', boxShadow: '2px 2px 0 var(--p-ink-2)' }}>Sign out</button>
+              <button onClick={async () => { await logout(); router.push('/'); }} style={primaryBtn}>Sign out</button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Main content */}
-      <section className="prof-main-section" style={{ padding: '50px 0 100px' }}>
-        <div className="prof-main-inner" style={{ maxWidth: 1160, margin: '0 auto', padding: '0 28px' }}>
+      <section style={{ padding: '50px 0 100px' }}>
+        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 28px' }}>
           {/* Tabs */}
-          <div style={{ display: 'flex', gap: 4, borderBottom: '2px solid var(--p-ink)', marginBottom: 36, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 4, borderBottom: '1px solid var(--p-line)', marginBottom: 36, flexWrap: 'wrap' }}>
             {TABS.map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                style={{ padding: '12px 20px', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 15, color: tab === t.id ? 'var(--p-ink)' : 'var(--p-ink-2)', cursor: 'pointer', background: 'transparent', border: 'none', borderBottom: tab === t.id ? '3px solid var(--p-primary)' : '3px solid transparent', marginBottom: -2 }}>
+                style={{ padding: '12px 20px', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 15, color: tab === t.id ? 'var(--p-primary)' : 'var(--p-ink-2)', cursor: 'pointer', background: 'transparent', border: 'none', borderBottom: tab === t.id ? '3px solid var(--p-primary)' : '3px solid transparent', marginBottom: -1, transition: 'color .15s' }}>
                 {t.label}
               </button>
             ))}
           </div>
 
-          {/* Overview */}
           {tab === 'overview' && <>
             <KpiStrip quizzes={history.length} avgScore={avgScore} xp={xp} testsOwned={purchases.length} loading={loading} />
             <PerformancePanel attempts={history as any} loading={histLoading} />
             {/* AI insight */}
-            <div style={{ padding: 28, border: '2px solid var(--p-ink)', borderRadius: 18, background: 'var(--p-ink)', color: 'var(--p-bg)', boxShadow: '5px 5px 0 rgba(0,0,0,0.3)', display: 'grid', gridTemplateColumns: '1fr auto', gap: 24, alignItems: 'center', marginBottom: 40, flexWrap: 'wrap' }} className="ai-row">
+            <div style={{ padding: 30, borderRadius: 20, background: 'linear-gradient(150deg,var(--p-hero-a),var(--p-hero-b) 55%,var(--p-hero-c))', color: '#fff', boxShadow: 'var(--p-shadow-orange)', display: 'grid', gridTemplateColumns: '1fr auto', gap: 24, alignItems: 'center', marginBottom: 40 }} className="ai-row">
               <div>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', border: '1.5px solid var(--p-bg)', borderRadius: 999, fontFamily: 'var(--font-mono,monospace)', fontSize: 10, background: 'var(--p-accent,#6D28D9)', color: '#fff', marginBottom: 14, fontWeight: 700 }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 999, background: 'rgba(255,255,255,0.2)', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 10, letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 14 }}>
                   <span style={{ width: 5, height: 5, borderRadius: 999, background: '#fff' }} />AI TUTOR WEEKLY NOTE
                 </span>
-                <h3 style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 22, marginBottom: 10, lineHeight: 1.2 }}>
+                <h3 style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 22, marginBottom: 10, lineHeight: 1.2, color: '#fff' }}>
                   {avgScore >= 80 ? "You're on a great streak — keep pushing harder topics." : avgScore >= 60 ? "Good progress — target your weak topics with focused practice." : "Let's build momentum — short daily sessions make a big difference."}
                 </h3>
-                <p style={{ opacity: 0.85, maxWidth: 720, fontSize: 14, lineHeight: 1.6 }}>
+                <p style={{ opacity: 0.9, maxWidth: 720, fontSize: 14, lineHeight: 1.6 }}>
                   Your average score is <strong>{avgScore}%</strong> across {history.length} tests. {history.length > 0 ? 'Keep up the consistency and aim for 2–3 tests per week.' : 'Start with a short test to build your performance profile.'}
                 </p>
               </div>
-              <Link href="/marketplace" style={{ padding: '13px 22px', border: '2px solid var(--p-bg)', borderRadius: 999, background: 'var(--p-secondary)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 14, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '3px 3px 0 rgba(0,0,0,0.3)', flexShrink: 0 }}>
+              <Link href="/marketplace" style={{ padding: '13px 22px', border: 'none', borderRadius: 12, background: '#fff', color: 'var(--p-primary)', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 14, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: 'var(--p-shadow-sm)', flexShrink: 0 }}>
                 Start practice →
               </Link>
             </div>
@@ -154,10 +153,6 @@ function ProfileContent() {
         @media(max-width:960px){ .prof-hero{grid-template-columns:1fr!important;} .ai-row{grid-template-columns:1fr!important;} }
         @media(max-width:600px){
           .prof-hero-section { padding: 28px 0 !important; }
-          .prof-hero-inner { padding: 0 14px !important; }
-          .prof-main-inner { padding: 0 14px !important; }
-          .prof-main-section { padding: 28px 0 60px !important; }
-          .prof-h1 { font-size: clamp(24px,7vw,44px) !important; }
         }
       `}</style>
     </div>
@@ -168,4 +163,6 @@ export default function StudentProfilePage() {
   return <Suspense><ProfileContent /></Suspense>;
 }
 
-const ghostBtn: React.CSSProperties = { padding: '9px 16px', border: '2px solid var(--p-ink)', borderRadius: 999, background: 'var(--p-bg)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,sans-serif)', fontWeight: 600, fontSize: 13, boxShadow: '2px 2px 0 var(--p-ink)', textDecoration: 'none', cursor: 'pointer' };
+const ghostNavBtn: React.CSSProperties = { padding: '9px 16px', border: '1.5px solid var(--p-line-2)', borderRadius: 10, background: '#fff', color: 'var(--p-ink-2)', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 700, fontSize: 13, boxShadow: 'var(--p-shadow-sm)', textDecoration: 'none' };
+const ghostBtn: React.CSSProperties   = { padding: '9px 16px', border: '1.5px solid var(--p-line-2)', borderRadius: 10, background: '#fff', color: 'var(--p-ink-2)', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 700, fontSize: 13, boxShadow: 'var(--p-shadow-sm)', cursor: 'pointer' };
+const primaryBtn: React.CSSProperties = { padding: '9px 16px', border: 'none', borderRadius: 10, background: 'var(--p-primary)', color: '#fff', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 13, boxShadow: 'var(--p-shadow-orange)', cursor: 'pointer' };

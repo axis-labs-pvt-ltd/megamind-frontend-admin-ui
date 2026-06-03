@@ -16,7 +16,11 @@
       "Bash(grep -n \"auth-layout\\\\|style.*{`\" \"c:/Users/Chanaka Chathuranga/source/repos/megamind/megamind-frontend-admin-ui/src/app/auth/signin/page.tsx\" | head -10)",
       "PowerShell(ls \"C:\\\\Users\\\\Chanaka Chathuranga\\\\Downloads\\\\lte-refs\\\\\")",
       "Bash(ls \"C:\\\\Users\\\\Chanaka Chathuranga\\\\Downloads\\\\\" | Select-String \"megamind\")",
-      "Read(//c/Users/Chanaka Chathuranga/**)"
+      "Read(//c/Users/Chanaka Chathuranga/**)",
+      "Bash(Get-ChildItem src/app/tests/take-test/components/)",
+      "Bash(Select-Object Name)",
+      "Bash(grep -r \"p-bg\\\\|p-ink\\\\|p-primary\\\\|p-secondary\\\\|p-muted\\\\|p-bg-alt\\\\|p-card\\\\|p-accent\\\\|p-card-b\" /c/Users/ChanakaCha/source/repos/megamind/megamind-frontend-admin-ui/src/app/tests/take-test/ --include=\"*.tsx\" --include=\"*.css\" -l)",
+      "Read(//c/Users/ChanakaCha/source/repos/megamind/megamind-frontend-admin-ui/src/app/tests/**)"
     ]
   }
 }
