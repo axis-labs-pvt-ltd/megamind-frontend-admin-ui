@@ -39,20 +39,20 @@ export function ProfileHeader({ name, email, role, joinedDate, avatarUrl, userId
   };
 
   const STATS = [
-    { val: statsLoading ? '…' : stats.purchased, lbl: 'Tests owned' },
-    { val: statsLoading ? '…' : stats.decks,     lbl: 'Flashcard decks' },
-    { val: statsLoading ? '…' : stats.completed, lbl: 'Tests done' },
-    { val: statsLoading ? '…' : `${stats.avgScore}%`, lbl: 'Avg score' },
+    { val: statsLoading ? '…' : stats.purchased,          lbl: 'Tests owned' },
+    { val: statsLoading ? '…' : stats.decks,              lbl: 'Flashcard decks' },
+    { val: statsLoading ? '…' : stats.completed,          lbl: 'Tests done' },
+    { val: statsLoading ? '…' : `${stats.avgScore}%`,     lbl: 'Avg score' },
   ];
 
   return (
-    <div style={{ background: 'var(--p-secondary)', border: '2px solid var(--p-ink)', borderRadius: 20, boxShadow: '6px 6px 0 var(--p-ink)', overflow: 'hidden', marginBottom: 28 }}>
-      <div style={{ padding: '32px 36px', display: 'flex', gap: 28, alignItems: 'center', flexWrap: 'wrap' }}>
+    <div style={{ background: '#fff', border: '1px solid var(--p-line)', borderRadius: 20, boxShadow: 'var(--p-shadow)', overflow: 'hidden', marginBottom: 28 }}>
+      <div style={{ padding: '28px 32px', display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap' }}>
         {/* Avatar */}
         <div style={{ position: 'relative', flexShrink: 0 }}>
-          <Avatar url={avatarUrl} initials={initials} size={88} radius={20} />
+          <Avatar url={avatarUrl} initials={initials} size={88} radius={999} />
           <button onClick={() => fileRef.current?.click()} disabled={uploading} title="Change photo"
-            style={{ position: 'absolute', bottom: -6, right: -6, width: 28, height: 28, borderRadius: 999, border: '2px solid var(--p-ink)', background: 'var(--p-primary)', color: 'var(--p-primary-ink)', display: 'grid', placeItems: 'center', cursor: uploading ? 'default' : 'pointer', fontSize: 13 }}>
+            style={{ position: 'absolute', bottom: 0, right: 0, width: 28, height: 28, borderRadius: 999, border: 'none', background: 'var(--p-primary)', color: '#fff', display: 'grid', placeItems: 'center', cursor: uploading ? 'default' : 'pointer', fontSize: 13, boxShadow: 'var(--p-shadow-orange)' }}>
             {uploading ? '…' : '📷'}
           </button>
           <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
@@ -60,21 +60,21 @@ export function ProfileHeader({ name, email, role, joinedDate, avatarUrl, userId
 
         {/* Identity */}
         <div style={{ flex: 1, minWidth: 180 }}>
-          <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 26, color: 'var(--p-ink)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>{name || 'Student'}</div>
-          <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 12, color: 'var(--p-ink-2)', margin: '5px 0 10px', wordBreak: 'break-all' }}>{email}</div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <span style={{ padding: '3px 12px', borderRadius: 999, border: '1.5px solid var(--p-ink)', fontFamily: 'var(--font-mono,monospace)', fontSize: 10, fontWeight: 700, background: 'var(--p-ink)', color: 'var(--p-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{role}</span>
-            <span style={{ padding: '3px 12px', borderRadius: 999, border: '1.5px solid var(--p-ink)', fontFamily: 'var(--font-mono,monospace)', fontSize: 10, color: 'var(--p-ink-2)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Since {joinedDate}</span>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
+            <span style={{ padding: '4px 12px', borderRadius: 999, fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 11, background: 'var(--p-primary-soft)', color: 'var(--p-primary-dark)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{role}</span>
+            <span style={{ padding: '4px 12px', borderRadius: 999, fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 700, fontSize: 11, background: 'var(--p-bg-alt)', color: 'var(--p-muted)' }}>Since {joinedDate}</span>
           </div>
+          <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 26, color: 'var(--p-ink)', letterSpacing: '-0.015em', lineHeight: 1.1, marginBottom: 8 }}>{name || 'Student'}</div>
+          <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 600, fontSize: 14, color: 'var(--p-muted)', wordBreak: 'break-all' }}>{email}</div>
         </div>
       </div>
 
       {/* Stats strip */}
-      <div style={{ borderTop: '2px solid var(--p-ink)', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }} className="stats-strip">
+      <div style={{ borderTop: '1px solid var(--p-line)', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }} className="stats-strip">
         {STATS.map((s, i) => (
-          <div key={s.lbl} style={{ padding: '16px 20px', textAlign: 'center', borderLeft: i > 0 ? '2px solid var(--p-ink)' : 'none' }}>
-            <div style={{ fontFamily: 'var(--font-display,sans-serif)', fontWeight: 700, fontSize: 26, color: 'var(--p-ink)', letterSpacing: '-0.02em' }}>{s.val}</div>
-            <div style={{ fontFamily: 'var(--font-mono,monospace)', fontSize: 10, color: 'var(--p-ink-2)', marginTop: 3, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{s.lbl}</div>
+          <div key={s.lbl} style={{ padding: '16px 20px', textAlign: 'center', borderLeft: i > 0 ? '1px solid var(--p-line)' : 'none' }}>
+            <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 900, fontSize: 26, color: 'var(--p-ink)', letterSpacing: '-0.02em', lineHeight: 1 }}>{s.val}</div>
+            <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 700, fontSize: 11, letterSpacing: '0.05em', color: 'var(--p-muted)', marginTop: 5, textTransform: 'uppercase' }}>{s.lbl}</div>
           </div>
         ))}
       </div>

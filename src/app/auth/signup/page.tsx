@@ -1,4 +1,4 @@
-// Client Component - Sign up page (2-column forest design, amber art side)
+// Client Component - Sign up page (Vedantu-style split layout)
 'use client';
 
 import { SignUpForm } from '@/components/features/auth/SignUpForm';
@@ -6,62 +6,62 @@ import Link from 'next/link';
 
 export default function SignUpPage() {
   return (
-    <div style={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: '1fr 1fr' }} className="auth-layout">
+    <div style={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: '1.05fr 1fr' }} className="auth-layout">
 
-      {/* ── Left: form side ── */}
-      <div style={{ background: 'var(--p-bg)', padding: '40px 8%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'var(--font-display, sans-serif)', fontWeight: 700, fontSize: 24, letterSpacing: '-0.03em', textDecoration: 'none', color: 'var(--p-ink)', marginBottom: 44 }}>
-          <span style={{ width: 34, height: 34, background: 'var(--p-primary)', border: '2px solid var(--p-ink)', borderRadius: 10, display: 'grid', placeItems: 'center', color: 'var(--p-primary-ink)', transform: 'rotate(-8deg)', fontSize: 18 }}>M</span>
-          megamind<span style={{ color: 'var(--p-primary)' }}>.</span>
+      {/* Form side */}
+      <div style={{ background: '#fff', padding: '46px clamp(28px,5vw,76px)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 9, fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 900, fontSize: 23, letterSpacing: '-0.03em', textDecoration: 'none', color: 'var(--p-ink)', marginBottom: 'clamp(34px,6vh,64px)' }}>
+          <span style={{ width: 34, height: 34, background: 'var(--p-primary)', borderRadius: 10, display: 'grid', placeItems: 'center', color: '#fff', fontSize: 19, fontWeight: 900, boxShadow: 'var(--p-shadow-orange)' }}>M</span>
+          megamind
         </Link>
 
-        <div style={{ maxWidth: 460, width: '100%' }}>
-          <span style={eyebrow}>Free · 14-day trial</span>
-          <h1 style={{ fontFamily: 'var(--font-display, sans-serif)', fontWeight: 700, fontSize: 'clamp(28px,3vw,44px)', letterSpacing: '-0.02em', lineHeight: 1.1, margin: '18px 0 14px', color: 'var(--p-ink)' }}>
-            Make your{' '}
-            <span style={{ position: 'relative', display: 'inline-block' }}>
-              megamind.
-              <span style={{ position: 'absolute', left: 0, right: 0, bottom: -6, height: 8, background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'><path d='M0 5 Q 15 0 30 5 T 60 5 T 90 5 T 120 5' fill='none' stroke='%232D6A4F' stroke-width='3' stroke-linecap='round'/></svg>\") center/100% 100% no-repeat" }} />
-            </span>
+        <div style={{ margin: 'auto 0', maxWidth: 460, width: '100%' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 18, fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 13, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--p-primary)' }}>
+            <span style={{ width: 18, height: 3, borderRadius: 3, background: 'var(--p-primary)' }} />
+            Free · 14-day trial
+          </div>
+          <h1 style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 'clamp(28px,3.2vw,44px)', letterSpacing: '-0.015em', lineHeight: 1.08, margin: '0 0 12px', color: 'var(--p-ink)' }}>
+            Make your <span style={{ color: 'var(--p-primary)', position: 'relative', whiteSpace: 'nowrap' }}>megamind.<span style={{ position: 'absolute', left: 0, right: 0, bottom: 2, height: 7, background: 'var(--p-primary)', opacity: 0.2, borderRadius: 5, zIndex: -1 }} /></span>
           </h1>
-          <p style={{ color: 'var(--p-ink-2)', fontSize: 16, marginBottom: 28 }}>
+          <p style={{ color: 'var(--p-ink-2)', fontSize: 16, marginBottom: 28, lineHeight: 1.6 }}>
             Tell us a bit about you — we&apos;ll tune your AI tutor before you finish your first quiz.
           </p>
           <SignUpForm />
         </div>
       </div>
 
-      {/* ── Right: art side (amber) ── */}
-      <div style={{ background: 'var(--p-secondary)', color: 'var(--p-ink)', borderLeft: '2px solid var(--p-ink)', padding: 60, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden' }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', border: '1.5px solid var(--p-ink)', borderRadius: 999, fontFamily: 'var(--font-mono, monospace)', fontSize: 12, fontWeight: 600, alignSelf: 'flex-start' }}>
-          <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--p-primary)', flexShrink: 0 }} />
+      {/* Art side — orange gradient */}
+      <div style={{ background: 'linear-gradient(155deg, var(--p-hero-a), var(--p-hero-b) 52%, var(--p-hero-c))', color: '#fff', padding: '54px clamp(34px,4vw,60px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden', position: 'relative' }}>
+        <div style={{ position: 'absolute', width: 300, height: 300, borderRadius: 999, background: 'rgba(255,255,255,0.1)', top: -90, right: -70, pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', width: 200, height: 200, borderRadius: 999, background: 'rgba(255,255,255,0.1)', bottom: 40, left: -80, pointerEvents: 'none' }} />
+
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '6px 14px', borderRadius: 999, background: 'rgba(255,255,255,0.18)', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 12.5, alignSelf: 'flex-start', position: 'relative' }}>
+          <span style={{ width: 7, height: 7, borderRadius: 999, background: '#fff' }} />
           No credit card required
         </span>
 
-        <div>
-          <div style={{ fontFamily: 'var(--font-display, sans-serif)', fontWeight: 700, fontSize: 'clamp(36px,4vw,56px)', lineHeight: 1, letterSpacing: '-0.03em', marginBottom: 30 }}>
-            Learn while<br />you{' '}
-            <span style={{ position: 'relative', display: 'inline-block' }}>
-              quiz.
-              <span style={{ position: 'absolute', left: 0, right: 0, bottom: -6, height: 8, background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'><path d='M0 5 Q 15 0 30 5 T 60 5 T 90 5 T 120 5' fill='none' stroke='%231B2E1F' stroke-width='3' stroke-linecap='round'/></svg>\") center/100% 100% no-repeat" }} />
-            </span>
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 'clamp(32px,3.5vw,52px)', lineHeight: 1.08, letterSpacing: '-0.015em', marginBottom: 32 }}>
+            Learn while<br />you quiz.
           </div>
-
-          <div style={{ display: 'grid', gap: 14, maxWidth: 380 }}>
+          <div style={{ display: 'grid', gap: 16, maxWidth: 380 }}>
             {[
-              { text: <><b>AI-personalized quizzes</b> across 5 subjects</> },
-              { text: <><b>Theory pop-ups</b> in every question</> },
-              { text: <><b>Buy single tests</b> from Rs. 1,000 — no subscription</> },
-            ].map((item, i) => (
-              <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                <div style={{ width: 28, height: 28, borderRadius: 999, background: 'var(--p-ink)', color: 'var(--p-secondary)', display: 'grid', placeItems: 'center', flexShrink: 0, fontWeight: 700, fontSize: 13 }}>✓</div>
-                <div style={{ fontSize: 15, lineHeight: 1.5 }}>{item.text}</div>
+              ['AI-personalized quizzes', 'across 5 subjects'],
+              ['Theory pop-ups',          'in every question'],
+              ['Buy single tests',        'from Rs. 1,000 — no subscription'],
+            ].map(([h, b]) => (
+              <div key={h} style={{ display: 'flex', gap: 13, alignItems: 'flex-start' }}>
+                <div style={{ width: 28, height: 28, borderRadius: 999, background: 'rgba(255,255,255,0.22)', display: 'grid', placeItems: 'center', flexShrink: 0, fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 900, fontSize: 14 }}>✓</div>
+                <div>
+                  <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 15 }}>{h}</div>
+                  <div style={{ fontSize: 13, opacity: 0.82 }}>{b}</div>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: 11, opacity: 0.7 }}>
+        <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 12, letterSpacing: '0.06em', opacity: 0.8, position: 'relative', zIndex: 1 }}>
           MEGAMIND · BUILT IN 🇱🇰 FOR SL STUDENTS
         </div>
       </div>
@@ -72,16 +72,9 @@ export default function SignUpPage() {
           .auth-layout > div:last-child { display: none !important; }
         }
         @media (max-width: 600px) {
-          .auth-layout > div:first-child { padding: 28px 20px !important; }
+          .auth-layout > div:first-child { padding: 32px 24px !important; }
         }
       `}</style>
     </div>
   );
 }
-
-const eyebrow: React.CSSProperties = {
-  fontFamily: 'var(--font-mono, monospace)',
-  fontSize: 12, fontWeight: 500, letterSpacing: '0.12em',
-  textTransform: 'uppercase', color: 'var(--p-ink-2)',
-  display: 'inline-flex', alignItems: 'center', gap: 10,
-};

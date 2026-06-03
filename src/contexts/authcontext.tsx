@@ -31,7 +31,7 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser]       = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,23 +49,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    // getSession gives us the initial state immediately on page load
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      if (session?.user) await fetchProfile(session.user.id);
-      setLoading(false);
+      try {
+        if (session?.user) await fetchProfile(session.user.id);
+      } finally {
+        setLoading(false);
+      }
     });
 
+    // onAuthStateChange handles login / logout / token refresh events
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
-        } else {
-          setProfile(null);
+        try {
+          if (session?.user) {
+            await fetchProfile(session.user.id);
+          } else {
+            setProfile(null);
+          }
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
       }
     );
 
@@ -77,9 +85,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, session, loading, logout }} >
+    <AuthContext.Provider value={{ user, profile, session, loading, logout }}>
       {children}
-    </AuthContext.Provider >
+    </AuthContext.Provider>
   );
 }
 

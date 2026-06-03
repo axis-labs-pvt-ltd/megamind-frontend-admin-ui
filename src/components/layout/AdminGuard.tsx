@@ -2,29 +2,42 @@
 'use client';
 
 import { useAuth } from '@/contexts/authcontext';
+import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-// Guards all admin routes — requires admin or teacher role
 export function AdminGuard({ children }: { children: React.ReactNode }) {
   const { user, profile, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (loading) return;
-    if (!user) { router.replace('/auth/signin'); return; }
-    if (!profile || !['admin', 'teacher'].includes(profile.role)) {
-      router.replace('/auth/signin');
+
+    if (!user) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!session) {
+          router.replace('/auth/signin');
+        }
+      });
+      return;
+    }
+
+    if (!profile) return;
+
+    if (!['admin', 'teacher'].includes(profile.role)) {
+      // Logged-in students belong to the student section, not the admin panel.
+      router.replace('/student/profile');
     }
   }, [user, profile, loading, router]);
 
   if (loading) return <AdminLoadingScreen />;
-  if (!user || !profile || !['admin', 'teacher'].includes(profile.role)) return null;
+  if (!user) return <AdminLoadingScreen />; // wait — may be a stale render post-login
+  if (!profile) return <AdminLoadingScreen />; // profile fetch in progress
+  if (!['admin', 'teacher'].includes(profile.role)) return null;
 
   return <>{children}</>;
 }
 
-// Stricter gate — use inside a page that is admin-only (subjects, settings, analytics)
 export function AdminOnlyGate({ children }: { children: React.ReactNode }) {
   const { user, profile, loading } = useAuth();
   const router = useRouter();
@@ -56,8 +69,9 @@ function AdminLoadingScreen() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-[var(--bg-primary)]">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-10 h-10 border-4 border-[var(--accent-blue)] border-t-transparent rounded-full animate-spin" />
-        <p className="text-sm text-[var(--text-secondary)] font-medium">Verifying access…</p>
+        <div className="w-10 h-10 border-4 border-t-transparent rounded-full animate-spin"
+          style={{ borderColor: 'var(--accent-orange)', borderTopColor: 'transparent' }} />
+        <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Verifying access…</p>
       </div>
     </div>
   );
