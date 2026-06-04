@@ -1,7 +1,7 @@
 // Server Component - Public landing page
 import { FAQSection } from '@/components/landing/FAQSection';
 import { FlashcardsSection } from '@/components/landing/FlashcardsSection';
-import { HeroSection } from '@/components/landing/HeroSection';
+import { HeroSlider } from '@/components/landing/HeroSlider';
 import { HowSection } from '@/components/landing/HowSection';
 import { IndividualTestsSection } from '@/components/landing/IndividualTestsSection';
 import { LandingFooter } from '@/components/landing/LandingFooter';
@@ -15,7 +15,7 @@ export default function LandingPage() {
   return (
     <div style={{ background: 'var(--p-bg)', minHeight: '100vh' }}>
       <LandingNav />
-      <HeroSection />
+      <HeroSlider />
       <HowSection />
       <SubjectsSection />
       <IndividualTestsSection />

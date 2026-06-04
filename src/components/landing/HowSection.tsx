@@ -8,7 +8,7 @@ const STEPS = [
 
 export function HowSection() {
   return (
-    <section id="how" style={{ padding: '84px 0', background: 'var(--p-ink)', position: 'relative' }}>
+    <section id="how" style={{ padding: '84px 0', background: 'var(--p-bg-alt)', position: 'relative' }}>
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 28px' }}>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'end', gap: 28, marginBottom: 56 }} className="how-head">
@@ -17,11 +17,11 @@ export function HowSection() {
               <span style={{ width: 18, height: 3, borderRadius: 3, background: 'var(--p-primary)' }} />
               How it works
             </div>
-            <h2 style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 'clamp(28px,3.5vw,48px)', letterSpacing: '-0.015em', lineHeight: 1.1, maxWidth: 780, color: '#fff' }}>
+            <h2 style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 'clamp(28px,3.5vw,48px)', letterSpacing: '-0.015em', lineHeight: 1.1, maxWidth: 780, color: 'var(--p-ink)' }}>
               A tutor that <span style={{ color: 'var(--p-primary)' }}>rebuilds itself</span> every time you answer.
             </h2>
           </div>
-          <div style={{ maxWidth: 300, color: 'rgba(255,255,255,0.72)', fontSize: 15, lineHeight: 1.6 }}>
+          <div style={{ maxWidth: 300, color: 'var(--p-ink-2)', fontSize: 15, lineHeight: 1.6 }}>
             Megamind watches <em>how</em> you answer — speed, confidence, mistakes — and quietly
             rewrites tomorrow&apos;s quiz to close the gaps.
           </div>
@@ -29,30 +29,32 @@ export function HowSection() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }} className="how-grid">
           {STEPS.map(s => (
-            <div key={s.n} style={{
-              padding: 24, borderRadius: 20,
-              background: s.featured ? 'var(--p-primary)' : 'rgba(255,255,255,0.06)',
-              border: `1px solid ${s.featured ? 'transparent' : 'rgba(255,255,255,0.1)'}`,
-              boxShadow: s.featured ? 'var(--p-shadow-orange)' : 'none',
-              minHeight: 260, position: 'relative',
+            <div key={s.n} className="how-card" style={{
+              padding: 24, borderRadius: 'var(--p-radius)',
+              background: s.featured ? 'var(--p-primary)' : 'var(--p-bg)',
+              border: `1px solid ${s.featured ? 'transparent' : 'var(--p-line)'}`,
+              boxShadow: s.featured ? 'var(--p-shadow-orange)' : 'var(--p-shadow)',
+              minHeight: 230, position: 'relative',
             }}>
               {s.featured && (
-                <span style={{ position: 'absolute', top: -13, left: 18, display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 11px', borderRadius: 999, background: '#fff', color: 'var(--p-primary-dark)', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 10, letterSpacing: '0.04em', textTransform: 'uppercase', boxShadow: 'var(--p-shadow-sm)' }}>
-                  <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--p-primary)' }} /> the AI bit
+                <span style={{ position: 'absolute', top: -13, left: 18, display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 999, background: 'var(--p-ink)', color: '#fff', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 11, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                  the AI bit
                 </span>
               )}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32 }}>
-                <span style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 700, fontSize: 12, letterSpacing: '0.05em', color: s.featured ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.45)' }}>{s.n}</span>
-                <div style={{ width: 46, height: 46, borderRadius: 13, background: s.color, display: 'grid', placeItems: 'center', fontSize: 24, boxShadow: 'var(--p-shadow-sm)' }}>{s.icon}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
+                <span style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 900, fontSize: 15, color: s.featured ? 'rgba(255,255,255,0.7)' : 'var(--p-muted)' }}>{s.n}</span>
+                <div style={{ width: 50, height: 50, borderRadius: 14, background: s.featured ? 'rgba(255,255,255,0.2)' : s.color, display: 'grid', placeItems: 'center', fontSize: 25 }}>{s.icon}</div>
               </div>
-              <h3 style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontSize: 22, fontWeight: 800, marginBottom: 10, color: '#fff' }}>{s.title}</h3>
-              <p style={{ fontSize: 14, lineHeight: 1.6, color: s.featured ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.65)' }}>{s.body}</p>
+              <h3 style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontSize: 21, fontWeight: 800, marginBottom: 8, color: s.featured ? '#fff' : 'var(--p-ink)' }}>{s.title}</h3>
+              <p style={{ fontSize: 14.5, lineHeight: 1.55, color: s.featured ? 'rgba(255,255,255,0.92)' : 'var(--p-ink-2)' }}>{s.body}</p>
             </div>
           ))}
         </div>
       </div>
 
       <style>{`
+        .how-card { transition: transform .15s, box-shadow .15s; }
+        .how-card:hover { transform: translateY(-4px); box-shadow: var(--p-shadow-lg) !important; }
         @media (max-width: 960px) { .how-grid { grid-template-columns: repeat(2, 1fr) !important; } .how-head { grid-template-columns: 1fr !important; } }
         @media (max-width: 560px) { .how-grid { grid-template-columns: 1fr !important; } }
       `}</style>

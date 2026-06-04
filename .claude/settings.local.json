@@ -20,7 +20,10 @@
       "Bash(Get-ChildItem src/app/tests/take-test/components/)",
       "Bash(Select-Object Name)",
       "Bash(grep -r \"p-bg\\\\|p-ink\\\\|p-primary\\\\|p-secondary\\\\|p-muted\\\\|p-bg-alt\\\\|p-card\\\\|p-accent\\\\|p-card-b\" /c/Users/ChanakaCha/source/repos/megamind/megamind-frontend-admin-ui/src/app/tests/take-test/ --include=\"*.tsx\" --include=\"*.css\" -l)",
-      "Read(//c/Users/ChanakaCha/source/repos/megamind/megamind-frontend-admin-ui/src/app/tests/**)"
+      "Read(//c/Users/ChanakaCha/source/repos/megamind/megamind-frontend-admin-ui/src/app/tests/**)",
+      "Bash(ls /c/Users/ChanakaCha/source/repos/megamind/megamind-frontend-admin-ui/src/app/ 2>/dev/null || echo \"path issue\")",
+      "Read(//c/Users/ChanakaCha/source/repos/megamind/megamind-frontend-admin-ui/src/**)",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\Chanaka Chathuranga\\\\source\\\\repos\\\\megamind\\\\megamind-frontend-admin-ui\\\\src\\\\app\\\\admin\\\\hero-slides\\\\components\")"
     ]
   }
 }
