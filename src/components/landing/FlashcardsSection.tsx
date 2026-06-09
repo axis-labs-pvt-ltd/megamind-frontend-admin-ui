@@ -1,6 +1,7 @@
 // Client Component - Flashcards landing section
 'use client';
 
+import { useT } from '@/contexts/LanguageContext';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -10,13 +11,8 @@ const SAMPLE_CARDS = [
   { subj: 'ICT',       title: 'OSI Layers · visual deck',     cards: 32, price: 1200, tint: 'var(--p-blue)',   ink: 'var(--p-ink-blue)',   emoji: '💻', rot: '3deg',  tutor: 'Mr. Silva',    isNew: true },
 ];
 
-const STATS = [
-  { val: '18+',      lbl: 'Curated decks' },
-  { val: 'Rs. 500+', lbl: 'From, one-time' },
-  { val: '3',        lbl: 'Card types' },
-];
-
 export function FlashcardsSection() {
+  const t = useT();
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
@@ -28,27 +24,22 @@ export function FlashcardsSection() {
           <div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 18, fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 13, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--p-primary)' }}>
               <span style={{ width: 18, height: 3, borderRadius: 3, background: 'var(--p-primary)' }} />
-              New · Flashcards
+              {t.flashcards.eyebrow}
             </div>
             <h2 style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 'clamp(26px,3.2vw,44px)', letterSpacing: '-0.015em', lineHeight: 1.1, color: 'var(--p-ink)', marginBottom: 20 }}>
-              Swipe, flip,{' '}
-              <span style={{ color: 'var(--p-primary)', position: 'relative', display: 'inline-block' }}>
-                remember.
-                <span style={{ position: 'absolute', left: 0, right: 0, bottom: 2, height: 8, background: 'var(--p-primary)', opacity: 0.22, borderRadius: 6, zIndex: -1 }} />
-              </span>
+              {t.flashcards.heading}
             </h2>
             <p style={{ fontSize: 'clamp(15px,1.2vw,17px)', color: 'var(--p-ink-2)', maxWidth: 460, lineHeight: 1.65, marginBottom: 28 }}>
-              Curated decks from top Sri Lankan tutors. Plain text, images, even short videos —
-              swipe left to review, right when you&apos;ve nailed it.
+              {t.flashcards.body}
             </p>
 
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 36 }}>
-              <Link href="/flashcards" style={btnPrimary}>Browse decks →</Link>
-              <Link href="/auth/signup" style={btnGhost}>Create a deck</Link>
+              <Link href="/flashcards" style={btnPrimary}>{t.flashcards.browseCta}</Link>
+              <Link href="/auth/signup" style={btnGhost}>{t.flashcards.createCta}</Link>
             </div>
 
             <div className="fc-stats" style={{ display: 'flex', gap: 36, flexWrap: 'wrap' }}>
-              {STATS.map(s => (
+              {t.flashcards.stats.map(s => (
                 <div key={s.lbl}>
                   <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 900, fontSize: 34, color: 'var(--p-ink)', letterSpacing: '-0.02em', lineHeight: 1 }}>{s.val}</div>
                   <div style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 700, fontSize: 12, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--p-muted)', marginTop: 5 }}>{s.lbl}</div>
@@ -102,9 +93,9 @@ export function FlashcardsSection() {
 
             {/* Swipe hint */}
             <div style={{ position: 'absolute', bottom: -2, left: '50%', transform: 'translateX(-50%)', background: 'var(--p-ink)', color: '#fff', padding: '8px 18px', borderRadius: 999, fontFamily: 'var(--font-display,Nunito,sans-serif)', fontSize: 12, fontWeight: 800, display: 'flex', gap: 12, alignItems: 'center', whiteSpace: 'nowrap', zIndex: 20, boxShadow: 'var(--p-shadow)' }}>
-              <span style={{ color: '#ff8a8a' }}>← REVIEW</span>
+              <span style={{ color: '#ff8a8a' }}>{t.flashcards.swipeReview}</span>
               <span style={{ opacity: 0.35 }}>·</span>
-              <span style={{ color: '#7be0a8' }}>I KNEW IT →</span>
+              <span style={{ color: '#7be0a8' }}>{t.flashcards.swipeKnew}</span>
             </div>
           </div>
         </div>

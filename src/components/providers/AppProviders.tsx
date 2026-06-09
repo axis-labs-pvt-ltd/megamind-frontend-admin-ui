@@ -1,5 +1,6 @@
 'use client';
 
+import { LanguageProvider } from '@/contexts/LanguageContext';
 import { queryClient } from '@/lib/query-client';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -13,10 +14,12 @@ interface AppProvidersProps {
 export function AppProviders({ children }: AppProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        {children}
-        <ReactQueryDevtools initialIsOpen={false} />
-      </ThemeProvider>
+      <LanguageProvider>
+        <ThemeProvider>
+          {children}
+          <ReactQueryDevtools initialIsOpen={false} />
+        </ThemeProvider>
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }
