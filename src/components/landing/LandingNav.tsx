@@ -56,8 +56,8 @@ export function LandingNav() {
 
           {/* Right CTA */}
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            {/* Language toggle */}
-            <button
+            {/* Language toggle — temporarily disabled */}
+            {/* <button
               onClick={() => setLang(lang === 'en' ? 'si' : 'en')}
               title={lang === 'en' ? 'Switch to Sinhala' : 'Switch to English'}
               style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'7px 13px', borderRadius:999, border:'1.5px solid var(--p-line-2)', background:'var(--p-bg)', cursor:'pointer', fontFamily:'var(--font-display,sans-serif)', fontWeight:800, fontSize:12, color:'var(--p-ink-2)', boxShadow:'var(--p-shadow-sm)', transition:'border-color .15s, color .15s', flexShrink:0 }}
@@ -65,7 +65,7 @@ export function LandingNav() {
               onMouseLeave={e => { e.currentTarget.style.borderColor='var(--p-line-2)'; e.currentTarget.style.color='var(--p-ink-2)'; }}
             >
               {lang === 'en' ? <>සිං</> : <>EN</>}
-            </button>
+            </button> */}
 
             {user ? (
               <button onClick={() => router.push('/student/profile')} title="My profile"

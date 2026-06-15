@@ -23,7 +23,14 @@
       "Read(//c/Users/ChanakaCha/source/repos/megamind/megamind-frontend-admin-ui/src/app/tests/**)",
       "Bash(ls /c/Users/ChanakaCha/source/repos/megamind/megamind-frontend-admin-ui/src/app/ 2>/dev/null || echo \"path issue\")",
       "Read(//c/Users/ChanakaCha/source/repos/megamind/megamind-frontend-admin-ui/src/**)",
-      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\Chanaka Chathuranga\\\\source\\\\repos\\\\megamind\\\\megamind-frontend-admin-ui\\\\src\\\\app\\\\admin\\\\hero-slides\\\\components\")"
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\Chanaka Chathuranga\\\\source\\\\repos\\\\megamind\\\\megamind-frontend-admin-ui\\\\src\\\\app\\\\admin\\\\hero-slides\\\\components\")",
+      "Bash(mkdir -p \"c:\\\\Users\\\\Chanaka Chathuranga\\\\source\\\\repos\\\\megamind\\\\megamind-frontend-admin-ui\\\\src\\\\app\\\\subjects\\\\[id]\")",
+      "Bash(npm install *)",
+      "Bash(mkdir -p \"c:\\\\Users\\\\Chanaka Chathuranga\\\\source\\\\repos\\\\megamind\\\\megamind-frontend-admin-ui\\\\src\\\\app\\\\admin\\\\modules\\\\[id]\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Chanaka Chathuranga\\source\\repos\\megamind\\megamind-frontend-admin-ui\\src\\app\\subjects",
+      "c:\\Users\\Chanaka Chathuranga\\source\\repos\\megamind\\megamind-frontend-admin-ui\\src\\app\\admin\\modules"
     ]
   }
 }

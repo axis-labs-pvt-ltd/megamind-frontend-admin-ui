@@ -50,6 +50,34 @@ export async function deleteSubject(id: string): Promise<void> {
   if (error) throw error;
 }
 
+export type SubjectDetail = Subject & { questionCounts: Record<string, number> };
+
+export async function fetchSubjectById(id: string): Promise<SubjectDetail | null> {
+  const { data, error } = await supabase
+    .from('subjects')
+    .select('*, modules(*)')
+    .eq('id', id)
+    .single();
+  if (error || !data) return null;
+
+  const modules = (data.modules ?? []).map(mapDbToModule);
+  let questionCounts: Record<string, number> = {};
+  if (modules.length > 0) {
+    const { data: qData } = await supabase
+      .from('questions')
+      .select('module_id')
+      .in('module_id', modules.map((m: Module) => m.id));
+    (qData ?? []).forEach((q: any) => {
+      questionCounts[q.module_id] = (questionCounts[q.module_id] ?? 0) + 1;
+    });
+  }
+  return {
+    id: data.id, name: data.name, description: data.description ?? '',
+    color: data.color ?? '#3b82f6', coverImage: data.cover_image ?? '',
+    modules, questionCounts,
+  };
+}
+
 // ---- Modules ----
 
 function mapDbToModule(row: any): Module {

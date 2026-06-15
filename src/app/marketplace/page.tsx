@@ -55,6 +55,8 @@ function MarketplaceContent() {
   useEffect(() => {
     const testId = params.get('testId');
     if (testId && tests.length > 0) { const t = tests.find(x => x.id === testId); if (t) setBuying(t); }
+    const sub = params.get('subject');
+    if (sub) setActiveSub(sub);
   }, [params, tests]);
 
   const subjects = useMemo(() => {

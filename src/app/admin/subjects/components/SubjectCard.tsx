@@ -2,7 +2,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Module, Subject } from '@/types';
-import { BookOpen, Edit, FolderPlus, Plus, Trash2, Users } from 'lucide-react';
+import { BookOpen, Edit, Film, FolderPlus, Plus, Trash2, Users } from 'lucide-react';
+import Link from 'next/link';
 
 interface SubjectCardProps {
   subject: Subject;
@@ -88,6 +89,14 @@ export function SubjectCard({
                     <p className="text-sm text-[var(--text-secondary)]">{module.description}</p>
                   </div>
                   <div className="flex space-x-1 opacity-0 group-hover/module:opacity-100 transition-opacity">
+                    <Link
+                      href={`/admin/modules/${module.id}`}
+                      title="Manage videos"
+                      style={{ display: 'inline-flex', alignItems: 'center', padding: 8, borderRadius: 6, color: 'var(--accent-blue)', textDecoration: 'none' }}
+                      className="hover:bg-blue-50"
+                    >
+                      <Film className="h-3 w-3" />
+                    </Link>
                     <Button
                       variant="ghost"
                       size="sm"
