@@ -1,23 +1,26 @@
 // Client Component - Public landing page navigation
 'use client';
 
+import { useLanguage, useT } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/authcontext';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-const NAV_LINKS = [
-  { href: '#how',        label: 'How it works' },
-  { href: '#subjects',   label: 'Subjects' },
-  { href: '#quiz',       label: 'Try a quiz' },
-  { href: '#pricing',    label: 'Pricing' },
-  { href: '/flashcards', label: '🃏 Flashcards' },
-];
-
 export function LandingNav() {
   const { user, profile } = useAuth();
+  const { lang, setLang } = useLanguage();
+  const t = useT();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+
+  const NAV_LINKS = [
+    { href: '#how',        label: t.nav.howItWorks },
+    { href: '#subjects',   label: t.nav.subjects },
+    { href: '#quiz',       label: t.nav.tryAQuiz },
+    { href: '#pricing',    label: t.nav.pricing },
+    { href: '/flashcards', label: t.nav.flashcards },
+  ];
 
   const initials = ((profile?.full_name || user?.email || '?')).slice(0, 2).toUpperCase();
   const avatarUrl = profile?.avatar_url ?? null;
@@ -53,6 +56,17 @@ export function LandingNav() {
 
           {/* Right CTA */}
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            {/* Language toggle — temporarily disabled */}
+            {/* <button
+              onClick={() => setLang(lang === 'en' ? 'si' : 'en')}
+              title={lang === 'en' ? 'Switch to Sinhala' : 'Switch to English'}
+              style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'7px 13px', borderRadius:999, border:'1.5px solid var(--p-line-2)', background:'var(--p-bg)', cursor:'pointer', fontFamily:'var(--font-display,sans-serif)', fontWeight:800, fontSize:12, color:'var(--p-ink-2)', boxShadow:'var(--p-shadow-sm)', transition:'border-color .15s, color .15s', flexShrink:0 }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor='var(--p-primary)'; e.currentTarget.style.color='var(--p-primary)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor='var(--p-line-2)'; e.currentTarget.style.color='var(--p-ink-2)'; }}
+            >
+              {lang === 'en' ? <>සිං</> : <>EN</>}
+            </button> */}
+
             {user ? (
               <button onClick={() => router.push('/student/profile')} title="My profile"
                 style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -63,8 +77,8 @@ export function LandingNav() {
               </button>
             ) : (
               <div className="hidden md:flex" style={{ gap: 10 }}>
-                <Link href="/auth/signin" style={ghostBtn}>Log in</Link>
-                <Link href="/auth/signup" style={primaryBtn}>Start free →</Link>
+                <Link href="/auth/signin" style={ghostBtn}>{t.nav.login}</Link>
+                <Link href="/auth/signup" style={primaryBtn}>{t.nav.startFree}</Link>
               </div>
             )}
 
@@ -99,12 +113,12 @@ export function LandingNav() {
             {user ? (
               <button onClick={() => { router.push('/student/profile'); setOpen(false); }}
                 style={{ padding: '13px 16px', borderRadius: 12, border: '1px solid var(--p-line-2)', background: 'var(--p-bg-alt)', color: 'var(--p-ink)', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 700, fontSize: 15, cursor: 'pointer', textAlign: 'left', boxShadow: 'var(--p-shadow-sm)' }}>
-                👤 My profile
+                {t.nav.myProfile}
               </button>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <Link href="/auth/signin" onClick={() => setOpen(false)} style={{ ...ghostBtn, display: 'block', textAlign: 'center', padding: '13px 16px', borderRadius: 12 }}>Log in</Link>
-                <Link href="/auth/signup" onClick={() => setOpen(false)} style={{ ...primaryBtn, display: 'block', textAlign: 'center', padding: '13px 16px', borderRadius: 12 }}>Start free →</Link>
+                <Link href="/auth/signin" onClick={() => setOpen(false)} style={{ ...ghostBtn, display: 'block', textAlign: 'center', padding: '13px 16px', borderRadius: 12 }}>{t.nav.login}</Link>
+                <Link href="/auth/signup" onClick={() => setOpen(false)} style={{ ...primaryBtn, display: 'block', textAlign: 'center', padding: '13px 16px', borderRadius: 12 }}>{t.nav.startFree}</Link>
               </div>
             )}
           </div>

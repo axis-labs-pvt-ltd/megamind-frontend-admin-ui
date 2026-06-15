@@ -6,7 +6,7 @@ import { AdminGuard } from './AdminGuard';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 
-const PUBLIC_PATHS = ['/', '/auth', '/tests/take-test', '/marketplace', '/my-tests', '/student', '/flashcards'];
+const PUBLIC_PATHS = ['/', '/auth', '/tests/take-test', '/marketplace', '/my-tests', '/student', '/flashcards', '/subjects'];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

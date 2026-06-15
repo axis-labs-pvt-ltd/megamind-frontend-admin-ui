@@ -2,6 +2,12 @@
    Clean white · warm orange · soft rounded cards
    Single global palette — all public pages + admin use these tokens */
 
+/* Sinhala language — switch display + body font to Noto Sans Sinhala */
+html.lang-si {
+  --font-display: var(--font-sinhala);
+  --font-body:    var(--font-sinhala);
+}
+
 :root {
   /* surfaces */
   --p-bg:          #FFFFFF;

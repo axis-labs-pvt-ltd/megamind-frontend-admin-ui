@@ -2,7 +2,7 @@ import { queryClient } from '@/lib/query-client';
 import {
   createModule, createSubject,
   deleteModule, deleteSubject,
-  fetchSubjects,
+  fetchSubjects, fetchSubjectById,
   updateModule, updateSubject,
 } from '@/services/api/subjects';
 import { Module, Subject } from '@/types';
@@ -11,9 +11,14 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export const SUBJECTS_KEY = ['subjects'] as const;
 
 export function useSubjects() {
+  return useQuery({ queryKey: SUBJECTS_KEY, queryFn: fetchSubjects });
+}
+
+export function useSubjectById(id: string) {
   return useQuery({
-    queryKey: SUBJECTS_KEY,
-    queryFn: fetchSubjects,
+    queryKey: ['subjects', id],
+    queryFn: () => fetchSubjectById(id),
+    enabled: !!id,
   });
 }
 
