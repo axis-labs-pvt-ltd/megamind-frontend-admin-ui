@@ -37,9 +37,9 @@ function getTestPrice(t: Test) {
 }
 
 export default function SubjectPage() {
-  const { id } = useParams<{ id: string }>();
+  const { subjectId } = useParams<{ subjectId: string }>();
   const { user } = useAuth();
-  const { data: subject, isLoading, error } = useSubjectById(id);
+  const { data: subject, isLoading, error } = useSubjectById(subjectId);
   const { data: allTests = [] } = useActiveTests();
   const [modFilter, setModFilter] = useState('all');
 
@@ -167,7 +167,7 @@ export default function SubjectPage() {
                     <span key={tag} style={{ fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 11, padding: '5px 11px', borderRadius: 999, background: 'rgba(255,255,255,0.18)', color: '#fff' }}>{tag}</span>
                   ))}
                 </div>
-                <Link href={`/subjects/${id}/modules/${featuredModule.id}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: '13px 20px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 14, textDecoration: 'none', boxSizing: 'border-box' as const }}>
+                <Link href={`/subjects/${subjectId}/modules/${featuredModule.id}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: '13px 20px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 800, fontSize: 14, textDecoration: 'none', boxSizing: 'border-box' as const }}>
                   Start module →
                 </Link>
               </div>
@@ -210,7 +210,7 @@ export default function SubjectPage() {
                 const qCount = subject.questionCounts[m.id] ?? 0;
                 const isFirst = i === 0;
                 return (
-                  <Link key={m.id} href={`/subjects/${id}/modules/${m.id}`} className="mod-card" style={{ border: '1px solid var(--p-line)', borderRadius: 20, background: '#fff', boxShadow: 'var(--p-shadow-sm)', padding: 24, display: 'flex', flexDirection: 'column', textDecoration: 'none', color: 'inherit', transition: 'transform .15s, box-shadow .15s' }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--p-shadow-lg)'; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ''; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--p-shadow-sm)'; }}>
+                  <Link key={m.id} href={`/subjects/${subjectId}/modules/${m.id}`} className="mod-card" style={{ border: '1px solid var(--p-line)', borderRadius: 20, background: '#fff', boxShadow: 'var(--p-shadow-sm)', padding: 24, display: 'flex', flexDirection: 'column', textDecoration: 'none', color: 'inherit', transition: 'transform .15s, box-shadow .15s' }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--p-shadow-lg)'; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ''; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--p-shadow-sm)'; }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
                       <div style={{ width: 48, height: 48, borderRadius: 13, background: bg, color: ink, display: 'grid', placeItems: 'center', fontFamily: 'var(--font-display,Nunito,sans-serif)', fontWeight: 900, fontSize: 16 }}>{num}</div>
                       {isFirst && (
